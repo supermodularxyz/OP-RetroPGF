@@ -40,29 +40,35 @@ export const Header = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <header className="container mx-auto flex h-[72px]  max-w-screen-2xl items-center px-8 shadow-md">
-      <div className="mr-8 flex items-center lg:mr-16">
-        <Button
-          className="font-mono md:hidden"
-          onClick={() => setOpen(!isOpen)}
-        >
-          {isOpen ? "x" : "m"}
-        </Button>
-        <OptimismLogo />
+    <header className="shadow-md">
+      <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2  md:px-8">
+        <div className="mr-4 flex items-center lg:mr-16">
+          <Button
+            className="font-mono md:hidden"
+            onClick={() => setOpen(!isOpen)}
+          >
+            {isOpen ? "x" : "m"}
+          </Button>
+          <OptimismLogo />
+        </div>
+        <div className="hidden h-full items-center gap-4 md:flex">
+          {navLinks.map((link) => (
+            <NavLink
+              isActive={asPath === link.href}
+              key={link.href}
+              {...link}
+            />
+          ))}
+        </div>
+        <div className="flex-1 md:ml-8">
+          <Search />
+        </div>
+        <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
+          <ConnectButton />
+          <Chip className="hidden md:block">T</Chip>
+        </div>
+        <MobileMenu isOpen={isOpen} />
       </div>
-      <div className="hidden h-full items-center gap-4 md:flex">
-        {navLinks.map((link) => (
-          <NavLink isActive={asPath === link.href} key={link.href} {...link} />
-        ))}
-      </div>
-      <div className="ml-8 flex-1">
-        <Search />
-      </div>
-      <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
-        <ConnectButton />
-        <Chip className="hidden md:block">T</Chip>
-      </div>
-      <MobileMenu isOpen={isOpen} />
     </header>
   );
 };

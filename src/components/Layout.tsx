@@ -26,5 +26,5 @@ export const Layout = (props: PropsWithChildren) => {
 };
 
 const Sidebar = (props: PropsWithChildren) => (
-  <div className="px-8" {...props} />
+  <div className="px-2 md:px-8" {...props} />
 );
