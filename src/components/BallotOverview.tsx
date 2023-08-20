@@ -43,9 +43,9 @@ export const BallotOverview = () => (
     </Button>
     <Divider />
     <p className="text-gray-700">
-      A nice heading As a badgeholder you are tasked with upholding the
-      principle of “impact = profit” - the idea that positive impact to the
-      Collective should be rewarded with profit to the individual.
+      As a badgeholder you are tasked with upholding the principle of “impact =
+      profit” - the idea that positive impact to the Collective should be
+      rewarded with profit to the individual.
     </p>
     <div>
       <ExternalLink href="/" target="_blank">
