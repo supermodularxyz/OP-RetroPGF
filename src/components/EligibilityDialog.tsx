@@ -12,7 +12,7 @@ export const EligibilityDialog = () => {
   const isBadgeholder = data && !isLoading;
   return (
     <Dialog
-      isOpen={!isBadgeholder && Boolean(address)}
+      isOpen={Boolean(address) && !isBadgeholder}
       title={
         <>
           You are not eligible to vote <span className="font-serif">😔</span>
