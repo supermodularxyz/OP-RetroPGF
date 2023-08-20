@@ -40,7 +40,7 @@ export const Header = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <header className="shadow-md">
+    <header className="relative z-10 bg-white shadow-md">
       <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2  md:px-8">
         <div className="mr-4 flex items-center lg:mr-16">
           <Button

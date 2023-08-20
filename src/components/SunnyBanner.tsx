@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Sparkles, SunnyBackground, SunnyFace } from "./SunnySVG";
+import { ExternalLink } from "./ui/Link";
 
 export const SunnyBanner = () => (
   <div className="relative mx-auto flex h-[572px] w-[312px] flex-col items-center">
@@ -17,9 +17,9 @@ export const SunnyBanner = () => (
           receive retroactive public goods funding.
         </p>
         <div>
-          <Link className="font-semibold" href="/" target="_blank">
-            View docs [icon]
-          </Link>
+          <ExternalLink href="/" target="_blank">
+            View docs
+          </ExternalLink>
         </div>
       </div>
       <Sparkles />

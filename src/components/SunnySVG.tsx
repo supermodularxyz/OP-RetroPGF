@@ -12,8 +12,8 @@ export const SunnyFace = () => (
         fill="currentColor"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M72.0647 75.2637C72.7951 75.2637 73.3873 75.8528 73.3873 76.5795C73.3873 80.2129 76.3479 83.1584 79.9999 83.1584C83.652 83.1584 86.6126 80.2129 86.6126 76.5795C86.6126 75.8528 87.2048 75.2637 87.9352 75.2637C88.6656 75.2637 89.2577 75.8528 89.2577 76.5795C89.2577 81.6663 85.1129 85.79 79.9999 85.79C74.887 85.79 70.7422 81.6663 70.7422 76.5795C70.7422 75.8528 71.3343 75.2637 72.0647 75.2637Z"
         fill="white"
       />
@@ -37,7 +37,7 @@ export const SunnyBackground = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_1357_19858)">
+    <g clipPath="url(#clip0_1357_19858)">
       <rect width="312" height="572" fill="white" />
       <g filter="url(#filter0_f_1357_19858)">
         <path
@@ -78,9 +78,9 @@ export const SunnyBackground = () => (
         width="594.223"
         height="644.587"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -99,9 +99,9 @@ export const SunnyBackground = () => (
         width="637.98"
         height="594.586"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -120,9 +120,9 @@ export const SunnyBackground = () => (
         width="795.559"
         height="802.769"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -141,9 +141,9 @@ export const SunnyBackground = () => (
         width="540.301"
         height="643.139"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
@@ -162,9 +162,9 @@ export const SunnyBackground = () => (
         width="520.219"
         height="635.099"
         filterUnits="userSpaceOnUse"
-        color-interpolation-filters="sRGB"
+        colorInterpolationFilters="sRGB"
       >
-        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+        <feFlood floodOpacity="0" result="BackgroundImageFix" />
         <feBlend
           mode="normal"
           in="SourceGraphic"
