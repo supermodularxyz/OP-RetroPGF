@@ -1,12 +1,12 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
-import { type PropsWithChildren } from "react";
-import { Button } from "./ui/Button";
+import type { ReactNode, PropsWithChildren } from "react";
+import { Button } from "./Button";
 
 export const Dialog = ({
   title,
   isOpen,
   children,
-}: { title: string; isOpen?: boolean } & PropsWithChildren) => (
+}: { title: string | ReactNode; isOpen?: boolean } & PropsWithChildren) => (
   <RadixDialog.Root open={isOpen}>
     <RadixDialog.Portal>
       <RadixDialog.Overlay className="fixed left-0 top-0 h-full w-full bg-black/70" />

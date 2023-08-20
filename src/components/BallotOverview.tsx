@@ -4,6 +4,7 @@ import { Button } from "./ui/Button";
 import { Divider } from "./ui/Divider";
 import { Progress } from "./ui/Progress";
 import { ExternalLink } from "./ui/Link";
+import type { PropsWithChildren, ReactNode } from "react";
 
 export const BallotOverview = () => (
   <div className="w-[336px] space-y-6">
@@ -54,7 +55,10 @@ export const BallotOverview = () => (
   </div>
 );
 
-const BallotSection = ({ title, children }) => (
+const BallotSection = ({
+  title,
+  children,
+}: { title: string | ReactNode } & PropsWithChildren) => (
   <div className="space-y-1">
     <h4 className="text-sm font-semibold text-gray-500">{title}</h4>
     <div className="space-y-1 text-lg font-semibold text-gray-500">
@@ -64,9 +68,3 @@ const BallotSection = ({ title, children }) => (
 );
 
 const TimeSlice = createComponent("span", tv({ base: "text-gray-900" }));
-const BallotHeading = createComponent("h4", tv({ base: "" }));
-
-// const BallotSection = createComponent(
-//   "div",
-//   tv({ base: "font-semibold text-lg text-gray-500" })
-// );

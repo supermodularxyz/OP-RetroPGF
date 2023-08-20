@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { type ComponentPropsWithRef, useEffect, useState } from "react";
+import { type ComponentPropsWithRef } from "react";
 import { type Address, useEnsAvatar, useEnsName } from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { createBreakpoint } from "react-use";
@@ -11,12 +11,6 @@ import { Chip } from "./ui/Chip";
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 export const ConnectButton = () => {
   const breakpoint = useBreakpoint();
-
-  const [isLoaded, setLoaded] = useState(false);
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-  if (!isLoaded) return null;
 
   const isMobile = breakpoint === "S";
   return (

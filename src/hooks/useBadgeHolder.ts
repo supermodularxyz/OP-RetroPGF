@@ -13,11 +13,13 @@ const query = gql`
   }
 `;
 
+type Attestation = { attestations: { id: string }[] };
+
 export function useBadgeHolder(address: Address) {
   return useQuery(
     ["badgeholder", address],
     () =>
-      request(`https://optimism.easscan.org/graphql`, query, {
+      request<Attestation>(`https://optimism.easscan.org/graphql`, query, {
         input: { schemaId: "" },
       }).then((r) => r.attestations?.length > 0),
     { enabled: Boolean(address) }
