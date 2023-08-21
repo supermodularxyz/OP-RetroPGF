@@ -1,25 +1,35 @@
 import Head from "next/head";
-import { type PropsWithChildren } from "react";
+import { useState, type PropsWithChildren, useEffect } from "react";
+import { useAccount } from "wagmi";
 
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
+import { BallotOverview } from "./BallotOverview";
+import { EligibilityDialog } from "./EligibilityDialog";
 
 export const Layout = (props: PropsWithChildren) => {
+  const { address } = useAccount();
+  const [isLoaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+  if (!isLoaded) return null;
+
   return (
     <>
       <Head>
         <title>Retro PGF</title>
       </Head>
 
-      <main>
+      <main className="text-gray-900">
         <Header />
         <div className="gap-8 pt-12 md:flex">
-          <Sidebar>
-            <SunnyBanner />
-          </Sidebar>
+          <Sidebar>{address ? <BallotOverview /> : <SunnyBanner />}</Sidebar>
 
           <div className="">{props.children}</div>
         </div>
+        <EligibilityDialog />
       </main>
     </>
   );
