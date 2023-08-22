@@ -1,12 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
+import { type ImpactCategory } from "./useProjects";
 
+type FilterSort = "shuffle" | "asc" | "desc";
 export type Filter = {
-  page: number;
+  page?: number;
   display?: "grid" | "list";
+  sort?: FilterSort;
+  categories: ImpactCategory[];
 };
-const initialFilter = {
+const initialFilter: Filter = {
   page: 1,
-  display: "grid" as const,
+  display: "grid",
+  sort: "shuffle",
+  categories: [],
+};
+
+export const sortLabels: { [key in FilterSort]: string } = {
+  shuffle: "Shuffle",
+  asc: "A to Z",
+  desc: "Z to A",
 };
 
 export function useFilter() {
