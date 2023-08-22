@@ -14,7 +14,8 @@ export function useFilter() {
 
   return useQuery(
     ["filter", "projects"],
-    () => client.getQueryData<Filter>(["filter", "projects"]) ?? initialFilter
+    () => client.getQueryData<Filter>(["filter", "projects"]) ?? initialFilter,
+    { cacheTime: 0 }
   );
 }
 
