@@ -4,8 +4,7 @@ import { type PropsWithChildren, useEffect } from "react";
 
 import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
-import { ProjectGridItem } from "~/components/ProjectGridItem";
-import { ProjectListItem } from "~/components/ProjectListItem";
+import { Projects } from "~/components/Projects";
 import { Button } from "~/components/ui/Button";
 import { Divider } from "~/components/ui/Divider";
 import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
@@ -41,21 +40,7 @@ export default function ProjectsPage() {
       </div>
 
       <div className="py-8">TAGS</div>
-      {filter?.display == "grid" ? (
-        <div className="mb-8 grid gap-4 md:grid-cols-3">
-          {projects?.map((project) => (
-            <ProjectGridItem key={project.id} project={project} />
-          ))}
-        </div>
-      ) : (
-        <div className="mb-8 mr-6 grid gap-6 divide-y divide-neutral-200">
-          {projects?.map((project, index) => (
-            <div key={project.id} className={index !== 0 ? "pt-6" : ""}>
-              <ProjectListItem project={project} />
-            </div>
-          ))}
-        </div>
-      )}
+      <Projects filter={filter} projects={projects} />
 
       <Pagination
         currentPage={currentPage}
