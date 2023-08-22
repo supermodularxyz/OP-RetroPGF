@@ -1,7 +1,8 @@
 import { useQuery } from "wagmi";
 import { type Filter } from "./useFilter";
+import { useMemo } from "react";
 
-type ImpactCategory =
+export type ImpactCategory =
   | "OP_STACK"
   | "COLLECTIVE_GOVERNANCE"
   | "DEVELOPER_ECOSYSTEM"
@@ -99,15 +100,51 @@ const projects: Project[] = Array.from({ length: 25 })
   }));
 
 export function useProjects(filter: Filter) {
-  const { page } = filter ?? {};
+  const { page = 1, sort = "shuffle", categories } = filter ?? {};
   const pageSize = 6;
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
 
   // TODO: Call EAS attestations
+
+  // Temporary sorting
+  const sortFn = {
+    shuffle: (arr: Project[]) => arr,
+    asc: (arr: Project[]) =>
+      arr.sort((a, b) => a.displayName.localeCompare(b.displayName)),
+    desc: (arr: Project[]) =>
+      arr.sort((a, b) => b.displayName.localeCompare(a.displayName)),
+  }[sort];
+
   return useQuery(
-    ["projects", { page }],
+    ["projects", { page, sort, categories }],
     () =>
-      new Promise<Project[]>((resolve) => resolve(projects.slice(start, end)))
+      new Promise<{ data: Project[]; pages: number }>((resolve) => {
+        const data = sortFn(projects).filter((project) =>
+          categories.length
+            ? categories.every((c) => project.impactCategory.includes(c))
+            : project
+        );
+
+        const pages = Math.ceil(data.length / pageSize);
+        return resolve({ data: data.slice(start, end), pages });
+      })
   );
+}
+
+export function useCategories() {
+  return useMemo(() => {
+    // Set each category to 0 - { OP_STACK: 0, COLLECTIVE_GOVERNANCE: 0, ...}
+    const initialState = Object.keys(impactCategoryLabels).reduce(
+      (a, x) => ({ ...a, [x]: 0 }),
+      {}
+    );
+    return projects.reduce((acc, x) => {
+      const next = { ...acc };
+      x.impactCategory.forEach((category) => {
+        next[category] += 1;
+      });
+      return next;
+    }, initialState as { [key in ImpactCategory]: number });
+  }, [projects]);
 }
