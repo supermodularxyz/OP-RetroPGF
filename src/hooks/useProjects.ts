@@ -1,5 +1,6 @@
 import { useQuery } from "wagmi";
 import { type Filter } from "./useFilter";
+import { useMemo } from "react";
 
 export type ImpactCategory =
   | "OP_STACK"
@@ -129,4 +130,21 @@ export function useProjects(filter: Filter) {
         return resolve({ data: data.slice(start, end), pages });
       })
   );
+}
+
+export function useCategories() {
+  return useMemo(() => {
+    // Set each category to 0 - { OP_STACK: 0, COLLECTIVE_GOVERNANCE: 0, ...}
+    const initialState = Object.keys(impactCategoryLabels).reduce(
+      (a, x) => ({ ...a, [x]: 0 }),
+      {}
+    );
+    return projects.reduce((acc, x) => {
+      const next = { ...acc };
+      x.impactCategory.forEach((category) => {
+        next[category] += 1;
+      });
+      return next;
+    }, initialState as { [key in ImpactCategory]: number });
+  }, [projects]);
 }
