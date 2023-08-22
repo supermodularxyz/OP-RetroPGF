@@ -18,7 +18,7 @@ export const ProjectGridItem = ({ project }: { project: Project }) => {
           <div className="flex h-full w-full rounded-md bg-gray-200" />
         </div>
         <h3 className="pt-2 text-lg font-bold">{project.displayName}</h3>
-        <p className="">{project.bio}</p>
+        <p className="text-sm text-neutral-700 line-clamp-2">{project.bio}</p>
         <Tag>{category}</Tag>
       </div>
     </div>
