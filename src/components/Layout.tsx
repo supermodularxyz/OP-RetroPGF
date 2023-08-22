@@ -27,7 +27,7 @@ export const Layout = (props: PropsWithChildren) => {
         <div className="gap-8 pt-12 md:flex">
           <Sidebar>{address ? <BallotOverview /> : <SunnyBanner />}</Sidebar>
 
-          <div className="">{props.children}</div>
+          <div className="flex-1 px-4 pb-24">{props.children}</div>
         </div>
         <EligibilityDialog />
       </main>
