@@ -54,7 +54,7 @@ export const Header = () => {
         <div className="hidden h-full items-center gap-4 md:flex">
           {navLinks.map((link) => (
             <NavLink
-              isActive={asPath === link.href}
+              isActive={asPath.startsWith(link.href)}
               key={link.href}
               {...link}
             />

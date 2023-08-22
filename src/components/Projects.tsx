@@ -68,7 +68,7 @@ const ProjectImage = () => (
 
 const ImpactCategories = ({ tags }: { tags: Project["impactCategory"] }) => (
   <div className="flex gap-1">
-    {tags.map((key) => {
+    {tags?.map((key) => {
       const category = impactCategoryLabels[key];
       return <Tag key={key}>{category}</Tag>;
     })}
