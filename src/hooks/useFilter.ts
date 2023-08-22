@@ -8,6 +8,7 @@ export type Filter = {
   sort?: FilterSort;
   categories: ImpactCategory[];
 };
+
 const initialFilter: Filter = {
   page: 1,
   display: "grid",

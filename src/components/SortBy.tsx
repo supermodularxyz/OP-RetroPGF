@@ -6,12 +6,12 @@ type Props = {
   value: Filter["sort"];
   onChange: (value: string) => void;
 };
-export const SortBy = ({ value = "shuffle", onChange }: Props) => {
+export const SortBy = ({ value, onChange }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <Button variant="outline" aria-label="Sort by">
-          [S] Sort by: {sortLabels[value]}
+          [S] Sort by: {value && sortLabels[value]}
         </Button>
       </DropdownMenu.Trigger>
 
