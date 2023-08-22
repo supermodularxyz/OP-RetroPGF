@@ -45,9 +45,7 @@ export default function ProjectsPage() {
       <Pagination
         currentPage={currentPage}
         pages={4}
-        onNavigate={(page) =>
-          void router.push(`/projects?${toURL(query, { page })}`)
-        }
+        onNavigate={(page) => `/projects?${toURL(query, { page })}`}
       />
     </Layout>
   );

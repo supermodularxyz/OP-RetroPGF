@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "~/components/ui/Button";
 
 type Props = {
@@ -12,7 +13,8 @@ export const Pagination = ({ currentPage, pages, onNavigate }: Props) => (
     <Button
       disabled={currentPage === 1}
       variant="outline"
-      onClick={() => onNavigate(currentPage - 1)}
+      as={Link}
+      href={onNavigate(currentPage - 1)}
     >
       Prev
     </Button>
@@ -24,7 +26,8 @@ export const Pagination = ({ currentPage, pages, onNavigate }: Props) => (
           className="hidden md:block"
           key={page}
           variant={currentPage === page ? "dark" : "outline"}
-          onClick={() => onNavigate(page)}
+          as={Link}
+          href={onNavigate(page)}
         >
           {page}
         </Button>
@@ -33,7 +36,8 @@ export const Pagination = ({ currentPage, pages, onNavigate }: Props) => (
     <Button
       disabled={currentPage === pages}
       variant="outline"
-      onClick={() => onNavigate(currentPage + 1)}
+      as={Link}
+      href={onNavigate(currentPage + 1)}
     >
       Next
     </Button>
