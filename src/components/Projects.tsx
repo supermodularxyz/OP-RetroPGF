@@ -58,9 +58,12 @@ export const ProjectListItem = ({ project }: { project: Project }) => {
   );
 };
 
-const ProjectTitle = createComponent("h3", tv({ base: "text-lg font-bold" }));
+export const ProjectTitle = createComponent(
+  "h3",
+  tv({ base: "text-lg font-bold" })
+);
 
-const ProjectImage = () => (
+export const ProjectImage = () => (
   <div className={"h-16 w-16 rounded-lg border border-gray-200 bg-white p-1"}>
     <div className="flex h-full w-full rounded-md bg-gray-200" />
   </div>

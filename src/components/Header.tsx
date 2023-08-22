@@ -18,6 +18,10 @@ const navLinks = [
     href: "/lists",
     children: "Lists",
   },
+  {
+    href: "/lists/create",
+    children: "New List",
+  },
 ];
 
 const NavLink = ({
@@ -54,7 +58,7 @@ export const Header = () => {
         <div className="hidden h-full items-center gap-4 md:flex">
           {navLinks.map((link) => (
             <NavLink
-              isActive={asPath.startsWith(link.href)}
+              isActive={asPath === link.href}
               key={link.href}
               {...link}
             />
@@ -65,7 +69,7 @@ export const Header = () => {
         </div>
         <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
           <ConnectButton />
-          <Chip className="hidden md:block">T</Chip>
+          {/* <Chip className="hidden md:block">T</Chip> */}
         </div>
         <MobileMenu isOpen={isOpen} />
       </div>
