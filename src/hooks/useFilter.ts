@@ -9,7 +9,7 @@ export type Filter = {
   categories: ImpactCategory[];
 };
 
-const initialFilter: Filter = {
+export const initialFilter: Filter = {
   page: 1,
   display: "grid",
   sort: "shuffle",

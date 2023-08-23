@@ -1,5 +1,5 @@
 import { useQuery } from "wagmi";
-import { type Filter } from "./useFilter";
+import { initialFilter, type Filter } from "./useFilter";
 import { useMemo } from "react";
 
 export type ImpactCategory =
@@ -100,7 +100,11 @@ const projects: Project[] = Array.from({ length: 25 })
   }));
 
 export function useProjects(filter: Filter) {
-  const { page = 1, sort = "shuffle", categories } = filter ?? {};
+  const {
+    page = 1,
+    sort = "shuffle",
+    categories = [],
+  } = filter ?? initialFilter;
   const pageSize = 6;
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
