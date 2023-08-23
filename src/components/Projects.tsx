@@ -8,6 +8,7 @@ import { tv } from "tailwind-variants";
 type Props = { filter?: Filter; projects?: Project[] };
 
 export const Projects = ({ filter, projects }: Props) => {
+  console.log("projects", projects);
   const isList = filter?.display === "list";
   return (
     <div
