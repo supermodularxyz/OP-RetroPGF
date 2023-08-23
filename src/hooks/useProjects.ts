@@ -1,6 +1,7 @@
 import { useQuery } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
 import { useMemo } from "react";
+import { projects } from "~/data/mock";
 
 export type ImpactCategory =
   | "OP_STACK"
@@ -56,49 +57,6 @@ export const impactCategoryLabels: { [key in ImpactCategory]: string } = {
   END_USER_EXPERIENCE_AND_ADOPTION: "End user UX",
 };
 
-const projects: Project[] = Array.from({ length: 25 })
-  .fill(0)
-  .map((_, id) => ({
-    id: String(id),
-    applicantType: "PROJECT",
-    displayName: `Project ${id + 1}`,
-    bio: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-    impactCategory: Array.from({
-      length: Math.floor(Math.random() * 2) + 1,
-    }).map((_, i) => Object.keys(impactCategoryLabels)[i]) as ImpactCategory[],
-    websiteUrl: "https://www.example.com",
-    contributionDescription: "Providing development services",
-    contributionLinks: [
-      {
-        type: "GITHUB_REPO",
-        url: "https://github.com/example/repo",
-        description: "Github Repo",
-      },
-    ],
-    impactDescription: "Making positive changes in open source ecosystem.",
-    impactMetrics: [
-      {
-        description: "Contributions to OP Stack",
-        number: 500,
-        url: "http://example.com/metrics1",
-      },
-    ],
-    fundingSources: [
-      {
-        type: "GOVERNANCE_FUND",
-        currency: "OP",
-        amount: 10000,
-        description: "Seed fund",
-      },
-    ],
-    payoutAddress: "0x123",
-    understoodKYCRequirements: true,
-    understoodFundClaimPeriod: true,
-    certifiedNotDesignatedOrSanctionedOrBlocked: true,
-    certifiedNotSponsoredByPoliticalFigureOrGovernmentEntity: true,
-    certifiedNotBarredFromParticipating: true,
-  }));
-
 export function useProjects(filter: Filter) {
   const {
     page = 1,
@@ -124,7 +82,7 @@ export function useProjects(filter: Filter) {
     ["projects", { page, sort, categories }],
     () =>
       new Promise<{ data: Project[]; pages: number }>((resolve) => {
-        const data = sortFn(projects).filter((project) =>
+        const data = sortFn([...projects]).filter((project) =>
           categories.length
             ? categories.every((c) => project.impactCategory.includes(c))
             : project
@@ -144,11 +102,8 @@ export function useCategories() {
       {}
     );
     return projects.reduce((acc, x) => {
-      const next = { ...acc };
-      x.impactCategory.forEach((category) => {
-        next[category] += 1;
-      });
-      return next;
+      x.impactCategory.forEach((category) => (acc[category] += 1));
+      return acc;
     }, initialState as { [key in ImpactCategory]: number });
   }, [projects]);
 }
