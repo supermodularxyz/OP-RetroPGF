@@ -22,9 +22,10 @@ export default function ProjectsPage() {
   const currentPage = Number(filter?.page);
 
   useEffect(() => {
-    const categories = (query.categories as unknown as string)
-      ?.split(",")
-      .filter(Boolean) as Filter["categories"];
+    const categories =
+      ((query.categories as unknown as string)
+        ?.split(",")
+        .filter(Boolean) as Filter["categories"]) ?? [];
     setFilter({ ...query, categories });
   }, [query, setFilter]);
 

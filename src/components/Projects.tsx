@@ -29,7 +29,7 @@ export const Projects = ({ filter, projects }: Props) => {
 
 export const ProjectGridItem = ({ project }: { project: Project }) => {
   return (
-    <div className="rounded-[20px] border p-2">
+    <div className="cursor-pointer rounded-[20px] border p-2 transition-colors hover:border-gray-400">
       <div className="h-24 rounded-2xl bg-gray-200" />
       <div className="space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
@@ -45,7 +45,7 @@ export const ProjectGridItem = ({ project }: { project: Project }) => {
 
 export const ProjectListItem = ({ project }: { project: Project }) => {
   return (
-    <div className="flex gap-6 pt-6">
+    <div className="flex  cursor-pointer gap-6 pt-6">
       <ProjectImage />
       <div className="flex flex-1 flex-col gap-2">
         <ProjectTitle>{project.displayName}</ProjectTitle>
