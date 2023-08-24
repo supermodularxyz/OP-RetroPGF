@@ -6,6 +6,7 @@ import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { Projects } from "~/components/Projects";
 import { Button } from "~/components/ui/Button";
+import { DisplayToggle } from "~/components/ui/DisplayToggle";
 import { Divider } from "~/components/ui/Divider";
 import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
 import { useProjects } from "~/hooks/useProjects";
@@ -16,27 +17,14 @@ export default function ProjectsPage() {
 
   const { data: filter } = useFilter();
   const { data: projects } = useProjects(filter!);
-  const { mutate: setFilter } = useSetFilter();
   const currentPage = Number(filter?.page);
-
-  useEffect(() => {
-    setFilter(query);
-  }, [query, setFilter]);
 
   return (
     <Layout>
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
 
-        <div className="flex gap-2">
-          <DisplayButton filter={filter!} display="list">
-            L
-          </DisplayButton>
-          <Divider orientation={"vertical"} />
-          <DisplayButton filter={filter!} display="grid">
-            G
-          </DisplayButton>
-        </div>
+        <DisplayToggle baseUrl="/projects" />
       </div>
 
       <div className="py-8">TAGS</div>
@@ -50,19 +38,3 @@ export default function ProjectsPage() {
     </Layout>
   );
 }
-
-const DisplayButton = ({
-  display,
-  filter,
-  children,
-}: { display: Filter["display"]; filter: Filter } & PropsWithChildren) => {
-  return (
-    <Button
-      as={Link}
-      href={`/projects?${toURL(filter, { display })}`}
-      variant={filter?.display === display ? "default" : "ghost"}
-    >
-      {children}
-    </Button>
-  );
-};

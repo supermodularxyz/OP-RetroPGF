@@ -1,7 +1,7 @@
 import { useQuery } from "wagmi";
 import { type Filter } from "./useFilter";
 
-type ImpactCategory =
+export type ImpactCategory =
   | "OP_STACK"
   | "COLLECTIVE_GOVERNANCE"
   | "DEVELOPER_ECOSYSTEM"
@@ -55,7 +55,7 @@ export const impactCategoryLabels: { [key in ImpactCategory]: string } = {
   END_USER_EXPERIENCE_AND_ADOPTION: "End user UX",
 };
 
-const projects: Project[] = Array.from({ length: 25 })
+export const projects: Project[] = Array.from({ length: 25 })
   .fill(0)
   .map((_, id) => ({
     id: String(id),
