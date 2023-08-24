@@ -4,7 +4,8 @@ import { Command } from "cmdk";
 import { useProjects } from "~/hooks/useProjects";
 import { useFilter } from "~/hooks/useFilter";
 import clsx from "clsx";
-import { Button } from "./ui/Button";
+import { Button, IconButton } from "./ui/Button";
+import { ChevronLeft, Search as SearchIcon, X } from "./icons";
 
 export const Search = ({
   onSelect,
@@ -33,29 +34,28 @@ export const Search = ({
   return (
     <div className="flex justify-end">
       <Chip className="md:hidden" onClick={() => setOpen(true)}>
-        S
+        <SearchIcon className="h-4 w-4" />
       </Chip>
       <div
         className={clsx(
-          "absolute left-0 top-0 z-10 flex h-[72px] w-full bg-white md:relative md:!flex md:h-auto",
+          "absolute left-0 top-0 z-10 flex h-[72px] w-full items-center bg-white md:relative md:!flex md:h-auto",
           {
             ["hidden"]: !isOpen,
           }
         )}
       >
-        <Button
+        <IconButton
+          icon={ChevronLeft}
           variant="ghost"
           onClick={() => setOpen(false)}
-          className={clsx("md:hidden", {})}
-        >
-          &lt;
-        </Button>
+          className={clsx("text-gray-600 md:hidden")}
+        />
         <Command className="flex-1 md:relative" shouldFilter={false} loop>
           <Command.Input
             value={search}
             onValueChange={setSearch}
             className={clsx(
-              "h-full w-full rounded-xl p-3 md:flex md:h-auto md:border",
+              "focus-visible:ring-ring h-full w-full rounded-xl p-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:flex md:h-auto md:border",
               {
                 ["hidden"]: !isOpen,
               }
@@ -106,13 +106,12 @@ export const Search = ({
             )}
           </Command.List>
         </Command>
-        <Button
+        <IconButton
+          icon={X}
           variant="ghost"
-          onClick={() => setSearch("")}
-          className={clsx("md:hidden", {})}
-        >
-          &times;
-        </Button>
+          onClick={() => setOpen(false)}
+          className={clsx("text-gray-600 md:hidden")}
+        />
       </div>
     </div>
   );

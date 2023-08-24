@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { type PropsWithChildren, useEffect } from "react";
+import { useEffect } from "react";
 import { ProjectsCategoriesFilter } from "~/components/ProjectsCategoriesFilter";
 
 import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { Projects } from "~/components/Projects";
 import { SortBy } from "~/components/SortBy";
-import { Button } from "~/components/ui/Button";
+import { IconButton } from "~/components/ui/Button";
 import { Divider } from "~/components/ui/Divider";
 import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
 import { useProjects } from "~/hooks/useProjects";
+import { Like, Liked, LayoutGrid, LayoutList } from "~/components/icons";
 
 export default function ProjectsPage() {
   const router = useRouter();
@@ -35,13 +36,9 @@ export default function ProjectsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
 
         <div className="flex gap-2">
-          <DisplayButton filter={filter!} display="list">
-            L
-          </DisplayButton>
+          <DisplayButton filter={filter!} display="list" />
           <Divider orientation={"vertical"} />
-          <DisplayButton filter={filter!} display="grid">
-            G
-          </DisplayButton>
+          <DisplayButton filter={filter!} display="grid" />
           <SortBy
             value={filter?.sort}
             onChange={(sort) =>
@@ -71,15 +68,22 @@ export default function ProjectsPage() {
 const DisplayButton = ({
   display,
   filter,
-  children,
-}: { display: Filter["display"]; filter: Filter } & PropsWithChildren) => {
+}: {
+  display: Filter["display"];
+  filter: Filter;
+}) => {
+  const isActive = filter?.display === display;
+  const icons = {
+    list: LayoutList,
+    grid: LayoutGrid,
+  };
   return (
-    <Button
+    <IconButton
+      icon={icons[display!]}
       as={Link}
       href={`/projects?${toURL(filter, { display })}`}
-      variant={filter?.display === display ? "default" : "ghost"}
-    >
-      {children}
-    </Button>
+      variant={isActive ? "default" : "ghost"}
+      className={isActive ? "" : "text-gray-600"}
+    />
   );
 };
