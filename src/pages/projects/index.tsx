@@ -1,16 +1,11 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { type PropsWithChildren, useEffect } from "react";
-import { ProjectsCategoriesFilter } from "~/components/ProjectsCategoriesFilter";
+import { CategoriesFilter } from "~/components/CategoriesFilter";
 
 import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { Projects } from "~/components/Projects";
-import { SortBy } from "~/components/SortBy";
-import { Button } from "~/components/ui/Button";
 import { DisplayToggle } from "~/components/ui/DisplayToggle";
-import { Divider } from "~/components/ui/Divider";
-import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
+import { useFilter, toURL, type Filter } from "~/hooks/useFilter";
 import { useProjects } from "~/hooks/useProjects";
 
 export default function ProjectsPage() {
@@ -21,14 +16,6 @@ export default function ProjectsPage() {
   const { data: projects } = useProjects(filter!);
   const currentPage = Number(filter?.page);
 
-  // useEffect(() => {
-  //   const categories =
-  //     ((query.categories as unknown as string)
-  //       ?.split(",")
-  //       .filter(Boolean) as Filter["categories"]) ?? [];
-  //   setFilter({ ...query, categories });
-  // }, [query, setFilter]);
-
   return (
     <Layout>
       <div className="flex justify-between">
@@ -38,7 +25,7 @@ export default function ProjectsPage() {
        
       </div>
 
-      <ProjectsCategoriesFilter
+      <CategoriesFilter
         selected={filter?.categories}
         onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
       />

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useQuery } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
 import { useMemo } from "react";
@@ -86,9 +83,7 @@ export function useProjects(filter: Filter) {
     () =>
       new Promise<{ data: Project[]; pages: number }>((resolve) => {
         const data = sortFn([...projects]).filter((project) =>
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
           categories.length
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             ? categories.every((c) => project.impactCategory.includes(c))
             : project
         );

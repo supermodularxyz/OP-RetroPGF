@@ -4,6 +4,7 @@ import { type PropsWithChildren, useEffect } from "react";
 import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
 import { useRouter } from "next/router";
 import { Divider } from "./Divider";
+import { SortBy } from "../SortBy";
 
 type Props = {
   baseUrl: string;
@@ -18,6 +19,12 @@ export const DisplayToggle = ({ baseUrl }: Props) => {
 
   useEffect(() => {
     setFilter(query);
+
+    const categories =
+      ((query.categories as unknown as string)
+        ?.split(",")
+        .filter(Boolean) as Filter["categories"]) ?? [];
+    setFilter({ ...query, categories });
   }, [query, setFilter]);
 
   return (
@@ -29,6 +36,14 @@ export const DisplayToggle = ({ baseUrl }: Props) => {
       <DisplayButton filter={filter!} display="grid" baseUrl={baseUrl}>
         G
       </DisplayButton>
+      <SortBy
+        value={filter?.sort}
+        onChange={(sort) =>
+          void router.push(
+            `${baseUrl}?${toURL(query, { sort: sort as Filter["sort"] })}`
+          )
+        }
+      />
     </div>
   );
 };

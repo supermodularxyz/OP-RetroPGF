@@ -9,6 +9,7 @@ import { Card } from "./ui/Card";
 import { CardTitle } from "./ui/CardTitle";
 import { ProjectImage } from "./ui/ProjectImage";
 import { ImpactCategories } from "./ui/ImpactCategories";
+import { Divider } from "./ui/Divider";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -39,38 +40,74 @@ export const ListGridItem = ({ list }: { list: List }) => {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>{list.displayName}</CardTitle>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="h-5 w-5 rounded-full bg-gray-200"></div>
-              <p className="text-sm font-semibold">{list.creatorName} </p>
-            </div>
+            <AvatarWithName name={list.creatorName} avatarUrl="" />
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs">{list.likesNumber}</span>
-            <span className="text-xs">[h]</span>
-          </div>
+          <LikesNumber likesNumber={list.likesNumber} />
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex">
-            {list.projects.slice(0, 4).map((project) => (
-              <div key={project.id} className="-mx-1">
-                <ProjectImage small={true} />
-              </div>
-            ))}
-          </div>
-          {list.projects.length > 4 && (
-            <p className="text-xs text-neutral-600">
-              +{list.projects.length - 4} projects
-            </p>
-          )}
-        </div>
+        <ProjectsLogosCard projects={list.projects} />
 
-        <p className="line-clamp-2 text-sm text-neutral-700 sm:line-clamp-2">
-          {list.bio}
-        </p>
+        <p className="line-clamp-2 text-sm text-neutral-700">{list.bio}</p>
 
         <ImpactCategories tags={list.impactCategory} />
       </div>
     </Card>
   );
 };
+
+export const ListListItem = ({ list }: { list: List }) => {
+  return (
+    <div className="cursor-pointer space-y-3 pt-6">
+      <div className="flex items-center gap-2">
+        <CardTitle>{list.displayName}</CardTitle>
+        <Divider orientation={"vertical"} />
+        <LikesNumber likesNumber={list.likesNumber} />
+      </div>
+      <AvatarWithName name={list.creatorName} avatarUrl="" />
+      <ProjectsLogosCard projects={list.projects} />
+
+      <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
+        {list.bio}
+      </p>
+
+      <ImpactCategories tags={list.impactCategory} />
+    </div>
+  );
+};
+
+export const LikesNumber = ({ likesNumber }: { likesNumber: number }) => (
+  <div className="flex items-center gap-3">
+    <span className="text-xs">{likesNumber}</span>
+    <span className="text-xs">[h]</span>
+  </div>
+);
+
+export const AvatarWithName = ({
+  name,
+  avatarUrl,
+}: {
+  name: string;
+  avatarUrl: string;
+}) => (
+  <div className="mt-1 flex items-center gap-2">
+    <div className="h-5 w-5 rounded-full bg-gray-200"></div>
+    <p className="text-sm font-semibold">{name} </p>
+  </div>
+);
+
+export const ProjectsLogosCard = ({ projects }: { projects: Project[] }) => (
+  <div className="flex items-center gap-3">
+    <div className="flex">
+      {projects?.slice(0, 4).map((project) => (
+        <div key={project.id} className="-mx-1">
+          <ProjectImage small={true} />
+        </div>
+      ))}
+    </div>
+    {projects.length > 4 && (
+      <p className="text-xs text-neutral-600">
+        +{projects.length - 4} projects
+      </p>
+    )}
+  </div>
+);

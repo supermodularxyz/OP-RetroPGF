@@ -7,7 +7,7 @@ import {
   useCategories,
 } from "~/hooks/useProjects";
 
-export const ProjectsCategoriesFilter = ({
+export const CategoriesFilter = ({
   selected = [],
   onSelect,
 }: {

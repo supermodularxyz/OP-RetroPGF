@@ -2,9 +2,10 @@ import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { DisplayToggle } from "~/components/ui/DisplayToggle";
 import { useRouter } from "next/router";
-import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
+import { useFilter, toURL, type Filter } from "~/hooks/useFilter";
 import { Lists } from "~/components/Lists";
 import { useLists } from "~/hooks/useLists";
+import { CategoriesFilter } from "~/components/CategoriesFilter";
 
 export default function ListsPage() {
   const router = useRouter();
@@ -21,12 +22,15 @@ export default function ListsPage() {
         <DisplayToggle baseUrl="/lists" />
       </div>
 
-      <div className="py-8">TAGS</div>
-      <Lists filter={filter} lists={lists} />
+      <CategoriesFilter
+        selected={filter?.categories}
+        onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
+      />
+      <Lists filter={filter} lists={lists?.data} />
 
       <Pagination
         currentPage={currentPage}
-        pages={4}
+        pages={lists?.pages}
         onNavigate={(page) => `/lists?${toURL(query, { page })}`}
       />
     </Layout>
