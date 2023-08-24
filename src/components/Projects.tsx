@@ -49,7 +49,7 @@ export const ProjectGridItem = ({ project }: { project: Project }) => {
 
 export const ProjectListItem = ({ project }: { project: Project }) => {
   return (
-    <div className="flex gap-6 pt-6">
+    <div className="flex  cursor-pointer gap-6 pt-6">
       <ProjectImage />
       <div className="flex flex-1 flex-col gap-2">
         <CardTitle>{project.displayName}</CardTitle>

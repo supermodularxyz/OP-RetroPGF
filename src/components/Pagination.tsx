@@ -3,12 +3,12 @@ import { Button } from "~/components/ui/Button";
 
 type Props = {
   currentPage: number;
-  pages: number;
+  pages?: number;
   onNavigate: (page: number) => void;
 };
 
 // TODO: Mobile view uses infinite query (load 10 more)
-export const Pagination = ({ currentPage, pages, onNavigate }: Props) => (
+export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
   <div className="flex justify-end gap-2">
     <Button
       disabled={currentPage === 1}

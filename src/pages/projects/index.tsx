@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { type PropsWithChildren, useEffect } from "react";
+import { ProjectsCategoriesFilter } from "~/components/ProjectsCategoriesFilter";
 
 import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { Projects } from "~/components/Projects";
+import { SortBy } from "~/components/SortBy";
 import { Button } from "~/components/ui/Button";
 import { DisplayToggle } from "~/components/ui/DisplayToggle";
 import { Divider } from "~/components/ui/Divider";
@@ -19,20 +21,32 @@ export default function ProjectsPage() {
   const { data: projects } = useProjects(filter!);
   const currentPage = Number(filter?.page);
 
+  // useEffect(() => {
+  //   const categories =
+  //     ((query.categories as unknown as string)
+  //       ?.split(",")
+  //       .filter(Boolean) as Filter["categories"]) ?? [];
+  //   setFilter({ ...query, categories });
+  // }, [query, setFilter]);
+
   return (
     <Layout>
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
 
         <DisplayToggle baseUrl="/projects" />
+       
       </div>
 
-      <div className="py-8">TAGS</div>
-      <Projects filter={filter} projects={projects} />
+      <ProjectsCategoriesFilter
+        selected={filter?.categories}
+        onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
+      />
+      <Projects filter={filter} projects={projects?.data} />
 
       <Pagination
         currentPage={currentPage}
-        pages={4}
+        pages={projects?.pages}
         onNavigate={(page) => `/projects?${toURL(query, { page })}`}
       />
     </Layout>
