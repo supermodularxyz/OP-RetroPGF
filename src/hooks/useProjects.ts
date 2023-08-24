@@ -62,6 +62,7 @@ export function useProjects(filter: Filter) {
     page = 1,
     sort = "shuffle",
     categories = [],
+    search = "",
   } = filter ?? initialFilter;
   const pageSize = 6;
   const start = (page - 1) * pageSize;
@@ -79,17 +80,24 @@ export function useProjects(filter: Filter) {
   }[sort];
 
   return useQuery(
-    ["projects", { page, sort, categories }],
+    ["projects", { page, sort, categories, search }],
     () =>
       new Promise<{ data: Project[]; pages: number }>((resolve) => {
-        const data = sortFn([...projects]).filter((project) =>
-          categories.length
-            ? categories.every((c) => project.impactCategory.includes(c))
-            : project
-        );
+        // Fake server response time
+        setTimeout(() => {
+          const data = sortFn([...projects])
+            .filter((project) =>
+              categories.length
+                ? categories.every((c) => project.impactCategory.includes(c))
+                : project
+            )
+            .filter((p) =>
+              p.displayName.toLowerCase().includes(search.toLowerCase())
+            );
 
-        const pages = Math.ceil(data.length / pageSize);
-        return resolve({ data: data.slice(start, end), pages });
+          const pages = Math.ceil(data.length / pageSize);
+          return resolve({ data: data.slice(start, end), pages });
+        }, 500);
       })
   );
 }

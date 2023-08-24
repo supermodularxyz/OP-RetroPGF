@@ -6,13 +6,15 @@ export type Filter = {
   page?: number;
   display?: "grid" | "list";
   sort?: FilterSort;
-  categories: ImpactCategory[];
+  search?: string;
+  categories?: ImpactCategory[];
 };
 
 export const initialFilter: Filter = {
   page: 1,
   display: "grid",
   sort: "shuffle",
+  search: "",
   categories: [],
 };
 
