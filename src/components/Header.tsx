@@ -36,7 +36,7 @@ const NavLink = ({
 );
 
 export const Header = () => {
-  const { asPath } = useRouter();
+  const { asPath, push } = useRouter();
   const [isOpen, setOpen] = useState(false);
 
   return (
@@ -61,7 +61,7 @@ export const Header = () => {
           ))}
         </div>
         <div className="flex-1 md:ml-8">
-          <Search />
+          <Search onSelect={(type, id) => void push(`/${type}/${id}`)} />
         </div>
         <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
           <ConnectButton />
