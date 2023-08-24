@@ -12,12 +12,21 @@ export const Search = ({
 }) => {
   const [search, setSearch] = useState("");
   const { data: filter } = useFilter();
-  const { data: projects, isLoading } = useProjects({
+  const projects = useProjects({
     ...filter,
     page: 1,
     sort: "asc",
     search,
   });
+  const lists = { isLoading: false };
+
+  const projectsList = projects.data?.data ?? [];
+  const listsList = [];
+
+  const results = {
+    projects: projects.data?.data ?? [],
+    lists: [],
+  } as const;
 
   return (
     <div className="flex justify-end">
@@ -40,33 +49,38 @@ export const Search = ({
             }
           )}
         >
-          {isLoading ? (
+          {projects.isLoading ?? lists.isLoading ? (
             <Command.Loading>Loading...</Command.Loading>
-          ) : !projects?.data.length ? (
+          ) : !projectsList.length && !listsList.length ? (
             <Command.Empty>No results found.</Command.Empty>
           ) : (
-            <Command.Group
-              heading="Projects"
-              className="uppercase text-gray-700"
-            >
-              {projects?.data?.map((project) => {
-                console.log("p", project);
-                return (
-                  <Command.Item
-                    key={project.id}
-                    value={project.id}
-                    className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg p-2 normal-case text-gray-900 hover:bg-gray-100 data-[selected]:bg-gray-100"
-                    onSelect={(id) => {
-                      setSearch("");
-                      onSelect("projects", id);
-                    }}
+            <>
+              {["projects", "lists"].map((type) => {
+                const items = results[type as keyof typeof results];
+                return items.length ? (
+                  <Command.Group
+                    key={type}
+                    heading={type}
+                    className="uppercase text-gray-700"
                   >
-                    <div className="h-6 w-6 bg-gray-200" />
-                    {project.displayName}
-                  </Command.Item>
-                );
+                    {items.map((item) => (
+                      <Command.Item
+                        key={item.id}
+                        value={item.id}
+                        className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg p-2 normal-case text-gray-900 hover:bg-gray-100 data-[selected]:bg-gray-100"
+                        onSelect={(id) => {
+                          setSearch("");
+                          onSelect("projects", id);
+                        }}
+                      >
+                        <div className="h-6 w-6 bg-gray-200" />
+                        {item.displayName}
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                ) : null;
               })}
-            </Command.Group>
+            </>
           )}
         </Command.List>
       </Command>
