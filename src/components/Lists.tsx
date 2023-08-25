@@ -1,27 +1,18 @@
-import clsx from "clsx";
-import { Tag } from "~/components/ui/Tag";
 import { type Filter } from "~/hooks/useFilter";
-import { impactCategoryLabels, type Project } from "~/hooks/useProjects";
-import { createComponent } from "./ui";
-import { tv } from "tailwind-variants";
-import { List } from "~/hooks/useLists";
-import { Card } from "./ui/Card";
-import { CardTitle } from "./ui/CardTitle";
+import { type Project } from "~/hooks/useProjects";
+import { type List } from "~/hooks/useLists";
+import { Card, CardTitle } from "./ui/Card";
 import { ProjectImage } from "./ui/ProjectImage";
 import { ImpactCategories } from "./ui/ImpactCategories";
 import { Divider } from "./ui/Divider";
+import { Grid } from "./Grid";
 
 type Props = { filter?: Filter; lists?: List[] };
 
 export const Lists = ({ filter, lists }: Props) => {
   const isList = filter?.display === "list";
   return (
-    <div
-      className={clsx("mb-8 grid gap-4", {
-        ["md:grid-cols-3"]: !isList,
-        ["gap-6 divide-y divide-neutral-200"]: isList,
-      })}
-    >
+    <Grid isList={isList}>
       {lists?.map((list) =>
         isList ? (
           <ListListItem key={list.id} list={list} />
@@ -29,7 +20,7 @@ export const Lists = ({ filter, lists }: Props) => {
           <ListGridItem key={list.id} list={list} />
         )
       )}
-    </div>
+    </Grid>
   );
 };
 
@@ -49,7 +40,7 @@ export const ListGridItem = ({ list }: { list: List }) => {
 
         <p className="line-clamp-2 text-sm text-neutral-700">{list.bio}</p>
 
-        <ImpactCategories tags={list.impactCategory} />
+        <ImpactCategories tags={list.impactCategory} type={"lists"} />
       </div>
     </Card>
   );
@@ -70,7 +61,7 @@ export const ListListItem = ({ list }: { list: List }) => {
         {list.bio}
       </p>
 
-      <ImpactCategories tags={list.impactCategory} />
+      <ImpactCategories tags={list.impactCategory} type={"lists"} />
     </div>
   );
 };

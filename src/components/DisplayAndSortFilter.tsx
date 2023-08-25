@@ -3,28 +3,30 @@ import { Button } from "~/components/ui/Button";
 import { type PropsWithChildren, useEffect } from "react";
 import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
 import { useRouter } from "next/router";
-import { Divider } from "./Divider";
-import { SortBy } from "../SortBy";
+import { Divider } from "./ui/Divider";
+import { SortBy } from "./SortBy";
 
 type Props = {
   baseUrl: string;
+  type: "projects" | "lists";
 };
 
-export const DisplayToggle = ({ baseUrl }: Props) => {
+export const DisplayAndSortFilter = ({ baseUrl, type }: Props) => {
   const router = useRouter();
   const query = router.query as unknown as Filter;
 
-  const { data: filter } = useFilter();
-  const { mutate: setFilter } = useSetFilter();
+  const { data: filter } = useFilter(type);
+  const { mutate: setFilter } = useSetFilter(type);
 
   useEffect(() => {
     setFilter(query);
-
-    const categories =
-      ((query.categories as unknown as string)
-        ?.split(",")
-        .filter(Boolean) as Filter["categories"]) ?? [];
-    setFilter({ ...query, categories });
+    if (query?.categories) {
+      const categories =
+        ((query.categories as unknown as string)
+          ?.split(",")
+          .filter(Boolean) as Filter["categories"]) ?? [];
+      setFilter({ ...query, categories });
+    }
   }, [query, setFilter]);
 
   return (

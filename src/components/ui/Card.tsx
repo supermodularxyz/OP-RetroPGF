@@ -8,3 +8,10 @@ export const Card = createComponent(
   })
 );
 
+export const CardTitle = createComponent(
+  "h3",
+  tv({
+    base: "text-lg font-bold",
+  })
+);
+

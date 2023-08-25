@@ -1,8 +1,8 @@
 import { useQuery } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
-import { type ImpactCategory, type Project, impactCategoryLabels } from "./useProjects";
+import {  type Project } from "./useProjects";
 import { lists } from "~/data/mock";
-import { useMemo } from "react";
+import { type ImpactCategory } from "./useCategories";
 
 export type List = {
   id: string;
@@ -50,18 +50,4 @@ export function useLists(filter: Filter) {
         return resolve({ data: data.slice(start, end), pages });
       })
   );
-}
-
-export function useCategories() {
-  return useMemo(() => {
-    // Set each category to 0 - { OP_STACK: 0, COLLECTIVE_GOVERNANCE: 0, ...}
-    const initialState = Object.keys(impactCategoryLabels).reduce(
-      (a, x) => ({ ...a, [x]: 0 }),
-      {}
-    );
-    return lists.reduce((acc, x) => {
-      x.impactCategory.forEach((category) => (acc[category] += 1));
-      return acc;
-    }, initialState as { [key in ImpactCategory]: number });
-  }, [lists]);
 }
