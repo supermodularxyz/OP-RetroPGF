@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
-import { type ImpactCategory } from "./useProjects";
+import { type ImpactCategory } from "./useCategories";
 
 type FilterSort = "shuffle" | "asc" | "desc";
 export type Filter = {
@@ -22,28 +22,28 @@ export const sortLabels: { [key in FilterSort]: string } = {
   desc: "Z to A",
 };
 
-export function useFilter() {
+export function useFilter(type: "projects" | "lists") {
   const client = useQueryClient();
 
   return useQuery(
-    ["filter", "projects"],
-    () => client.getQueryData<Filter>(["filter", "projects"]) ?? initialFilter,
+    ["filter", type],
+    () => client.getQueryData<Filter>(["filter", type]) ?? initialFilter,
     { cacheTime: 0 }
   );
 }
 
-export function useSetFilter() {
+export function useSetFilter(type: "projects" | "lists") {
   const client = useQueryClient();
 
   return useMutation(async (filter: Filter) =>
-    client.setQueryData<Filter>(
-      ["filter", "projects"],
-      (prev = initialFilter) => ({ ...prev, ...filter })
-    )
+    client.setQueryData<Filter>(["filter", type], (prev = initialFilter) => ({
+      ...prev,
+      ...filter,
+    }))
   );
 }
 
-export const toURL = (prev: Filter, next: Partial<Filter>) =>
+export const toURL = (prev: Partial<Filter>, next: Partial<Filter> | undefined) =>
   new URLSearchParams({ ...prev, ...next } as unknown as Record<
     string,
     string

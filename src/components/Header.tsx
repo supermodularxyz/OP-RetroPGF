@@ -8,15 +8,18 @@ import { Search } from "./Search";
 import { ConnectButton } from "./ConnectButton";
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
+import { toURL, useFilter } from "~/hooks/useFilter";
 
 const navLinks = [
   {
     href: "/projects",
     children: "Projects",
+    type: "projects",
   },
   {
     href: "/lists",
     children: "Lists",
+    type: "lists",
   },
 ];
 
@@ -38,6 +41,8 @@ const NavLink = ({
 export const Header = () => {
   const { asPath } = useRouter();
   const [isOpen, setOpen] = useState(false);
+  const { data: projectsFilter } = useFilter("projects");
+  const { data: listsFilter } = useFilter("lists");
 
   return (
     <header className="relative z-10 bg-white shadow-md">
@@ -55,7 +60,9 @@ export const Header = () => {
           {navLinks.map((link) => (
             <NavLink
               isActive={asPath.startsWith(link.href)}
-              key={link.href}
+              key={`${link.href}?${toURL({}, 
+                link.type == "projects" ? projectsFilter : listsFilter
+              )}`}
               {...link}
             />
           ))}
