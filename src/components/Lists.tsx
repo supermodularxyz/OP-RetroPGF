@@ -6,6 +6,8 @@ import { ProjectImage } from "./ui/ProjectImage";
 import { ImpactCategories } from "./ui/ImpactCategories";
 import { Divider } from "./ui/Divider";
 import { Grid } from "./Grid";
+import { Like, Liked } from "~/components/icons";
+import { IconButton } from "./ui/Button";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -66,10 +68,16 @@ export const ListListItem = ({ list }: { list: List }) => {
   );
 };
 
-export const LikesNumber = ({ likesNumber }: { likesNumber: number }) => (
+export const LikesNumber = ({
+  likesNumber,
+  isLiked,
+}: {
+  likesNumber: number;
+  isLiked?: boolean;
+}) => (
   <div className="flex items-center gap-3">
     <span className="text-xs">{likesNumber}</span>
-    <span className="text-xs">[h]</span>
+    <IconButton icon={isLiked ? Liked : Like} variant={"ghost"} />
   </div>
 );
 

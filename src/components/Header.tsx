@@ -45,6 +45,7 @@ export const Header = () => {
   const { data: projectsFilter } = useFilter("projects");
   const { data: listsFilter } = useFilter("lists");
 
+  const route = useRouter();
   return (
     <header className="relative z-10 bg-white shadow-md">
       <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2  md:px-8">
@@ -61,7 +62,8 @@ export const Header = () => {
           {navLinks.map((link) => (
             <NavLink
               isActive={asPath.startsWith(link.href)}
-              key={`${link.href}?${toURL({}, 
+              key={`${link.href}?${toURL(
+                {},
                 link.type == "projects" ? projectsFilter : listsFilter
               )}`}
               {...link}
@@ -69,7 +71,10 @@ export const Header = () => {
           ))}
         </div>
         <div className="flex-1 md:ml-8">
-          <Search onSelect={(type, id) => void push(`/${type}/${id}`)} />
+          <Search
+            type={route.pathname == 'projects' ? "projects" : "lists"}
+            onSelect={(type, id) => void push(`/${type}/${id}`)}
+          />
         </div>
         <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
           <ConnectButton />

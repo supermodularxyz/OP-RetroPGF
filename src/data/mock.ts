@@ -1,5 +1,6 @@
+import { ImpactCategory } from "~/hooks/useCategories";
 import { type List } from "~/hooks/useLists";
-import { type ImpactCategory, type Project } from "~/hooks/useProjects";
+import { type Project } from "~/hooks/useProjects";
 
 const categories = [
   "COLLECTIVE_GOVERNANCE",

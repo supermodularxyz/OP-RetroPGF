@@ -9,12 +9,14 @@ import { ChevronLeft, Search as SearchIcon, X } from "./icons";
 
 export const Search = ({
   onSelect,
+  type
 }: {
   onSelect: (type: "projects" | "lists", id: string) => void;
+  type: "projects" | "lists"
 }) => {
   const [isOpen, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { data: filter } = useFilter();
+  const { data: filter } = useFilter(type);
   const projects = useProjects({
     ...filter,
     page: 1,
