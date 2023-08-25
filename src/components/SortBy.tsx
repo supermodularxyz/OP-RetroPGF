@@ -1,6 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Button } from "./ui/Button";
+import { Button, IconButton } from "./ui/Button";
 import { sortLabels, type Filter } from "~/hooks/useFilter";
+import { Check, Sort } from "./icons";
 
 type Props = {
   value: Filter["sort"];
@@ -10,9 +11,9 @@ export const SortBy = ({ value, onChange }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <Button variant="outline" aria-label="Sort by">
-          [S] Sort by: {value && sortLabels[value]}
-        </Button>
+        <IconButton icon={Sort} variant="outline" aria-label="Sort by">
+          Sort by: {value && sortLabels[value]}
+        </IconButton>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
@@ -40,7 +41,7 @@ const RadioItem = ({ value = "", label = "" }) => (
     value={value}
   >
     <DropdownMenu.ItemIndicator className="absolute left-4">
-      [C]
+      <Check className="h-4 w-4" />
     </DropdownMenu.ItemIndicator>
     {label}
   </DropdownMenu.RadioItem>

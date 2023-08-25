@@ -1,12 +1,16 @@
 import { useRouter } from "next/router";
 import { CategoriesFilter } from "~/components/CategoriesFilter";
-
+import { useEffect } from "react";
 import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { Projects } from "~/components/Projects";
 import { DisplayAndSortFilter } from "~/components/DisplayAndSortFilter";
 import { useFilter, toURL, type Filter } from "~/hooks/useFilter";
+import { SortBy } from "~/components/SortBy";
+import { IconButton } from "~/components/ui/Button";
+import { Divider } from "~/components/ui/Divider";
 import { useProjects } from "~/hooks/useProjects";
+import { Like, Liked, LayoutGrid, LayoutList } from "~/components/icons";
 
 export default function ProjectsPage() {
   const router = useRouter();

@@ -7,6 +7,7 @@ import { createBreakpoint } from "react-use";
 
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
+import { AddBallot } from "./icons";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 export const ConnectButton = () => {
@@ -56,7 +57,11 @@ export const ConnectButton = () => {
               return (
                 <div className="flex gap-2">
                   <Chip className="gap-2" as={Link} href={"/ballot"}>
-                    {isMobile ? "B" : `View Ballot`}
+                    {isMobile ? (
+                      <AddBallot className="h-4 w-4" />
+                    ) : (
+                      `View Ballot`
+                    )}
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs ">
                       0
                     </div>

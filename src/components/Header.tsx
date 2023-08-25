@@ -6,9 +6,10 @@ import clsx from "clsx";
 import { OptimismLogo } from "~/components/OptimismLogo";
 import { Search } from "./Search";
 import { ConnectButton } from "./ConnectButton";
-import { Button } from "./ui/Button";
+import { IconButton } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { toURL, useFilter } from "~/hooks/useFilter";
+import { Menu, X } from "./icons";
 
 const navLinks = [
   {
@@ -39,7 +40,7 @@ const NavLink = ({
 );
 
 export const Header = () => {
-  const { asPath } = useRouter();
+  const { asPath, push } = useRouter();
   const [isOpen, setOpen] = useState(false);
   const { data: projectsFilter } = useFilter("projects");
   const { data: listsFilter } = useFilter("lists");
@@ -48,12 +49,12 @@ export const Header = () => {
     <header className="relative z-10 bg-white shadow-md">
       <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2  md:px-8">
         <div className="mr-4 flex items-center lg:mr-16">
-          <Button
-            className="font-mono md:hidden"
+          <IconButton
+            icon={isOpen ? X : Menu}
+            variant="ghost"
+            className="mr-1 font-mono text-gray-600 md:hidden"
             onClick={() => setOpen(!isOpen)}
-          >
-            {isOpen ? "x" : "m"}
-          </Button>
+          />
           <OptimismLogo />
         </div>
         <div className="hidden h-full items-center gap-4 md:flex">
@@ -68,11 +69,11 @@ export const Header = () => {
           ))}
         </div>
         <div className="flex-1 md:ml-8">
-          <Search />
+          <Search onSelect={(type, id) => void push(`/${type}/${id}`)} />
         </div>
         <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
           <ConnectButton />
-          <Chip className="hidden md:block">T</Chip>
+          <Chip className="hidden">T</Chip>
         </div>
         <MobileMenu isOpen={isOpen} />
       </div>
