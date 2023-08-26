@@ -1,10 +1,6 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from ".";
-import {
-  type ComponentPropsWithRef,
-  createElement,
-  FunctionComponent,
-} from "react";
+import { type ComponentPropsWithRef, createElement, forwardRef } from "react";
 
 const button = tv({
   base: "inline-flex items-center justify-center font-semibold transition-colors rounded-xl duration-150 whitespace-nowrap disabled:bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -31,15 +27,21 @@ const button = tv({
 });
 
 export const Button = createComponent("button", button);
-export const IconButton = ({
-  children,
-  icon,
-  size,
-  ...props
-}: // eslint-disable-next-line
-{ icon: any; size?: string } & ComponentPropsWithRef<typeof Button>) => (
-  <Button {...props} size={children ? size : "icon"}>
-    {createElement(icon, { className: `w-4 h-4 ${children ? "mr-2" : ""}` })}
-    {children}
-  </Button>
-);
+
+export const IconButton = forwardRef(function IconButton(
+  {
+    children,
+    icon,
+    size,
+    ...props
+  }: // eslint-disable-next-line
+  { icon: any; size?: string } & ComponentPropsWithRef<typeof Button>,
+  ref
+) {
+  return (
+    <Button ref={ref} {...props} size={children ? size : "icon"}>
+      {createElement(icon, { className: `w-4 h-4 ${children ? "mr-2" : ""}` })}
+      {children}
+    </Button>
+  );
+});

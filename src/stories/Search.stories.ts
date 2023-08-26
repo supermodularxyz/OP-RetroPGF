@@ -14,7 +14,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    onSelect: () => {
+      return;
+    },
+  },
+};
 
 // // More on interaction testing: https://storybook.js.org/docs/react/writing-tests/interaction-testing
 // export const LoggedIn: Story = {

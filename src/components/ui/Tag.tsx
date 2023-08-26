@@ -8,7 +8,7 @@ export const Tag = createComponent(
     variants: {
       size: {
         md: "rounded py-1 px-2 text-xs",
-        lg: "rounded-xl p-2 text-lg",
+        lg: "rounded-xl py-2 px-4 text-lg",
       },
       selected: {
         true: "bg-gray-100",

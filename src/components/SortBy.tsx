@@ -1,5 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Button, IconButton } from "./ui/Button";
+import { IconButton } from "./ui/Button";
 import { sortLabels, type Filter } from "~/hooks/useFilter";
 import { Check, Sort } from "./icons";
 

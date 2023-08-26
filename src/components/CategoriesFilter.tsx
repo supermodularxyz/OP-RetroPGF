@@ -1,22 +1,24 @@
 import Link from "next/link";
 import { Tag } from "~/components/ui/Tag";
-import { type Filter } from "~/hooks/useFilter";
 import {
   type ImpactCategory,
   impactCategoryLabels,
   useCategories,
-} from "~/hooks/useProjects";
+} from "~/hooks/useCategories";
+import { type Filter } from "~/hooks/useFilter";
 
-export const ProjectsCategoriesFilter = ({
+export const CategoriesFilter = ({
   selected = [],
   onSelect,
+  type,
 }: {
   selected?: Filter["categories"];
   onSelect: (categories: Filter["categories"]) => void;
+  type: "projects" | "lists";
 }) => {
-  const categoriesCount = useCategories();
+  const categoriesCount = useCategories(type);
   return (
-    <div className="flex gap-2 overflow-x-auto py-4 md:py-8">
+    <div className="flex gap-2 overflow-x-auto">
       {Object.entries(impactCategoryLabels).map(([key, label]) => {
         const category = key as ImpactCategory;
         const count = categoriesCount[category];

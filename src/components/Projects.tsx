@@ -1,9 +1,8 @@
 import clsx from "clsx";
-import { Tag } from "~/components/ui/Tag";
 import { type Filter } from "~/hooks/useFilter";
-import { impactCategoryLabels, type Project } from "~/hooks/useProjects";
-import { createComponent } from "./ui";
-import { tv } from "tailwind-variants";
+import { type Project } from "~/hooks/useProjects";
+import { Card, CardTitle } from "~/components/ui/Card";
+import { ImpactCategories } from "./ImpactCategories";
 
 type Props = { filter?: Filter; projects?: Project[] };
 
@@ -29,17 +28,17 @@ export const Projects = ({ filter, projects }: Props) => {
 
 export const ProjectGridItem = ({ project }: { project: Project }) => {
   return (
-    <div className="cursor-pointer rounded-[20px] border p-2 transition-colors hover:border-gray-400">
+    <Card>
       <div className="h-24 rounded-2xl bg-gray-200" />
       <div className="space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
           <ProjectImage />
         </div>
-        <ProjectTitle>{project.displayName}</ProjectTitle>
+        <CardTitle>{project.displayName}</CardTitle>
         <p className="line-clamp-2 text-sm text-neutral-700">{project.bio}</p>
         <ImpactCategories tags={project.impactCategory} />
       </div>
-    </div>
+    </Card>
   );
 };
 
@@ -48,7 +47,7 @@ export const ProjectListItem = ({ project }: { project: Project }) => {
     <div className="flex  cursor-pointer gap-6 pt-6">
       <ProjectImage />
       <div className="flex flex-1 flex-col gap-2">
-        <ProjectTitle>{project.displayName}</ProjectTitle>
+        <CardTitle>{project.displayName}</CardTitle>
         <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
           {project.bio}
         </p>
@@ -58,19 +57,23 @@ export const ProjectListItem = ({ project }: { project: Project }) => {
   );
 };
 
-const ProjectTitle = createComponent("h3", tv({ base: "text-lg font-bold" }));
-
-const ProjectImage = () => (
-  <div className={"h-16 w-16 rounded-lg border border-gray-200 bg-white p-1"}>
-    <div className="flex h-full w-full rounded-md bg-gray-200" />
-  </div>
-);
-
-const ImpactCategories = ({ tags }: { tags: Project["impactCategory"] }) => (
-  <div className="flex gap-1">
-    {tags?.map((key) => {
-      const category = impactCategoryLabels[key];
-      return <Tag key={key}>{category}</Tag>;
-    })}
+// TODO: Move to ui/Avatar as a generalized component with different sizes so it can be used in ViewProjectPage also
+export const ProjectImage = ({
+  small,
+  avatarUrl,
+}: {
+  small?: boolean;
+  avatarUrl?: string;
+}) => (
+  <div
+    className={`${
+      !small ? "h-16 w-16 rounded-lg p-1" : "h-8 w-8 rounded-md p-0.5"
+    }  border border-gray-200 bg-white `}
+  >
+    <div
+      className={`${
+        !small ? "rounded-md" : "rounded"
+      } flex h-full w-full bg-gray-200`}
+    />
   </div>
 );
