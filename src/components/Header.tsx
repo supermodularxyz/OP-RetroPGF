@@ -71,10 +71,7 @@ export const Header = () => {
           ))}
         </div>
         <div className="flex-1 md:ml-8">
-          <Search
-            type={route.pathname == 'projects' ? "projects" : "lists"}
-            onSelect={(type, id) => void push(`/${type}/${id}`)}
-          />
+          <Search onSelect={(path) => void push(path)} />
         </div>
         <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
           <ConnectButton />

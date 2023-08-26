@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
 import { type ImpactCategory } from "./useCategories";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 type FilterSort = "shuffle" | "asc" | "desc";
 export type Filter = {
@@ -24,7 +26,8 @@ export const sortLabels: { [key in FilterSort]: string } = {
   desc: "Z to A",
 };
 
-export function useFilter(type: "projects" | "lists") {
+type FilterType = "projects" | "lists";
+export function useFilter(type: FilterType) {
   const client = useQueryClient();
 
   return useQuery(
@@ -34,7 +37,7 @@ export function useFilter(type: "projects" | "lists") {
   );
 }
 
-export function useSetFilter(type: "projects" | "lists") {
+export function useSetFilter(type: FilterType) {
   const client = useQueryClient();
 
   return useMutation(async (filter: Filter) =>
@@ -45,7 +48,28 @@ export function useSetFilter(type: "projects" | "lists") {
   );
 }
 
-export const toURL = (prev: Partial<Filter>, next: Partial<Filter> | undefined) =>
+export function useUpdateFilterFromRouter(type: FilterType) {
+  const router = useRouter();
+  const query = router.query;
+  const { mutate: setFilter } = useSetFilter(type);
+
+  useEffect(() => {
+    setFilter(query);
+    if (query?.categories) {
+      // Build array of categories from comma-separated string
+      const categories =
+        ((query.categories as unknown as string)
+          ?.split(",")
+          .filter(Boolean) as Filter["categories"]) ?? [];
+      setFilter({ ...query, categories });
+    }
+  }, [query, setFilter]);
+}
+
+export const toURL = (
+  prev: Partial<Filter>,
+  next: Partial<Filter> | undefined
+) =>
   new URLSearchParams({ ...prev, ...next } as unknown as Record<
     string,
     string

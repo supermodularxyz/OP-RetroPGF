@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { Button } from "~/components/ui/Button";
-import { type PropsWithChildren, useEffect } from "react";
-import { useFilter, useSetFilter, toURL, type Filter } from "~/hooks/useFilter";
+import { toURL, type Filter } from "~/hooks/useFilter";
 import { useRouter } from "next/router";
 import { Divider } from "./ui/Divider";
 import { SortBy } from "./SortBy";
@@ -10,32 +8,18 @@ import { LayoutGrid, LayoutList } from "~/components/icons";
 
 type Props = {
   baseUrl: string;
-  type: "projects" | "lists";
+  filter: Filter;
 };
 
-export const DisplayAndSortFilter = ({ baseUrl, type }: Props) => {
+export const DisplayAndSortFilter = ({ baseUrl, filter }: Props) => {
   const router = useRouter();
   const query = router.query as unknown as Filter;
 
-  const { data: filter } = useFilter(type);
-  const { mutate: setFilter } = useSetFilter(type);
-
-  useEffect(() => {
-    setFilter(query);
-    if (query?.categories) {
-      const categories =
-        ((query.categories as unknown as string)
-          ?.split(",")
-          .filter(Boolean) as Filter["categories"]) ?? [];
-      setFilter({ ...query, categories });
-    }
-  }, [query, setFilter]);
-
   return (
-    <div className="flex gap-2">
-      <DisplayButton filter={filter!} display="list" baseUrl={baseUrl} />
+    <div className="flex gap-2 overflow-x-auto">
+      <DisplayButton filter={filter} display="list" baseUrl={baseUrl} />
       <Divider orientation={"vertical"} />
-      <DisplayButton filter={filter!} display="grid" baseUrl={baseUrl} />
+      <DisplayButton filter={filter} display="grid" baseUrl={baseUrl} />
       <SortBy
         value={filter?.sort}
         onChange={(sort) =>

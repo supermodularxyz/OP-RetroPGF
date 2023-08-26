@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Tag } from "~/components/ui/Tag";
-import { lists, projects } from "~/data/mock";
 import {
   type ImpactCategory,
   impactCategoryLabels,
@@ -17,11 +16,10 @@ export const CategoriesFilter = ({
   onSelect: (categories: Filter["categories"]) => void;
   type: "projects" | "lists";
 }) => {
-  const items = type == "projects" ? projects : lists;
-  const categoriesCount = useCategories(items, type);
+  const categoriesCount = useCategories(type);
   return (
-    <div className="flex gap-2 overflow-x-auto py-4 md:py-8">
-      {Object.entries(impactCategoryLabels(type)).map(([key, label]) => {
+    <div className="flex gap-2 overflow-x-auto">
+      {Object.entries(impactCategoryLabels).map(([key, label]) => {
         const category = key as ImpactCategory;
         const count = categoriesCount[category];
         return (

@@ -1,37 +1,31 @@
 import { useState } from "react";
-import { Chip } from "./ui/Chip";
-import { Command } from "cmdk";
-import { useProjects } from "~/hooks/useProjects";
-import { useFilter } from "~/hooks/useFilter";
 import clsx from "clsx";
-import { Button, IconButton } from "./ui/Button";
-import { ChevronLeft, Search as SearchIcon, X } from "./icons";
+import { Command } from "cmdk";
 
-export const Search = ({
-  onSelect,
-  type
-}: {
-  onSelect: (type: "projects" | "lists", id: string) => void;
-  type: "projects" | "lists"
-}) => {
+import { Chip } from "./ui/Chip";
+import { useProjects } from "~/hooks/useProjects";
+import { type Filter, useFilter } from "~/hooks/useFilter";
+import { IconButton } from "./ui/Button";
+import { ChevronLeft, Search as SearchIcon, X } from "./icons";
+import { useLists } from "~/hooks/useLists";
+
+type Props = {
+  onSelect: (path: string) => void;
+};
+
+export const Search = ({ onSelect }: Props) => {
   const [isOpen, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { data: filter } = useFilter(type);
-  const projects = useProjects({
-    ...filter,
-    page: 1,
-    sort: "asc",
-    search,
-  });
-  const lists = { isLoading: false };
 
-  const projectsList = projects.data?.data ?? [];
-  const listsList = [];
+  // Search does not use pagination and always sorts A to Z
+  const filter = { page: 1, sort: "asc", search } as Partial<Filter>;
+  const projects = useProjects({ ...useFilter("projects").data, ...filter });
+  const lists = useLists({ ...useFilter("lists").data, ...filter });
 
-  const results = {
-    projects: projects.data?.data ?? [],
-    lists: [],
-  } as const;
+  const projectsData = projects.data?.data ?? [];
+  const listsData = lists.data?.data ?? [];
+
+  const results = { projects: projectsData, lists: listsData } as const;
 
   return (
     <div className="flex justify-end">
@@ -75,12 +69,12 @@ export const Search = ({
           >
             {projects.isLoading ?? lists.isLoading ? (
               <Command.Loading>Loading...</Command.Loading>
-            ) : !projectsList.length && !listsList.length ? (
+            ) : !projectsData.length && !listsData.length ? (
               <Command.Empty>No results found.</Command.Empty>
             ) : (
               <>
-                {["projects", "lists"].map((type) => {
-                  const items = results[type as keyof typeof results];
+                {(["projects", "lists"] as const).map((type) => {
+                  const items = results[type];
                   return items.length ? (
                     <Command.Group
                       key={type}
@@ -89,12 +83,12 @@ export const Search = ({
                     >
                       {items.map((item) => (
                         <Command.Item
-                          key={item.id}
-                          value={item.id}
+                          key={`${type}/${item.id}`}
+                          value={`/${type}/${item.id}`}
                           className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg p-2 normal-case text-gray-900 hover:bg-gray-100 data-[selected]:bg-gray-100"
-                          onSelect={(id) => {
+                          onSelect={(path) => {
                             setSearch("");
-                            onSelect("projects", id);
+                            onSelect(path);
                           }}
                         >
                           <div className="h-6 w-6 bg-gray-200" />

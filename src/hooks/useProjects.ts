@@ -44,7 +44,6 @@ export type Project = {
   certifiedNotBarredFromParticipating: boolean;
 };
 
-
 export function useProjects(filter: Filter) {
   const {
     page = 1,
@@ -52,42 +51,55 @@ export function useProjects(filter: Filter) {
     categories = [],
     search = "",
   } = filter ?? initialFilter;
-  const pageSize = 6;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
 
   // TODO: Call EAS attestations
-
-  // Temporary sorting
-  const sortFn = {
-    shuffle: (arr: Project[]) => arr,
-    asc: (arr: Project[]) =>
-      arr.sort((a, b) => a.displayName.localeCompare(b.displayName)),
-    desc: (arr: Project[]) =>
-      arr.sort((a, b) => b.displayName.localeCompare(a.displayName)),
-  }[sort];
 
   return useQuery(
     ["projects", { page, sort, categories, search }],
     () =>
       new Promise<{ data: Project[]; pages: number }>((resolve) => {
         // Fake server response time
-        setTimeout(() => {
-          const data = sortFn([...projects])
-            .filter((project) =>
-              categories.length
-                ? categories.every((c) => project.impactCategory.includes(c))
-                : project
-            )
-            .filter((p) =>
-              p.displayName.toLowerCase().includes(search.toLowerCase())
-            );
-
-          const pages = Math.ceil(data.length / pageSize);
-          return resolve({ data: data.slice(start, end), pages });
-        }, 500);
+        setTimeout(() => resolve(sortAndFilter(projects, filter)), 500);
       })
   );
 }
 
+export function sortAndFilter<
+  T extends { displayName: string; impactCategory: ImpactCategory[] }
+>(collection: T[], filter: Filter) {
+  const {
+    page = 1,
+    sort = "shuffle",
+    categories = [],
+    search = "",
+  } = filter ?? initialFilter;
 
+  const pageSize = 6;
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+
+  // Temporary sorting
+
+  const sortFn = {
+    shuffle: (arr: T[]) => arr,
+    asc: (arr: T[]) =>
+      arr.sort((a: T, b: T) => a.displayName.localeCompare(b.displayName)),
+    desc: (arr: T[]) =>
+      arr.sort((a: T, b: T) => b.displayName.localeCompare(a.displayName)),
+  }[sort];
+
+  const data = sortFn([...collection])
+    .filter((item) =>
+      categories.length
+        ? categories.every((c) => item.impactCategory.includes(c))
+        : item
+    )
+    .filter((p) => p.displayName.toLowerCase().includes(search.toLowerCase()));
+
+  const pages = Math.ceil(data.length / pageSize);
+
+  return {
+    data: data.slice(start, end),
+    pages,
+  };
+}
