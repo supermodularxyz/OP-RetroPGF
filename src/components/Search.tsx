@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import clsx from "clsx";
 import { Command } from "cmdk";
 
@@ -8,14 +8,29 @@ import { type Filter, useFilter } from "~/hooks/useFilter";
 import { IconButton } from "./ui/Button";
 import { ChevronLeft, Search as SearchIcon, X } from "./icons";
 import { useLists } from "~/hooks/useLists";
+import { useKey } from "react-use";
 
 type Props = {
   onSelect: (path: string) => void;
 };
 
+function useCmdK() {
+  const ref = useRef<HTMLInputElement>();
+  useKey(
+    (e) => (e.metaKey ?? e.ctrlKey) && [75, 107].includes(e.keyCode),
+    (e) => {
+      e.preventDefault();
+      ref.current?.focus();
+    }
+  );
+  return ref;
+}
+
 export const Search = ({ onSelect }: Props) => {
   const [isOpen, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+
+  const ref = useCmdK();
 
   // Search does not use pagination and always sorts A to Z
   const filter = { page: 1, sort: "asc", search } as Partial<Filter>;
@@ -48,6 +63,7 @@ export const Search = ({ onSelect }: Props) => {
         />
         <Command className="flex-1 md:relative" shouldFilter={false} loop>
           <Command.Input
+            ref={ref}
             value={search}
             onValueChange={setSearch}
             className={clsx(
@@ -56,7 +72,7 @@ export const Search = ({ onSelect }: Props) => {
                 ["hidden"]: !isOpen,
               }
             )}
-            placeholder="Search projects or lists"
+            placeholder="Search projects or lists..."
           />
 
           <Command.List
