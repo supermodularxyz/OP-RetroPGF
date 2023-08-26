@@ -2,8 +2,7 @@ import clsx from "clsx";
 import { type Filter } from "~/hooks/useFilter";
 import { type Project } from "~/hooks/useProjects";
 import { Card, CardTitle } from "~/components/ui/Card";
-import { ProjectImage } from "./ui/ProjectImage";
-import { ImpactCategories } from "./ui/ImpactCategories";
+import { ImpactCategories } from "./ImpactCategories";
 
 type Props = { filter?: Filter; projects?: Project[] };
 
@@ -57,3 +56,24 @@ export const ProjectListItem = ({ project }: { project: Project }) => {
     </div>
   );
 };
+
+// TODO: Move to ui/Avatar as a generalized component with different sizes so it can be used in ViewProjectPage also
+export const ProjectImage = ({
+  small,
+  avatarUrl,
+}: {
+  small?: boolean;
+  avatarUrl?: string;
+}) => (
+  <div
+    className={`${
+      !small ? "h-16 w-16 rounded-lg p-1" : "h-8 w-8 rounded-md p-0.5"
+    }  border border-gray-200 bg-white `}
+  >
+    <div
+      className={`${
+        !small ? "rounded-md" : "rounded"
+      } flex h-full w-full bg-gray-200`}
+    />
+  </div>
+);

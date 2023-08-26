@@ -56,7 +56,7 @@ export const Header = () => {
           {navLinks.map((link) => (
             <NavLink
               isActive={asPath.startsWith(link.href)}
-              key={`${link.href}`}
+              key={link.href}
               {...link}
             />
           ))}

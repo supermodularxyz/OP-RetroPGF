@@ -2,12 +2,12 @@ import { type Filter } from "~/hooks/useFilter";
 import { type Project } from "~/hooks/useProjects";
 import { type List } from "~/hooks/useLists";
 import { Card, CardTitle } from "./ui/Card";
-import { ProjectImage } from "./ui/ProjectImage";
-import { ImpactCategories } from "./ui/ImpactCategories";
+import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
 import { IconButton } from "./ui/Button";
 import clsx from "clsx";
+import { ProjectImage } from "./Projects";
 
 type Props = { filter?: Filter; lists?: List[] };
 
