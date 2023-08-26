@@ -9,17 +9,20 @@ import { ConnectButton } from "./ConnectButton";
 import { IconButton } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { Menu, X } from "./icons";
+import { toURL, useFilter } from "~/hooks/useFilter";
 
 const navLinks = [
   {
     href: "/projects",
     children: "Projects",
+    type: "projects",
   },
   {
     href: "/lists",
     children: "Lists",
+    type: "lists",
   },
-];
+] as const;
 
 const NavLink = ({
   isActive,
@@ -40,6 +43,11 @@ export const Header = () => {
   const { asPath, push } = useRouter();
   const [isOpen, setOpen] = useState(false);
 
+  const params = {
+    projects: useFilter("projects").data,
+    lists: useFilter("lists").data,
+  };
+
   return (
     <header className="relative z-10 bg-white shadow-md">
       <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2  md:px-8">
@@ -57,8 +65,10 @@ export const Header = () => {
             <NavLink
               isActive={asPath.startsWith(link.href)}
               key={link.href}
-              {...link}
-            />
+              href={`${link.href}?${toURL(params[link.type]!)}`}
+            >
+              {link.children}
+            </NavLink>
           ))}
         </div>
         <div className="flex-1 md:ml-8">
