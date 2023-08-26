@@ -15,7 +15,7 @@ type Props = {
 };
 
 function useCmdK() {
-  const ref = useRef<HTMLInputElement>();
+  const ref = useRef<HTMLInputElement>(null);
   useKey(
     (e) => (e.metaKey ?? e.ctrlKey) && [75, 107].includes(e.keyCode),
     (e) => {
@@ -32,8 +32,13 @@ export const Search = ({ onSelect }: Props) => {
 
   const ref = useCmdK();
 
-  // Search does not use pagination and always sorts A to Z
-  const filter = { page: 1, sort: "asc", search } as Partial<Filter>;
+  // Search does not use pagination, categories and always sorts A to Z
+  const filter = {
+    page: 1,
+    sort: "asc",
+    categories: [],
+    search,
+  } as Partial<Filter>;
   const projects = useProjects({ ...useFilter("projects").data, ...filter });
   const lists = useLists({ ...useFilter("lists").data, ...filter });
 
