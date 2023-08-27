@@ -44,6 +44,15 @@ export type Project = {
   certifiedNotBarredFromParticipating: boolean;
 };
 
+export const fundingSourcesLabels = {
+  RETROPGF_1: "RetroPGF 1",
+  RETROPGF_2: "RetroPGF 2",
+  GOVERNANCE_FUND: "Governance Fund",
+  PARTNER_FUND: "Partner Fund",
+  REVENUE: "Revenue",
+  OTHER: "Other",
+};
+
 export function useProjects(filter: Filter) {
   const {
     page = 1,
@@ -61,6 +70,14 @@ export function useProjects(filter: Filter) {
         // Fake server response time
         setTimeout(() => resolve(sortAndFilter(projects, filter)), 500);
       })
+  );
+}
+
+export function useProject(id: string) {
+  return useQuery(
+    ["projects", id],
+    async () => projects.find((p) => p.id === id),
+    { enabled: Boolean(id) }
   );
 }
 

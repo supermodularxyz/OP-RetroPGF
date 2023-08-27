@@ -3,6 +3,7 @@ import { type Filter } from "~/hooks/useFilter";
 import { type Project } from "~/hooks/useProjects";
 import { Card, CardTitle } from "~/components/ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
+import Link from "next/link";
 
 type Props = { filter?: Filter; projects?: Project[] };
 
@@ -15,13 +16,15 @@ export const Projects = ({ filter, projects }: Props) => {
         ["gap-6 divide-y divide-neutral-200"]: isList,
       })}
     >
-      {projects?.map((project) =>
-        isList ? (
-          <ProjectListItem key={project.id} project={project} />
-        ) : (
-          <ProjectGridItem key={project.id} project={project} />
-        )
-      )}
+      {projects?.map((project) => (
+        <Link href={`/projects/${project.id}`} key={project.id}>
+          {isList ? (
+            <ProjectListItem project={project} />
+          ) : (
+            <ProjectGridItem project={project} />
+          )}
+        </Link>
+      ))}
     </div>
   );
 };

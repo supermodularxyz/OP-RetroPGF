@@ -56,12 +56,14 @@ export const ListGridItem = ({ list }: { list: List }) => {
 export const ListListItem = ({ list }: { list: List }) => {
   return (
     <div className="cursor-pointer space-y-3 pt-6">
-      <div className="flex items-center gap-2">
-        <CardTitle>{list.displayName}</CardTitle>
-        <Divider orientation={"vertical"} />
-        <LikesNumber likesNumber={list.likesNumber} />
+      <div>
+        <div className="flex items-center gap-2">
+          <CardTitle>{list.displayName}</CardTitle>
+          <Divider orientation={"vertical"} />
+          <LikesNumber likesNumber={list.likesNumber} />
+        </div>
+        <AvatarWithName name={list.creatorName} avatarUrl="" />
       </div>
-      <AvatarWithName name={list.creatorName} avatarUrl="" />
       <ProjectsLogosCard projects={list.projects} />
 
       <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
@@ -93,7 +95,7 @@ export const AvatarWithName = ({
   name: string;
   avatarUrl: string;
 }) => (
-  <div className="mt-1 flex items-center gap-2">
+  <div className="flex items-center gap-2">
     <div className="h-5 w-5 rounded-full bg-gray-200"></div>
     <p className="text-sm font-semibold">{name} </p>
   </div>
