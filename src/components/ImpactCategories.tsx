@@ -9,7 +9,11 @@ export const ImpactCategories = ({ tags }: { tags: ImpactCategory[] }) => (
     {tags?.length &&
       tags?.map((key) => {
         const category = impactCategoryLabels[key];
-        return <Tag key={key}>{category}</Tag>;
+        return (
+          <Tag key={key} size="sm">
+            {category}
+          </Tag>
+        );
       })}
   </div>
 );
