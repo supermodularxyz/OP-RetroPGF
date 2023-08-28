@@ -18,7 +18,9 @@ export const DisplayAndSortFilter = ({ baseUrl, filter }: Props) => {
   return (
     <div className="flex gap-2 overflow-x-auto">
       <DisplayButton filter={filter} display="list" baseUrl={baseUrl} />
-      <Divider orientation={"vertical"} />
+      <div className="flex py-2">
+        <Divider orientation={"vertical"} />
+      </div>
       <DisplayButton filter={filter} display="grid" baseUrl={baseUrl} />
       <SortBy
         value={filter?.sort}

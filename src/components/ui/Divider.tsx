@@ -23,7 +23,7 @@ export const Divider = ({
   ...props
 }: // eslint-disable-next-line
 { icon?: any } & ComponentPropsWithoutRef<typeof DividerComponent>) => (
-  <div className="relative inline-flex w-full items-center justify-center">
+  <div className="relative inline-flex items-center justify-center">
     <DividerComponent {...props} />
     {icon ? (
       <div className="absolute left-1/2 mt-1 -translate-x-1/2 bg-white px-4 text-gray-200">
