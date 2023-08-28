@@ -89,11 +89,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <p>{project?.contributionDescription}</p>
 
         {project?.contributionLinks.map((link) => (
-          <div key={link.url} className="space-y-2 rounded-xl bg-gray-100 p-4">
+          <ImpactCard key={link.url} className="space-y-2">
             <H4>{link.description}</H4>
             <p>TODO: contribution description</p>
             <div>{link.url}</div>
-          </div>
+          </ImpactCard>
         ))}
         <DividerIcon icon={Contribution} className="my-4" />
 
@@ -101,11 +101,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <p>{project?.impactDescription}</p>
         <div className="grid grid-cols-3 gap-2">
           {project?.impactMetrics.map((metric, i) => (
-            <Link
+            <ImpactCard
+              as={metric.url ? Link : "div"}
               href={metric.url ?? "#"}
               target={metric.url ? "_blank" : ""}
               key={i}
-              className="rounded-xl bg-gray-100 p-4"
             >
               <div className="flex justify-between">
                 <H4 className="font-mono">{suffixNumber(metric.number)}</H4>
@@ -114,7 +114,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 ) : null}
               </div>
               <p className="text-gray-700">{metric.description}</p>
-            </Link>
+            </ImpactCard>
           ))}
         </div>
         <DividerIcon icon={Contribution} className="my-4" />
@@ -160,4 +160,10 @@ const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));
 const Card = createComponent(
   "div",
   tv({ base: "flex flex-col gap-4 rounded-3xl border p-8" })
+);
+const ImpactCard = createComponent(
+  "div",
+  tv({
+    base: "rounded-xl bg-gray-100 p-4",
+  })
 );
