@@ -104,7 +104,7 @@ export default function ViewProjectPage() {
         <Divider icon={Contribution} className="my-4" />
 
         <H3>Impact</H3>
-
+        <p>{project?.impactDescription}</p>
         <div className="grid grid-cols-3 gap-2">
           {project?.impactMetrics.map((metric, i) => (
             <Link
