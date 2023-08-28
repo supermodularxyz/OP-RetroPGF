@@ -53,14 +53,23 @@ export const ListGridItem = ({ list }: { list: List }) => {
   );
 };
 
-export const ListListItem = ({ list }: { list: List }) => {
+export const ListListItem = ({
+  list,
+  allocation,
+}: {
+  allocation?: string;
+  list: List;
+}) => {
   return (
     <div className="cursor-pointer space-y-3 pt-6">
       <div>
-        <div className="flex items-center gap-2">
-          <CardTitle>{list.displayName}</CardTitle>
-          <Divider orientation={"vertical"} />
-          <LikesNumber likesNumber={list.likesNumber} />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CardTitle>{list.displayName}</CardTitle>
+            <Divider orientation={"vertical"} />
+            <LikesNumber likesNumber={list.likesNumber} />
+          </div>
+          <div className="font-semibold">{allocation}</div>
         </div>
         <AvatarWithName name={list.creatorName} avatarUrl="" />
       </div>

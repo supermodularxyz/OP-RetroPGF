@@ -149,7 +149,11 @@ export default function ViewProjectPage() {
         <H3>Included in the following lists</H3>
         <Card className="space-y-4 divide-y divide-gray-200">
           {lists.slice(0, 3).map((list) => (
-            <ListListItem key={list.id} list={list} />
+            <ListListItem
+              key={list.id}
+              list={list}
+              allocation={formatCurrency(36_000, "OP", false)}
+            />
           ))}
         </Card>
       </div>
@@ -157,8 +161,14 @@ export default function ViewProjectPage() {
   );
 }
 
-function formatCurrency(amount: number, currency: string) {
-  return `${suffixNumber(amount)} ${currency}`;
+function formatCurrency(amount: number, currency: string, short = true) {
+  const format = (n: number) =>
+    n.toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+
+  return `${short ? suffixNumber(amount) : format(amount)} ${currency}`;
 }
 
 const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
