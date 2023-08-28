@@ -20,17 +20,17 @@ import { CopyButton } from "~/components/CopyButton";
 export const ProjectDetails = ({ project }: { project: Project }) => {
   return (
     <>
-      <div className="mb-8 flex justify-between">
+      <div className="mb-8 hidden justify-between md:flex">
         <h1 className="text-xl font-semibold">
           {project?.displayName}&apos;s Round application
         </h1>
         <div className="">PROJECT_NAVIGATION</div>
       </div>
       <div>
-        <div className="h-[328px] rounded-xl border border-gray-200 bg-gray-100" />
-        <div className="mx-8 -mt-20 flex items-end gap-6">
+        <div className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]" />
+        <div className="-mt-20 items-end gap-6 md:mx-8 md:flex">
           <Avatar size="lg" />
-          <div className="flex flex-1 items-center justify-between">
+          <div className="flex-1 items-center justify-between md:flex">
             <div>
               <h3 className="text-2xl font-bold">{project?.displayName}</h3>
               <div className="flex items-center gap-4 text-gray-700">
@@ -46,7 +46,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               </div>
             </div>
             <div>
-              <IconButton variant="primary" icon={AddBallot}>
+              <IconButton
+                variant="primary"
+                icon={AddBallot}
+                className="w-full md:w-auto"
+              >
                 Add to ballot
               </IconButton>
             </div>
@@ -55,7 +59,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       </div>
       <Divider className="my-8" />
       <p className="">{project?.bio}</p>
-      <div className="my-8 flex gap-2">
+      <div className="my-8 flex flex-wrap gap-2">
         <Tag>
           <FaCheckToSlot /> 56 ballots
         </Tag>
@@ -99,7 +103,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 
         <H3>Impact</H3>
         <p>{project?.impactDescription}</p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid gap-2 md:grid-cols-3">
           {project?.impactMetrics.map((metric, i) => (
             <ImpactCard
               as={metric.url ? Link : "div"}
@@ -124,9 +128,9 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <div className="flex flex-col gap-4 divide-y divide-gray-200">
           {project?.fundingSources.map((fund, i) => (
             <div className="flex pt-6" key={i}>
-              <div className="flex flex-1 justify-between">
-                <div className="flex">
-                  <div className="w-64 text-lg">
+              <div className="flex-1 justify-between md:flex">
+                <div className="md:flex">
+                  <div className="text-lg md:w-64">
                     {fundingSourcesLabels[fund.type]}
                   </div>
                   <div className="">{fund.description}</div>
