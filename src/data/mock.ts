@@ -44,6 +44,11 @@ export const projects: Project[] = Array.from({ length: 25 })
         number: 50_100,
         url: "",
       },
+      {
+        description: "OP delegated via the application",
+        number: 25_000_000,
+        url: "",
+      },
     ],
     fundingSources: [
       {

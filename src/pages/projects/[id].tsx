@@ -14,6 +14,7 @@ import { ListListItem } from "~/components/Lists";
 import { impactCategoryLabels } from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
 import { lists } from "~/data/mock";
+import { suffixNumber } from "~/utils/suffixNumber";
 
 export default function ViewProjectPage() {
   const router = useRouter();
@@ -158,11 +159,6 @@ export default function ViewProjectPage() {
 
 function formatCurrency(amount: number, currency: string) {
   return `${suffixNumber(amount)} ${currency}`;
-}
-
-function suffixNumber(number: number) {
-  // TODO: add suffix for k and m
-  return number;
 }
 
 const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
