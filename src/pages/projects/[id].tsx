@@ -4,10 +4,14 @@ import { Layout } from "~/components/Layout";
 import { createComponent } from "~/components/ui";
 import { IconButton } from "~/components/ui/Button";
 import { AddBallot, Contribution, LayoutList } from "~/components/icons";
-import { fundingSourcesLabels, useProject } from "~/hooks/useProjects";
+import {
+  type Project,
+  fundingSourcesLabels,
+  useProject,
+} from "~/hooks/useProjects";
 import Link from "next/link";
-import { FaCheckToSlot, FaCopy } from "react-icons/fa6";
-import { Divider } from "~/components/ui/Divider";
+import { FaCheckToSlot } from "react-icons/fa6";
+import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
 import { ListListItem } from "~/components/Lists";
@@ -15,21 +19,19 @@ import { impactCategoryLabels } from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
 import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
+import { formatCurrency } from "~/utils/formatCurrency";
+import { Avatar } from "~/components/ui/Avatar";
+import { CopyButton } from "~/components/CopyButton";
 
-export default function ViewProjectPage() {
-  const router = useRouter();
-  const id = router.query.id as string;
-  const { data: project } = useProject(id);
-
+const ProjectDetails = ({ project }: { project: Project }) => {
   return (
-    <Layout>
+    <>
       <div className="mb-8 flex justify-between">
         <h1 className="text-xl font-semibold">
           {project?.displayName}&apos;s Round application
         </h1>
         <div className="">PROJECT_NAVIGATION</div>
       </div>
-
       <div>
         <div className="h-[328px] rounded-xl border border-gray-200 bg-gray-100" />
         <div className="mx-8 -mt-20 flex items-end gap-6">
@@ -40,7 +42,7 @@ export default function ViewProjectPage() {
               <div className="flex items-center gap-4 text-gray-700">
                 <div className="flex items-center gap-2">
                   <code>{project?.payoutAddress}</code>
-                  <FaCopy className="h-4 w-4 text-gray-500" />
+                  <CopyButton value={project?.payoutAddress} />
                 </div>
                 {project?.websiteUrl ? (
                   <Link href={project?.websiteUrl} target="_blank">
@@ -72,6 +74,17 @@ export default function ViewProjectPage() {
           Round 2 contributor
         </Tag>
       </div>
+    </>
+  );
+};
+export default function ViewProjectPage() {
+  const router = useRouter();
+  const id = router.query.id as string;
+  const { data: project } = useProject(id);
+
+  return (
+    <Layout>
+      <ProjectDetails project={project!} />
 
       <Card>
         <div className="flex items-center gap-4">
@@ -88,7 +101,7 @@ export default function ViewProjectPage() {
             <Tag key={category}>{impactCategoryLabels[category]}</Tag>
           ))}
         </div>
-        <Divider icon={Contribution} className="my-4" />
+        <DividerIcon icon={Contribution} className="my-4" />
 
         <H3>Contributions</H3>
 
@@ -101,7 +114,7 @@ export default function ViewProjectPage() {
             <div>{link.url}</div>
           </div>
         ))}
-        <Divider icon={Contribution} className="my-4" />
+        <DividerIcon icon={Contribution} className="my-4" />
 
         <H3>Impact</H3>
         <p>{project?.impactDescription}</p>
@@ -123,7 +136,7 @@ export default function ViewProjectPage() {
             </Link>
           ))}
         </div>
-        <Divider icon={Contribution} className="my-4" />
+        <DividerIcon icon={Contribution} className="my-4" />
 
         <H3>Past funding</H3>
 
@@ -160,37 +173,9 @@ export default function ViewProjectPage() {
     </Layout>
   );
 }
-
-function formatCurrency(amount: number, currency: string, short = true) {
-  const format = (n: number) =>
-    n.toLocaleString("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
-
-  return `${short ? suffixNumber(amount) : format(amount)} ${currency}`;
-}
-
-const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
-const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));
+export const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
+export const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));
 const Card = createComponent(
   "div",
   tv({ base: "flex flex-col gap-4 rounded-3xl border p-8" })
-);
-
-// Temp avatar until image
-const Avatar = createComponent(
-  "div",
-  tv({
-    base: "bg-gray-200 border border-gray-200",
-    variants: {
-      size: {
-        md: "w-16 h-16",
-        lg: "w-40 h-40 rounded-3xl",
-      },
-    },
-    defaultVariants: {
-      size: "md",
-    },
-  })
 );
