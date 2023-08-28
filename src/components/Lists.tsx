@@ -7,7 +7,7 @@ import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
 import { IconButton } from "./ui/Button";
 import clsx from "clsx";
-import { ProjectImage } from "./Projects";
+import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -38,7 +38,7 @@ export const ListGridItem = ({ list }: { list: List }) => {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>{list.displayName}</CardTitle>
-            <AvatarWithName name={list.creatorName} avatarUrl="" />
+            <AvatarWithName name={list.creatorName} />
           </div>
           <LikesNumber likesNumber={list.likesNumber} />
         </div>
@@ -53,15 +53,26 @@ export const ListGridItem = ({ list }: { list: List }) => {
   );
 };
 
-export const ListListItem = ({ list }: { list: List }) => {
+export const ListListItem = ({
+  list,
+  allocation,
+}: {
+  allocation?: string;
+  list: List;
+}) => {
   return (
     <div className="cursor-pointer space-y-3 pt-6">
-      <div className="flex items-center gap-2">
-        <CardTitle>{list.displayName}</CardTitle>
-        <Divider orientation={"vertical"} />
-        <LikesNumber likesNumber={list.likesNumber} />
+      <div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CardTitle>{list.displayName}</CardTitle>
+            <Divider orientation={"vertical"} />
+            <LikesNumber likesNumber={list.likesNumber} />
+          </div>
+          <div className="font-semibold">{allocation}</div>
+        </div>
+        <AvatarWithName name={list.creatorName} />
       </div>
-      <AvatarWithName name={list.creatorName} avatarUrl="" />
       <ProjectsLogosCard projects={list.projects} />
 
       <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
@@ -86,26 +97,18 @@ export const LikesNumber = ({
   </div>
 );
 
-export const AvatarWithName = ({
-  name,
-  avatarUrl,
-}: {
-  name: string;
-  avatarUrl: string;
-}) => (
-  <div className="mt-1 flex items-center gap-2">
-    <div className="h-5 w-5 rounded-full bg-gray-200"></div>
+export const AvatarWithName = ({ name }: { name: string }) => (
+  <div className="flex items-center gap-2">
+    <Avatar size="xs" rounded="full" />
     <p className="text-sm font-semibold">{name} </p>
   </div>
 );
 
 export const ProjectsLogosCard = ({ projects }: { projects: Project[] }) => (
   <div className="flex items-center gap-3">
-    <div className="flex">
+    <div className="ml-1 flex">
       {projects?.slice(0, 4).map((project) => (
-        <div key={project.id} className="-mx-1">
-          <ProjectImage small={true} />
-        </div>
+        <AvatarWithBorder key={project.id} className="-mx-1" size="sm" />
       ))}
     </div>
     {projects.length > 4 && (

@@ -1,4 +1,4 @@
-import { ImpactCategory } from "~/hooks/useCategories";
+import { type ImpactCategory } from "~/hooks/useCategories";
 import { type List } from "~/hooks/useLists";
 import { type Project } from "~/hooks/useProjects";
 
@@ -26,6 +26,11 @@ export const projects: Project[] = Array.from({ length: 25 })
         url: "https://github.com/example/repo",
         description: "Github Repo",
       },
+      {
+        type: "CONTRACT_ADDRESS",
+        url: "0x123",
+        description: "Contract Address",
+      },
     ],
     impactDescription: "Making positive changes in open source ecosystem.",
     impactMetrics: [
@@ -34,6 +39,21 @@ export const projects: Project[] = Array.from({ length: 25 })
         number: 500,
         url: "http://example.com/metrics1",
       },
+      {
+        description: "unique addresses interacted with the contract",
+        number: 20_000,
+        url: "http://example.com/metrics2",
+      },
+      {
+        description: "unique visitors since March 2023",
+        number: 50_100,
+        url: "",
+      },
+      {
+        description: "OP delegated via the application",
+        number: 25_000_000,
+        url: "",
+      },
     ],
     fundingSources: [
       {
@@ -41,6 +61,12 @@ export const projects: Project[] = Array.from({ length: 25 })
         currency: "OP",
         amount: 10000,
         description: "Seed fund",
+      },
+      {
+        type: "RETROPGF_1",
+        currency: "USD",
+        amount: 20000,
+        description: "Initial funding from xyz",
       },
     ],
     payoutAddress: "0x123",
