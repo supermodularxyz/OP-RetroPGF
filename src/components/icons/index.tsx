@@ -9,7 +9,9 @@ import {
   FaChevronLeft,
   FaListCheck,
   FaCheck,
+  FaLink,
 } from "react-icons/fa6";
+import { HiCodeBracketSquare } from "react-icons/hi2";
 
 import { LuArrowDownUp, LuLayoutGrid, LuList } from "react-icons/lu";
 
@@ -24,6 +26,8 @@ export const Sort = LuArrowDownUp;
 export const Check = FaCheck;
 export const LayoutGrid = LuLayoutGrid;
 export const LayoutList = LuList;
+export const Link = FaLink;
+export const Code = HiCodeBracketSquare;
 
 export const Contribution = (props: ComponentProps<typeof IconBase>) => (
   <IconBase {...props}>

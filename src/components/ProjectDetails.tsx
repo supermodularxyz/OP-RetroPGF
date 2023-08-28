@@ -1,7 +1,13 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import { IconButton } from "~/components/ui/Button";
-import { AddBallot, Contribution, LayoutList } from "~/components/icons";
+import {
+  AddBallot,
+  Code,
+  Contribution,
+  LayoutList,
+  Link as LinkIcon,
+} from "~/components/icons";
 import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import Link from "next/link";
 import { FaCheckToSlot } from "react-icons/fa6";
@@ -92,13 +98,25 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 
         <p>{project?.contributionDescription}</p>
 
-        {project?.contributionLinks.map((link) => (
-          <ImpactCard key={link.url} className="space-y-2">
-            <H4>{link.description}</H4>
-            <p>TODO: contribution description</p>
-            <div>{link.url}</div>
-          </ImpactCard>
-        ))}
+        <div className="grid gap-2">
+          {project?.contributionLinks.map((link) => {
+            const Icon = {
+              GITHUB_REPO: LinkIcon,
+              CONTRACT_ADDRESS: Code,
+              OTHER: "div",
+            }[link.type];
+            return (
+              <ImpactCard key={link.url} className="space-y-2">
+                <H4>{link.description}</H4>
+                <p>{link.description}</p>
+                <div className="flex items-center gap-1 text-gray-700">
+                  <Icon className="h-4 w-4" />
+                  {link.url}
+                </div>
+              </ImpactCard>
+            );
+          })}
+        </div>
         <DividerIcon icon={Contribution} className="my-4" />
 
         <H3>Impact</H3>

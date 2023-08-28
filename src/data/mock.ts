@@ -26,6 +26,11 @@ export const projects: Project[] = Array.from({ length: 25 })
         url: "https://github.com/example/repo",
         description: "Github Repo",
       },
+      {
+        type: "CONTRACT_ADDRESS",
+        url: "0x123",
+        description: "Contract Address",
+      },
     ],
     impactDescription: "Making positive changes in open source ecosystem.",
     impactMetrics: [
