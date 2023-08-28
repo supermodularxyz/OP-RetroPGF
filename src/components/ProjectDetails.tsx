@@ -39,15 +39,22 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <div className="flex-1 items-center justify-between md:flex">
             <div>
               <h3 className="text-2xl font-bold">{project?.displayName}</h3>
-              <div className="flex items-center gap-4 text-gray-700">
+              <div className="flex items-center gap-1 text-gray-700">
                 <div className="flex items-center gap-2">
                   <code>{project?.payoutAddress}</code>
                   <CopyButton value={project?.payoutAddress} />
                 </div>
+                <div>·</div>
                 {project?.websiteUrl ? (
-                  <Link href={project?.websiteUrl} target="_blank">
+                  <IconButton
+                    as={Link}
+                    variant="link"
+                    icon={LinkIcon}
+                    href={project?.websiteUrl}
+                    target="_blank"
+                  >
                     {project?.websiteUrl}
-                  </Link>
+                  </IconButton>
                 ) : null}
               </div>
             </div>

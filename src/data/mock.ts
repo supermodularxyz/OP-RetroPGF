@@ -1,4 +1,4 @@
-import { ImpactCategory } from "~/hooks/useCategories";
+import { type ImpactCategory } from "~/hooks/useCategories";
 import { type List } from "~/hooks/useLists";
 import { type Project } from "~/hooks/useProjects";
 
