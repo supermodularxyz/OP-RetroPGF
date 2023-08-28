@@ -88,7 +88,7 @@ export default function ViewProjectPage() {
             <Tag key={category}>{impactCategoryLabels[category]}</Tag>
           ))}
         </div>
-        <Divider className="my-4" />
+        <Divider icon={Contribution} className="my-4" />
 
         <H3>Contributions</H3>
 
@@ -101,7 +101,7 @@ export default function ViewProjectPage() {
             <div>{link.url}</div>
           </div>
         ))}
-        <Divider className="my-4" />
+        <Divider icon={Contribution} className="my-4" />
 
         <H3>Impact</H3>
 
@@ -123,7 +123,7 @@ export default function ViewProjectPage() {
             </Link>
           ))}
         </div>
-        <Divider className="my-4" />
+        <Divider icon={Contribution} className="my-4" />
 
         <H3>Past funding</H3>
 
