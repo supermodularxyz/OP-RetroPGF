@@ -1,6 +1,6 @@
 import { useQuery } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
-import { sortAndFilter, type Project } from "./useProjects";
+import { sortAndFilter, type Project, paginate } from "./useProjects";
 import { lists } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
 
@@ -30,7 +30,10 @@ export function useLists(filter: Filter) {
     () =>
       new Promise<{ data: List[]; pages: number }>((resolve) => {
         // Fake server response time
-        setTimeout(() => resolve(sortAndFilter(lists, filter)), 500);
+        setTimeout(
+          () => resolve(paginate(sortAndFilter(lists, filter), filter.page)),
+          500
+        );
       })
   );
 }

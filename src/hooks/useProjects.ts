@@ -68,7 +68,10 @@ export function useProjects(filter: Filter) {
     () =>
       new Promise<{ data: Project[]; pages: number }>((resolve) => {
         // Fake server response time
-        setTimeout(() => resolve(sortAndFilter(projects, filter)), 500);
+        setTimeout(
+          () => resolve(paginate(sortAndFilter(projects, filter), filter.page)),
+          500
+        );
       })
   );
 }
@@ -82,41 +85,49 @@ export function useProject(id: string) {
 }
 
 export function sortAndFilter<
-  T extends { displayName: string; impactCategory: ImpactCategory[] }
+  T extends {
+    displayName: string;
+    impactCategory: ImpactCategory[];
+    amount?: number;
+  }
 >(collection: T[], filter: Filter) {
   const {
-    page = 1,
     sort = "shuffle",
     categories = [],
     search = "",
   } = filter ?? initialFilter;
 
-  const pageSize = 6;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-
   // Temporary sorting
-
   const sortFn = {
     shuffle: (arr: T[]) => arr,
     asc: (arr: T[]) =>
       arr.sort((a: T, b: T) => a.displayName.localeCompare(b.displayName)),
     desc: (arr: T[]) =>
       arr.sort((a: T, b: T) => b.displayName.localeCompare(a.displayName)),
+    ascOP: (arr: T[]) =>
+      arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? 1 : -1)),
+    descOP: (arr: T[]) =>
+      arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? -1 : 1)),
   }[sort];
 
-  const data = sortFn([...collection])
+  return sortFn([...collection])
     .filter((item) =>
       categories.length
         ? categories.every((c) => item.impactCategory.includes(c))
         : item
     )
     .filter((p) => p.displayName.toLowerCase().includes(search.toLowerCase()));
+}
 
-  const pages = Math.ceil(data.length / pageSize);
+export function paginate<T>(collection: T[], page = 1) {
+  const pageSize = 6;
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+
+  const pages = Math.ceil(collection.length / pageSize);
 
   return {
-    data: data.slice(start, end),
+    data: collection.slice(start, end),
     pages,
   };
 }

@@ -5,9 +5,11 @@ import { Check, Sort } from "./icons";
 
 type Props = {
   value: Filter["sort"];
-  onChange: (value: string) => void;
+  onChange: (value: Filter["sort"]) => void;
+  options: Filter["sort"][];
 };
-export const SortBy = ({ value, onChange }: Props) => {
+
+export const SortBy = ({ value, onChange, options = [] }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -24,10 +26,13 @@ export const SortBy = ({ value, onChange }: Props) => {
           <DropdownMenu.Label className="p-2 text-xs font-semibold uppercase text-gray-700">
             Sort By
           </DropdownMenu.Label>
-          <DropdownMenu.RadioGroup value={value} onValueChange={onChange}>
-            <RadioItem value="shuffle" label={sortLabels.shuffle} />
-            <RadioItem value="asc" label={sortLabels.asc} />
-            <RadioItem value="desc" label={sortLabels.desc} />
+          <DropdownMenu.RadioGroup
+            value={value}
+            onValueChange={(v) => onChange(v as Filter["sort"])}
+          >
+            {options.map((value) => (
+              <RadioItem key={value} value={value} label={sortLabels[value!]} />
+            ))}
           </DropdownMenu.RadioGroup>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

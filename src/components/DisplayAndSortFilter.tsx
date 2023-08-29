@@ -11,6 +11,8 @@ type Props = {
   filter: Filter;
 };
 
+const options = ["shuffle", "asc", "desc"];
+
 export const DisplayAndSortFilter = ({ baseUrl, filter }: Props) => {
   const router = useRouter();
   const query = router.query as unknown as Filter;
@@ -23,6 +25,7 @@ export const DisplayAndSortFilter = ({ baseUrl, filter }: Props) => {
       </div>
       <DisplayButton filter={filter} display="grid" baseUrl={baseUrl} />
       <SortBy
+        options={options}
         value={filter?.sort}
         onChange={(sort) =>
           void router.push(

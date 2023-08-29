@@ -14,7 +14,7 @@ import {
 import { FaExternalLinkSquareAlt } from "react-icons/fa";
 import { HiCodeBracketSquare } from "react-icons/hi2";
 
-import { LuArrowDownUp, LuLayoutGrid, LuList } from "react-icons/lu";
+import { LuArrowDownUp, LuLayoutGrid, LuList, LuTrash } from "react-icons/lu";
 
 export const Like = FaRegHeart;
 export const Liked = FaHeart;
@@ -30,6 +30,7 @@ export const LayoutList = LuList;
 export const Link = FaLink;
 export const ExternalLink = FaExternalLinkSquareAlt;
 export const Code = HiCodeBracketSquare;
+export const Trash = LuTrash;
 
 export const Contribution = (props: ComponentProps<typeof IconBase>) => (
   <IconBase {...props}>
