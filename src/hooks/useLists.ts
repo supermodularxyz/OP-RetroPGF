@@ -11,6 +11,8 @@ export type List = {
   creatorAvatarUrl: string;
   bio: string;
   impactCategory: ImpactCategory[];
+  impactEvaluation: string;
+  impactEvaluationLink: string;
   projects: Project[];
   likesNumber: number;
 };
@@ -34,3 +36,12 @@ export function useLists(filter: Filter) {
       })
   );
 }
+
+export function useList(id: string) {
+  return useQuery(
+    ["lists", id],
+    async () => lists.find((p) => p.id === id),
+    { enabled: Boolean(id) }
+  );
+}
+

@@ -8,6 +8,7 @@ import { Like, Liked } from "~/components/icons";
 import { IconButton } from "./ui/Button";
 import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
+import Link from "next/link";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -20,13 +21,15 @@ export const Lists = ({ filter, lists }: Props) => {
         ["gap-6 divide-y divide-neutral-200"]: isList,
       })}
     >
-      {lists?.map((list) =>
-        isList ? (
-          <ListListItem key={list.id} list={list} />
-        ) : (
-          <ListGridItem key={list.id} list={list} />
-        )
-      )}
+      {lists?.map((list) => (
+        <Link href={`/lists/${list.id}`} key={list.id}>
+          {isList ? (
+            <ListListItem key={list.id} list={list} />
+          ) : (
+            <ListGridItem key={list.id} list={list} />
+          )}
+        </Link>
+      ))}
     </div>
   );
 };
@@ -91,7 +94,7 @@ export const LikesNumber = ({
   likesNumber: number;
   isLiked?: boolean;
 }) => (
-  <div className="flex items-center gap-3">
+  <div className="flex items-center gap-1">
     <span className="text-xs">{likesNumber}</span>
     <IconButton icon={isLiked ? Liked : Like} variant={"ghost"} />
   </div>
