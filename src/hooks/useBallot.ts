@@ -57,3 +57,5 @@ export const sumBallot = (allocations: { amount?: number }[]) =>
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
+
+export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;

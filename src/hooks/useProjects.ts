@@ -69,7 +69,8 @@ export function useProjects(filter: Filter) {
       new Promise<{ data: Project[]; pages: number }>((resolve) => {
         // Fake server response time
         setTimeout(
-          () => resolve(paginate(sortAndFilter(projects, filter), filter.page)),
+          () =>
+            resolve(paginate(sortAndFilter(projects, filter), filter?.page)),
           500
         );
       })

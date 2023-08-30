@@ -31,7 +31,7 @@ export function useLists(filter: Filter) {
       new Promise<{ data: List[]; pages: number }>((resolve) => {
         // Fake server response time
         setTimeout(
-          () => resolve(paginate(sortAndFilter(lists, filter), filter.page)),
+          () => resolve(paginate(sortAndFilter(lists, filter), filter?.page)),
           500
         );
       })
