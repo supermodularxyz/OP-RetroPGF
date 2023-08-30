@@ -92,7 +92,12 @@ export function Form<S extends z.Schema>({
   onSubmit,
 }: FormProps<S>) {
   // Initialize the form with defaultValues and schema for validation
-  const form = useForm({ defaultValues, resolver: zodResolver(schema) });
+  const form = useForm({
+    defaultValues,
+    resolver: zodResolver(schema),
+
+    mode: "onBlur",
+  });
   // Pass the form methods to a FormProvider. This lets us access the form from components without passing props.
   return (
     <FormProvider {...form}>

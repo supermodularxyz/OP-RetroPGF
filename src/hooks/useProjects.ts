@@ -101,9 +101,9 @@ export function sortAndFilter<
   const sortFn = {
     shuffle: (arr: T[]) => arr,
     asc: (arr: T[]) =>
-      arr.sort((a: T, b: T) => a.displayName.localeCompare(b.displayName)),
+      arr.sort((a: T, b: T) => a.displayName?.localeCompare(b.displayName)),
     desc: (arr: T[]) =>
-      arr.sort((a: T, b: T) => b.displayName.localeCompare(a.displayName)),
+      arr.sort((a: T, b: T) => b.displayName?.localeCompare(a.displayName)),
     ascOP: (arr: T[]) =>
       arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? 1 : -1)),
     descOP: (arr: T[]) =>
@@ -116,7 +116,7 @@ export function sortAndFilter<
         ? categories.every((c) => item.impactCategory.includes(c))
         : item
     )
-    .filter((p) => p.displayName.toLowerCase().includes(search.toLowerCase()));
+    .filter((p) => p.displayName?.toLowerCase().includes(search.toLowerCase()));
 }
 
 export function paginate<T>(collection: T[], page = 1) {
