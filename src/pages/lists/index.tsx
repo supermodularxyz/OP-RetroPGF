@@ -34,9 +34,12 @@ export default function ListsPage() {
 
         <DisplayAndSortFilter baseUrl="/lists" filter={filter!} />
       </div>
-
-      <div className="flex gap-2 py-4">
-        <div className="flex gap-1">
+      <div className="no-scrollbar flex gap-2 overflow-auto py-4">
+        <CategoriesFilter
+          selected={filter?.categories}
+          onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
+          type="lists"
+        >
           <Tag
             size="lg"
             as={Link}
@@ -47,15 +50,10 @@ export default function ListsPage() {
           <Tag size="lg" onClick={() => alert("not implemented yet")}>
             <Like /> Liked
           </Tag>
-        </div>
-        <div className="flex items-center py-2">
-          <Divider orientation="vertical" />
-        </div>
-        <CategoriesFilter
-          selected={filter?.categories}
-          onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
-          type="lists"
-        />
+          <div className="flex items-center py-2">
+            <Divider orientation="vertical" />
+          </div>
+        </CategoriesFilter>
       </div>
       <Lists filter={filter} lists={lists?.data} />
       <Pagination
