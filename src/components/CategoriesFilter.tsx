@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { type PropsWithChildren } from "react";
 import { Tag } from "~/components/ui/Tag";
 import {
   type ImpactCategory,
@@ -11,14 +12,16 @@ export const CategoriesFilter = ({
   selected = [],
   onSelect,
   type,
+  children,
 }: {
   selected?: Filter["categories"];
   onSelect: (categories: Filter["categories"]) => void;
   type: "projects" | "lists";
-}) => {
+} & PropsWithChildren) => {
   const categoriesCount = useCategories(type);
   return (
-    <div className="flex gap-2 overflow-x-auto">
+    <div className="my-2 flex gap-2 overflow-x-auto py-1">
+      {children}
       {Object.entries(impactCategoryLabels).map(([key, label]) => {
         const category = key as ImpactCategory;
         const count = categoriesCount[category];

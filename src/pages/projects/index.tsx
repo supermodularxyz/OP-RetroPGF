@@ -22,10 +22,9 @@ export default function ProjectsPage() {
     <Layout>
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-
         <DisplayAndSortFilter baseUrl="/projects" filter={filter!} />
       </div>
-      <div className="py-4">
+      <div className="no-scrollbar">
         <CategoriesFilter
           selected={filter?.categories}
           onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
