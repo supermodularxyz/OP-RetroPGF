@@ -8,14 +8,19 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
 import Link from "next/link";
 import { formatNumber } from "~/utils/formatNumber";
+import { useRouter } from "next/router";
 
 export const BallotOverview = () => {
+  const { route } = useRouter();
+
   const { data: ballot } = useBallot();
 
   const allocations = ballotToArray(ballot);
   const sum = sumBallot(allocations) ?? 0;
 
   const total = 30_000_000;
+
+  const canSubmit = route === "/ballot" && allocations.length;
   return (
     <div className="w-[336px] space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
@@ -47,7 +52,9 @@ export const BallotOverview = () => {
           <div>{formatNumber(total)} OP</div>
         </div>
       </BallotSection>
-      {allocations.length ? (
+      {canSubmit ? (
+        <Button variant="primary">Submit ballot</Button>
+      ) : allocations.length ? (
         <Button variant="outline" as={Link} href={"/ballot"}>
           View ballot
         </Button>
@@ -58,9 +65,11 @@ export const BallotOverview = () => {
       )}
       <Divider />
       <p className="text-gray-700">
-        As a badgeholder you are tasked with upholding the principle of “impact
+        {canSubmit
+          ? `If you don't allocate all 30m OP, the remainder will be distributed in proportion to all badgeholders' votes.`
+          : `As a badgeholder you are tasked with upholding the principle of “impact
         = profit” - the idea that positive impact to the Collective should be
-        rewarded with profit to the individual.
+        rewarded with profit to the individual.`}
       </p>
       <div>
         <ExternalLink href="/" target="_blank">
