@@ -3,7 +3,7 @@ import { createComponent } from ".";
 import { type ComponentPropsWithRef, createElement, forwardRef } from "react";
 
 const button = tv({
-  base: "inline-flex items-center justify-center font-semibold transition-colors rounded-xl duration-150 whitespace-nowrap disabled:bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+  base: "inline-flex items-center justify-center font-semibold text-center transition-colors rounded-xl duration-150 whitespace-nowrap disabled:bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
   variants: {
     variant: {
       primary: "bg-primary-600 hover:bg-primary-700 text-white",
@@ -14,8 +14,9 @@ const button = tv({
       link: "bg-none hover:underline",
     },
     size: {
-      deafult: "px-4 py-2 h-10",
-      icon: "h-10 w-10",
+      sm: "px-3 py-2 h-10 min-w-[40px]",
+      deafult: "px-4 py-2 h-12",
+      icon: "h-12 w-12",
     },
     disabled: {
       true: "text-gray-400 pointer-events-none pointer-default bg-gray-200 border-none",

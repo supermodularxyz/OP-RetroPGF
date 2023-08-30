@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { type ParsedUrlQuery } from "querystring";
 
-type FilterSort = "shuffle" | "asc" | "desc";
+type FilterSort = "shuffle" | "asc" | "desc" | "ascOP" | "descOP";
 export type Filter = {
   page?: number;
   display?: "grid" | "list";
@@ -25,6 +25,8 @@ export const sortLabels: { [key in FilterSort]: string } = {
   shuffle: "Shuffle",
   asc: "A to Z",
   desc: "Z to A",
+  ascOP: "Smallest OP",
+  descOP: "Highest OP",
 };
 
 type FilterType = "projects" | "lists";

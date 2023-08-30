@@ -13,6 +13,7 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
     <Button
       disabled={currentPage === 1}
       variant="outline"
+      size="sm"
       as={Link}
       href={onNavigate(currentPage - 1)}
     >
@@ -26,6 +27,7 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
           className="hidden md:block"
           key={page}
           variant={currentPage === page ? "dark" : "outline"}
+          size="sm"
           as={Link}
           href={onNavigate(page)}
         >
@@ -36,6 +38,7 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
     <Button
       disabled={currentPage === pages}
       variant="outline"
+      size="sm"
       as={Link}
       href={onNavigate(currentPage + 1)}
     >

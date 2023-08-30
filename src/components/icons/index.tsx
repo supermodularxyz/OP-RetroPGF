@@ -12,6 +12,9 @@ import {
   FaLink,
 } from "react-icons/fa6";
 import { FaExternalLinkSquareAlt } from "react-icons/fa";
+
+import { LuArrowDownUp, LuLayoutGrid, LuList, LuTrash } from "react-icons/lu";
+
 import {
   HiCodeBracketSquare,
   HiOutlineAdjustmentsHorizontal,
@@ -19,7 +22,6 @@ import {
 import { FiMoreHorizontal, FiFlag } from "react-icons/fi";
 import { RxExternalLink } from "react-icons/rx";
 import { IoIosDocument } from "react-icons/io";
-import { LuArrowDownUp, LuLayoutGrid, LuList } from "react-icons/lu";
 import { PiShareFat } from "react-icons/pi";
 
 export const Like = FaRegHeart;
@@ -36,6 +38,7 @@ export const LayoutList = LuList;
 export const Link = FaLink;
 export const ExternalLink = FaExternalLinkSquareAlt;
 export const Code = HiCodeBracketSquare;
+export const Trash = LuTrash;
 export const MoreHorizontal = FiMoreHorizontal;
 export const Document = IoIosDocument;
 export const ExternalLinkOutline = RxExternalLink;

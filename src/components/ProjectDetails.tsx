@@ -3,6 +3,7 @@ import { createComponent } from "~/components/ui";
 import { IconButton } from "~/components/ui/Button";
 import {
   AddBallot,
+  Check,
   Code,
   Contribution,
   LayoutList,
@@ -22,6 +23,42 @@ import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
 import { CopyButton } from "~/components/CopyButton";
+import {
+  useAddToBallot,
+  useBallot,
+  useRemoveFromBallot,
+} from "~/hooks/useBallot";
+
+export const AddProjectToBallot = ({ project }: { project: Project }) => {
+  const add = useAddToBallot();
+  const remove = useRemoveFromBallot();
+  const { data: ballot } = useBallot();
+
+  const { id } = project ?? {};
+  const inBallot = ballot?.[id];
+  return (
+    <div>
+      {inBallot ? (
+        <IconButton
+          variant="outline"
+          icon={Check}
+          onClick={() => remove.mutate(project)}
+        >
+          {inBallot.amount} OP allocated
+        </IconButton>
+      ) : (
+        <IconButton
+          onClick={() => add.mutate([{ ...project, amount: 0 }])}
+          variant="primary"
+          icon={AddBallot}
+          className="w-full md:w-auto"
+        >
+          Add to ballot
+        </IconButton>
+      )}
+    </div>
+  );
+};
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   return (
@@ -58,15 +95,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 ) : null}
               </div>
             </div>
-            <div>
-              <IconButton
-                variant="primary"
-                icon={AddBallot}
-                className="w-full md:w-auto"
-              >
-                Add to ballot
-              </IconButton>
-            </div>
+            <AddProjectToBallot project={project} />
           </div>
         </div>
       </div>

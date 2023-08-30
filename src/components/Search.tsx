@@ -9,6 +9,7 @@ import { IconButton } from "./ui/Button";
 import { ChevronLeft, Search as SearchIcon, X } from "./icons";
 import { useLists } from "~/hooks/useLists";
 import { useKey } from "react-use";
+import { SearchInput } from "./ui/Form";
 
 type Props = {
   onSelect: (path: string) => void;
@@ -67,16 +68,12 @@ export const Search = ({ onSelect }: Props) => {
           className={clsx("text-gray-600 md:hidden")}
         />
         <Command className="flex-1 md:relative" shouldFilter={false} loop>
-          <Command.Input
+          <SearchInput
+            as={Command.Input}
             ref={ref}
             value={search}
             onValueChange={setSearch}
-            className={clsx(
-              "focus-visible:ring-ring h-full w-full rounded-xl p-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:flex md:h-auto md:border",
-              {
-                ["hidden"]: !isOpen,
-              }
-            )}
+            className={clsx({ ["hidden"]: !isOpen })}
             placeholder="Search projects or lists..."
           />
 

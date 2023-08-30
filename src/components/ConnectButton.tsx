@@ -8,12 +8,15 @@ import { createBreakpoint } from "react-use";
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
+import { countBallot, useBallot } from "~/hooks/useBallot";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 export const ConnectButton = () => {
   const breakpoint = useBreakpoint();
 
   const isMobile = breakpoint === "S";
+
+  const ballotSize = countBallot(useBallot().data);
   return (
     <RainbowConnectButton.Custom>
       {({
@@ -63,7 +66,7 @@ export const ConnectButton = () => {
                       `View Ballot`
                     )}
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs ">
-                      0
+                      {ballotSize}
                     </div>
                   </Chip>
                   <UserInfo

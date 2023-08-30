@@ -9,7 +9,7 @@ export const Avatar = createComponent(
     variants: {
       size: {
         xs: "w-5 h-5 rounded-xs",
-        s: 'w-12 h-12 rounded-md',
+        sm: "w-12 h-12 rounded-md",
         md: "w-16 h-16 rounded-md",
         lg: "w-40 h-40 rounded-3xl",
       },
