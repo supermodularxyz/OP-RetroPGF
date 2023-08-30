@@ -21,13 +21,13 @@ export const BallotOverview = () => {
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
         Your ballot
       </h3>
-      <BallotSection title="Voting ends in">
+      <BallotSection title="Voting ends in:">
         <div>
           <TimeSlice>3d</TimeSlice>:<TimeSlice>12h</TimeSlice>:
           <TimeSlice>30m</TimeSlice>:<TimeSlice>24s</TimeSlice>
         </div>
       </BallotSection>
-      <BallotSection title="Projects added">
+      <BallotSection title="Projects added:">
         <div>
           <span className="text-gray-900">{allocations.length}</span>
           /200
@@ -36,7 +36,7 @@ export const BallotOverview = () => {
       <BallotSection
         title={
           <div className="flex justify-between">
-            OP allocated
+            OP allocated:
             <div className="text-gray-900">{formatNumber(sum)} OP</div>
           </div>
         }
