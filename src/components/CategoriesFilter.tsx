@@ -20,7 +20,7 @@ export const CategoriesFilter = ({
 } & PropsWithChildren) => {
   const categoriesCount = useCategories(type);
   return (
-    <div className="flex gap-2 overflow-x-auto">
+    <div className="my-2 flex gap-2 overflow-x-auto py-1">
       {children}
       {Object.entries(impactCategoryLabels).map(([key, label]) => {
         const category = key as ImpactCategory;

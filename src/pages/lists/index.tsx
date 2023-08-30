@@ -34,7 +34,7 @@ export default function ListsPage() {
 
         <DisplayAndSortFilter baseUrl="/lists" filter={filter!} />
       </div>
-      <div className="no-scrollbar flex gap-2 overflow-auto py-4">
+      <div className="no-scrollbar">
         <CategoriesFilter
           selected={filter?.categories}
           onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
