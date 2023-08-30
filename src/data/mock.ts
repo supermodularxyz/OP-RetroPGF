@@ -88,6 +88,11 @@ export const lists: List[] = Array.from({ length: 25 })
     impactCategory: Array.from({
       length: Math.floor(Math.random() * 2) + 1,
     }).map((_, i) => categories[i]) as ImpactCategory[],
+    impactEvaluation: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequasssd.`,
+    impactEvaluationLink: "http://example.com/metrics1",
     projects,
     likesNumber: 12,
   }));
