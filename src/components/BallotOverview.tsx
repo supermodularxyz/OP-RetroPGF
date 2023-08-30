@@ -7,12 +7,15 @@ import { ExternalLink } from "./ui/Link";
 import type { PropsWithChildren, ReactNode } from "react";
 import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
 import Link from "next/link";
+import { formatNumber } from "~/utils/formatNumber";
 
 export const BallotOverview = () => {
   const { data: ballot } = useBallot();
 
   const allocations = ballotToArray(ballot);
   const sum = sumBallot(allocations) ?? 0;
+
+  const total = 30_000_000;
   return (
     <div className="w-[336px] space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
@@ -34,14 +37,14 @@ export const BallotOverview = () => {
         title={
           <div className="flex justify-between">
             OP allocated
-            <div className="text-gray-900">{sum} OP</div>
+            <div className="text-gray-900">{formatNumber(sum)} OP</div>
           </div>
         }
       >
-        <Progress />
+        <Progress value={sum} max={total} />
         <div className="flex justify-between text-xs">
           <div>Total</div>
-          <div>30,000,000 OP</div>
+          <div>{formatNumber(total)} OP</div>
         </div>
       </BallotSection>
       {allocations.length ? (

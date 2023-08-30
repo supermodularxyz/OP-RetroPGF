@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
 import { type Project } from "./useProjects";
+import { formatNumber } from "~/utils/formatNumber";
 
 type Allocation = Project & { amount?: number };
 
@@ -51,11 +52,6 @@ export const arrayToBallot = (
 ) => allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
 
 export const sumBallot = (allocations: { amount?: number }[]) =>
-  allocations
-    .reduce((sum, x) => sum + (x?.amount ?? 0), 0)
-    .toLocaleString("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    });
+  allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
 
 export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
