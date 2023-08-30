@@ -24,9 +24,9 @@ export const Lists = ({ filter, lists }: Props) => {
       {lists?.map((list) => (
         <Link href={`/lists/${list.id}`} key={list.id}>
           {isList ? (
-            <ListListItem key={list.id} list={list} />
+            <ListListItem list={list} />
           ) : (
-            <ListGridItem key={list.id} list={list} />
+            <ListGridItem list={list} />
           )}
         </Link>
       ))}
