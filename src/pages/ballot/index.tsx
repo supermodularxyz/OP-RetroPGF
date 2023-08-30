@@ -40,7 +40,7 @@ export default function BallotPage() {
     save.mutate(arrayToBallot(allocations));
   }
   return (
-    <Layout>
+    <Layout sidebar="right">
       {isLoading ? null : (
         <Form
           schema={AllocationSchema}

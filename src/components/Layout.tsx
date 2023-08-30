@@ -7,7 +7,9 @@ import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
 import { EligibilityDialog } from "./EligibilityDialog";
 
-export const Layout = (props: PropsWithChildren) => {
+export const Layout = (
+  props: { sidebar?: "left" | "right" } & PropsWithChildren
+) => {
   const { address } = useAccount();
   const [isLoaded, setLoaded] = useState(false);
 
@@ -16,6 +18,9 @@ export const Layout = (props: PropsWithChildren) => {
   }, []);
   if (!isLoaded) return null;
 
+  const sidebar = (
+    <Sidebar>{address ? <BallotOverview /> : <SunnyBanner />}</Sidebar>
+  );
   return (
     <>
       <Head>
@@ -25,9 +30,9 @@ export const Layout = (props: PropsWithChildren) => {
       <main className="text-gray-900">
         <Header />
         <div className="container mx-auto max-w-screen-2xl gap-8 pt-12 md:flex">
-          <Sidebar>{address ? <BallotOverview /> : <SunnyBanner />}</Sidebar>
-
+          {props.sidebar === "left" || !props.sidebar ? sidebar : null}
           <div className="flex-1 px-4 pb-24">{props.children}</div>
+          {props.sidebar === "right" ? sidebar : null}
         </div>
         <EligibilityDialog />
       </main>
