@@ -22,9 +22,7 @@ import {
 import { FiMoreHorizontal, FiFlag } from "react-icons/fi";
 import { RxExternalLink } from "react-icons/rx";
 import { IoIosDocument } from "react-icons/io";
-import { LuArrowDownUp, LuLayoutGrid, LuList } from "react-icons/lu";
 import { PiShareFat } from "react-icons/pi";
-
 
 export const Like = FaRegHeart;
 export const Liked = FaHeart;
@@ -47,7 +45,6 @@ export const ExternalLinkOutline = RxExternalLink;
 export const Adjustment = HiOutlineAdjustmentsHorizontal;
 export const Flag = FiFlag;
 export const Share = PiShareFat;
-
 
 export const Contribution = (props: ComponentProps<typeof IconBase>) => (
   <IconBase {...props}>
