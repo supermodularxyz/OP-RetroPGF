@@ -32,7 +32,11 @@ export default function ListsPage() {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Lists</h1>
 
-        <DisplayAndSortFilter baseUrl="/lists" filter={filter!} />
+        <DisplayAndSortFilter
+          baseUrl="/lists"
+          filter={filter!}
+          sortOptions={["shuffle", "asc", "desc", "liked"]}
+        />
       </div>
       <div className="no-scrollbar">
         <CategoriesFilter
