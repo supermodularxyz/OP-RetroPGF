@@ -2,7 +2,7 @@ import Link from "next/link";
 import { toURL, type Filter } from "~/hooks/useFilter";
 import { useRouter } from "next/router";
 import { Divider } from "./ui/Divider";
-import { SortBy } from "./SortBy";
+import { SortByDropdown } from "./SortByDropdown";
 import { IconButton } from "~/components/ui/Button";
 import { LayoutGrid, LayoutList } from "~/components/icons";
 
@@ -27,7 +27,7 @@ export const DisplayAndSortFilter = ({
         <Divider orientation={"vertical"} />
       </div>
       <DisplayButton filter={filter} display="grid" baseUrl={baseUrl} />
-      <SortBy
+      <SortByDropdown
         options={sortOptions}
         value={filter?.sort}
         onChange={(sort) =>

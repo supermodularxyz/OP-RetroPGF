@@ -21,6 +21,7 @@ import Link from "next/link";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
 import { useState } from "react";
+import { MoreDropdown } from "./MoreDropdown";
 
 export const ListDetails = ({ list }: { list: List }) => {
   // TODO: temporary like
@@ -61,33 +62,22 @@ export const ListDetails = ({ list }: { list: List }) => {
                 )}
               </Button>
 
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger asChild>
-                  <IconButton
-                    className="text-neutral-500"
-                    icon={MoreHorizontal}
-                    variant={"outline"}
-                  />
-                </DropdownMenu.Trigger>
-
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    className="w-[200px] rounded-2xl border border-gray-300 bg-white p-2"
-                    sideOffset={5}
-                  >
-                    <DropdownMenu.Group>
-                      <div className="flex items-center gap-3 px-2 py-3">
-                        <Share className="text-neutral-600" />
-                        <span className="text-neutral-600">Share</span>
-                      </div>
-                      <div className="flex items-center gap-3 px-2 py-3">
-                        <Flag className="text-neutral-600" />
-                        <span className="text-neutral-600">Report</span>
-                      </div>
-                    </DropdownMenu.Group>
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
+              <MoreDropdown
+                options={[
+                  {
+                    value: "share",
+                    href: `/lists/${list.id}?share`,
+                    label: "Share",
+                    icon: Share,
+                  },
+                  {
+                    value: "report",
+                    href: `/lists/${list.id}?report`,
+                    label: "Report",
+                    icon: Flag,
+                  },
+                ]}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-3">
