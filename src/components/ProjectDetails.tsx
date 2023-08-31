@@ -55,6 +55,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               </h3>
               <div className="flex items-center gap-2">
                 <IconBadge
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   icon={Github}
                   as={Link}
                   target="_blank"
@@ -63,6 +64,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   GitHub
                 </IconBadge>
                 <IconBadge
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   icon={Twitter}
                   as={Link}
                   target="_blank"
