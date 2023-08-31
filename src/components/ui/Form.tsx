@@ -91,37 +91,6 @@ export const SearchInput = forwardRef(function SearchInput(
   );
 });
 
-export const FormControl = ({
-  name,
-  hint,
-  children,
-}: {
-  name: string;
-  hint?: string;
-} & ComponentPropsWithoutRef<"div">) => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
-
-  const error = errors[name];
-  return (
-    <div>
-      {cloneElement(children as ReactElement, {
-        id: name,
-        ...register(name),
-        error: Boolean(error),
-      })}
-      {hint ? <div className="pt-1 text-xs text-gray-500">{hint}</div> : null}
-      {error ? (
-        <div className="pt-1 text-xs text-red-500">
-          {error.message as string}
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
 export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];
   schema: S;
