@@ -98,9 +98,7 @@ const ProjectAllocation = ({
       />
       <div className="flex justify-end gap-2 pt-2 text-sm">
         <span
-          className={clsx("font-semibold", {
-            ["text-primary-500"]: isError,
-          })}
+          className={clsx("font-semibold", { ["text-primary-500"]: isError })}
         >
           {formatNumber(current + amount)}
         </span>
