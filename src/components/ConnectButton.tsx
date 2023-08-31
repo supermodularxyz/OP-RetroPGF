@@ -9,6 +9,7 @@ import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
 import { countBallot, useBallot } from "~/hooks/useBallot";
+import { EligibilityDialog } from "./EligibilityDialog";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 export const ConnectButton = () => {
@@ -75,6 +76,7 @@ export const ConnectButton = () => {
                   >
                     {isMobile ? null : account.displayName}
                   </UserInfo>
+                  <EligibilityDialog />
                 </div>
               );
             })()}

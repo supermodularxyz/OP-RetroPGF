@@ -5,7 +5,6 @@ import { useAccount } from "wagmi";
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
-import { EligibilityDialog } from "./EligibilityDialog";
 
 export const Layout = (
   props: { sidebar?: "left" | "right" } & PropsWithChildren
@@ -34,7 +33,6 @@ export const Layout = (
           <div className="min-w-0 flex-1 px-4 pb-24">{props.children}</div>
           {props.sidebar === "right" ? sidebar : null}
         </div>
-        <EligibilityDialog />
       </main>
     </>
   );
