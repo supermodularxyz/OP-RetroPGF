@@ -1,9 +1,6 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
-import { IconButton } from "~/components/ui/Button";
 import {
-  AddBallot,
-  Check,
   Code,
   Contribution,
   Github,
@@ -24,46 +21,12 @@ import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
-import {
-  useAddToBallot,
-  useBallot,
-  useRemoveFromBallot,
-} from "~/hooks/useBallot";
-import { formatNumber } from "~/utils/formatNumber";
+
 import { MoreDropdown } from "./MoreDropdown";
 import { useCopyToClipboard } from "react-use";
 import { IconBadge } from "./ui/Badge";
 
-export const AddProjectToBallot = ({ project }: { project: Project }) => {
-  const add = useAddToBallot();
-  const remove = useRemoveFromBallot();
-  const { data: ballot } = useBallot();
-
-  const { id } = project ?? {};
-  const inBallot = ballot?.[id];
-  return (
-    <div>
-      {inBallot ? (
-        <IconButton
-          variant="outline"
-          icon={Check}
-          onClick={() => remove.mutate(project)}
-        >
-          {formatNumber(inBallot.amount)} OP allocated
-        </IconButton>
-      ) : (
-        <IconButton
-          onClick={() => add.mutate([{ ...project, amount: 0 }])}
-          variant="primary"
-          icon={AddBallot}
-          className="w-full md:w-auto"
-        >
-          Add to ballot
-        </IconButton>
-      )}
-    </div>
-  );
-};
+import { ProjectAddToBallot } from "./ProjectAddToBallot";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
@@ -105,7 +68,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   icon={LinkIcon}
                   as={Link}
                   target="_blank"
-                  href={project.websiteUrl}
+                  href={project?.websiteUrl ?? "#"}
                 >
                   Website
                 </IconBadge>
@@ -132,7 +95,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   },
                 ]}
               />
-              <AddProjectToBallot project={project} />
+              <ProjectAddToBallot project={project} />
             </div>
           </div>
         </div>

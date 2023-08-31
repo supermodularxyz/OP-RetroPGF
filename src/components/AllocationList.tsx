@@ -1,9 +1,4 @@
-import {
-  type ComponentPropsWithRef,
-  type ReactNode,
-  forwardRef,
-  useMemo,
-} from "react";
+import { type ReactNode, useMemo } from "react";
 import { z } from "zod";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
@@ -16,19 +11,9 @@ import { IconButton } from "./ui/Button";
 import { Trash } from "./icons";
 import { type Project, sortAndFilter } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
-import { Input, InputAddon, InputWrapper } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
 import { formatNumber } from "~/utils/formatNumber";
 import { AllocationInput } from "./AllocationInput";
-
-const Allocation = z.object({
-  id: z.string(),
-  amount: z.number(),
-});
-
-export const AllocationSchema = z.object({
-  allocations: z.array(Allocation),
-});
 
 type Allocation = Project & { amount: number };
 
@@ -113,8 +98,6 @@ export function AllocationForm({
                 ) : null}
                 <Td>
                   <AllocationInput
-                    type="number"
-                    min={0}
                     {...form.register(`allocations.${idx}.amount`, {
                       valueAsNumber: true,
                       onBlur: () => onSave(form.getValues()),

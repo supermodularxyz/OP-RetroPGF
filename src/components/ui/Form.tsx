@@ -2,10 +2,18 @@ import { type z } from "zod";
 import { tv } from "tailwind-variants";
 import {
   type ComponentPropsWithRef,
-  forwardRef,
   type PropsWithChildren,
+  type ComponentPropsWithoutRef,
+  type ReactElement,
+  forwardRef,
+  cloneElement,
 } from "react";
-import { FormProvider, useForm, type UseFormProps } from "react-hook-form";
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  type UseFormProps,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createComponent } from ".";
@@ -36,7 +44,11 @@ export const Input = createComponent(
       "disabled:bg-gray-200",
       "disabled:opacity-50",
     ],
-    variants: {},
+    variants: {
+      error: {
+        true: "ring-primary-500",
+      },
+    },
   })
 );
 export const InputWrapper = createComponent(
@@ -78,6 +90,37 @@ export const SearchInput = forwardRef(function SearchInput(
     </InputWrapper>
   );
 });
+
+export const FormControl = ({
+  name,
+  hint,
+  children,
+}: {
+  name: string;
+  hint?: string;
+} & ComponentPropsWithoutRef<"div">) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
+  const error = errors[name];
+  return (
+    <div>
+      {cloneElement(children as ReactElement, {
+        id: name,
+        ...register(name),
+        error: Boolean(error),
+      })}
+      {hint ? <div className="pt-1 text-xs text-gray-500">{hint}</div> : null}
+      {error ? (
+        <div className="pt-1 text-xs text-red-500">
+          {error.message as string}
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
 export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];

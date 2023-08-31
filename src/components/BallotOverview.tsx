@@ -10,6 +10,7 @@ import Link from "next/link";
 import { formatNumber } from "~/utils/formatNumber";
 import { useRouter } from "next/router";
 
+export const OP_TO_ALLOCATE = 30_000_000;
 export const BallotOverview = () => {
   const { route } = useRouter();
 
@@ -17,8 +18,6 @@ export const BallotOverview = () => {
 
   const allocations = ballotToArray(ballot);
   const sum = sumBallot(allocations) ?? 0;
-
-  const total = 30_000_000;
 
   const canSubmit = route === "/ballot" && allocations.length;
   return (
@@ -46,10 +45,10 @@ export const BallotOverview = () => {
           </div>
         }
       >
-        <Progress value={sum} max={total} />
+        <Progress value={sum} max={OP_TO_ALLOCATE} />
         <div className="flex justify-between text-xs">
           <div>Total</div>
-          <div>{formatNumber(total)} OP</div>
+          <div>{formatNumber(OP_TO_ALLOCATE)} OP</div>
         </div>
       </BallotSection>
       {canSubmit ? (

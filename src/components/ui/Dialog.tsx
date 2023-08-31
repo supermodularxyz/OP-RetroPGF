@@ -8,7 +8,7 @@ export const Dialog = ({
   children,
   onOpenChange,
 }: {
-  title: string | ReactNode;
+  title?: string | ReactNode;
   isOpen?: boolean;
   onOpenChange?: ComponentProps<typeof RadixDialog.Root>["onOpenChange"];
 } & PropsWithChildren) => (
