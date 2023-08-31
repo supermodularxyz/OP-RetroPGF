@@ -6,8 +6,10 @@ import {
   Check,
   Code,
   Contribution,
+  Github,
   LayoutList,
   Link as LinkIcon,
+  Twitter,
 } from "~/components/icons";
 import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import Link from "next/link";
@@ -22,7 +24,6 @@ import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
-import { CopyButton } from "~/components/CopyButton";
 import {
   useAddToBallot,
   useBallot,
@@ -31,6 +32,7 @@ import {
 import { formatNumber } from "~/utils/formatNumber";
 import { MoreDropdown } from "./MoreDropdown";
 import { useCopyToClipboard } from "react-use";
+import { IconBadge } from "./ui/Badge";
 
 export const AddProjectToBallot = ({ project }: { project: Project }) => {
   const add = useAddToBallot();
@@ -75,13 +77,39 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       </div>
       <div>
         <div className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]" />
-        <div className="-mt-20 items-end gap-6 md:mx-8 md:flex">
+        <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar size="lg" />
           <div className="flex-1 items-center justify-between md:flex">
             <div>
-              <h3 className="text-2xl font-bold">{project?.displayName}</h3>
-              <div className="flex items-center gap-1 text-gray-700">
-                <div className="flex items-center gap-2">
+              <h3 className="mb-2 text-2xl font-bold">
+                {project?.displayName}
+              </h3>
+              <div className="flex items-center gap-2">
+                <IconBadge
+                  icon={Github}
+                  as={Link}
+                  target="_blank"
+                  href={`https://www.github.com/`}
+                >
+                  GitHub
+                </IconBadge>
+                <IconBadge
+                  icon={Twitter}
+                  as={Link}
+                  target="_blank"
+                  href={`https://www.twitter.com/`}
+                >
+                  Twitter
+                </IconBadge>
+                <IconBadge
+                  icon={LinkIcon}
+                  as={Link}
+                  target="_blank"
+                  href={project.websiteUrl}
+                >
+                  Website
+                </IconBadge>
+                {/* <div className="flex items-center gap-2">
                   <code>{project?.payoutAddress}</code>
                   <CopyButton value={project?.payoutAddress} />
                 </div>
@@ -96,7 +124,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   >
                     {project?.websiteUrl}
                   </IconButton>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
             <div className="flex gap-2">
