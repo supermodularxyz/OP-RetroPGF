@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { type z } from "zod";
 import { AllocationForm, AllocationSchema } from "~/components/AllocationList";
 import { Layout } from "~/components/Layout";
-import { SortBy } from "~/components/SortBy";
+import { SortByDropdown } from "~/components/SortByDropdown";
 import { Button } from "~/components/ui/Button";
 import { Form, SearchInput } from "~/components/ui/Form";
 import { arrayToBallot } from "~/hooks/useBallot";
@@ -63,7 +63,11 @@ export default function BallotPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-                <SortBy value={sort} onChange={setSort} options={options} />
+                <SortByDropdown
+                  value={sort}
+                  onChange={setSort}
+                  options={options}
+                />
               </div>
               <div className="relative flex min-h-[360px] flex-col">
                 {allocations.length ? (
