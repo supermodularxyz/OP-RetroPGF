@@ -20,9 +20,11 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
+import { useState } from "react";
 
 export const ListDetails = ({ list }: { list: List }) => {
-  const isLiked = false;
+  // TODO: temporary like
+  const [isLiked, setLiked] = useState(false);
   const allocatedOP = 0;
   const { address } = useAccount();
   return (
@@ -46,30 +48,26 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="flex h-fit gap-3">
-              <BorderedIcon>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-neutral-600">
-                    {list.likesNumber}
-                  </span>
-                  <IconButton
-                    icon={isLiked ? Liked : Like}
-                    variant={"ghost"}
-                    className="!m-0 !p-0 text-neutral-600"
-                  />
-                </div>
-              </BorderedIcon>
+              <Button
+                variant="outline"
+                className="text-gray-600"
+                onClick={() => setLiked(!isLiked)}
+              >
+                <span className="text-xs">{list.likesNumber}</span>
+                {isLiked ? (
+                  <Liked className="ml-2 h-4 w-4 text-primary-600" />
+                ) : (
+                  <Like className="ml-2 h-4 w-4" />
+                )}
+              </Button>
 
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                  <BorderedIcon>
-                    <div className="flex items-center">
-                      <IconButton
-                        className="text-neutral-500"
-                        icon={MoreHorizontal}
-                        variant={"ghost"}
-                      />
-                    </div>
-                  </BorderedIcon>
+                  <IconButton
+                    className="text-neutral-500"
+                    icon={MoreHorizontal}
+                    variant={"outline"}
+                  />
                 </DropdownMenu.Trigger>
 
                 <DropdownMenu.Portal>
