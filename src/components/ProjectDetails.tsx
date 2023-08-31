@@ -142,14 +142,24 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               CONTRACT_ADDRESS: Code,
               OTHER: "div",
             }[link.type];
+
+            const linkUrl = {
+              GITHUB_REPO: link.url,
+              CONTRACT_ADDRESS: `https://optimistic.etherscan.io/address/${link.url}`,
+              OTHER: link.url,
+            }[link.type];
             return (
               <ImpactCard key={link.url} className="space-y-2">
                 <H4>{link.description}</H4>
                 <p>{link.description}</p>
-                <div className="flex items-center gap-1 text-gray-700">
+                <Link
+                  href={linkUrl}
+                  target="_blank"
+                  className="flex items-center gap-1 text-gray-700 hover:underline "
+                >
                   <Icon className="h-4 w-4" />
                   {link.url}
-                </div>
+                </Link>
               </ImpactCard>
             );
           })}
