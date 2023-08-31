@@ -19,6 +19,7 @@ import { useAccount } from "wagmi";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { AllocationList } from "./AllocationList";
+import { CopyButton } from "./CopyButton";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const isLiked = false;
@@ -33,7 +34,16 @@ export const ListDetails = ({ list }: { list: List }) => {
           <div className="flex justify-between gap-4 sm:items-center">
             <div>
               <h3 className="mb-2 text-2xl font-bold">{list?.displayName}</h3>
-              <AvatarWithName name={list.creatorName} />
+              <div className="flex items-center gap-1">
+                <Avatar size="xs" rounded="full" />
+                <div className="flex items-center">
+                  <div className="text-sm font-semibold">
+                    {list.creatorName}
+                  </div>
+                  {/* TODO: should probably be address here  */}
+                  <CopyButton value={list.creatorName} />
+                </div>
+              </div>
             </div>
             <div className="flex h-fit gap-3">
               <BorderedIcon>

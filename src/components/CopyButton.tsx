@@ -4,7 +4,7 @@ import { useCopyToClipboard, useTimeout } from "react-use";
 
 export const CopyButton = ({ value = "" }) => {
   const [copyState, copy] = useCopyToClipboard();
-  const [isReady, cancel, reset] = useTimeout(2000);
+  const [isReady, , reset] = useTimeout(2000);
   function handleCopy() {
     copy(value);
     reset();
@@ -12,7 +12,7 @@ export const CopyButton = ({ value = "" }) => {
 
   return (
     <IconButton
-      variant="ghost"
+      variant="link"
       className="text-gray-500"
       icon={copyState.value && !isReady() ? FaCheck : FaCopy}
       onClick={handleCopy}
