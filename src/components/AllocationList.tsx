@@ -1,9 +1,4 @@
-import {
-  type ComponentPropsWithRef,
-  type ReactNode,
-  forwardRef,
-  useMemo,
-} from "react";
+import { type ReactNode, useMemo } from "react";
 import { z } from "zod";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
@@ -16,18 +11,9 @@ import { IconButton } from "./ui/Button";
 import { Trash } from "./icons";
 import { type Project, sortAndFilter } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
-import { Input, InputAddon, InputWrapper } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
 import { formatNumber } from "~/utils/formatNumber";
-
-const Allocation = z.object({
-  id: z.string(),
-  amount: z.number(),
-});
-
-export const AllocationSchema = z.object({
-  allocations: z.array(Allocation),
-});
+import { AllocationInput } from "./AllocationInput";
 
 type Allocation = Project & { amount: number };
 
@@ -35,22 +21,6 @@ const AllocationListWrapper = createComponent(
   "div",
   tv({ base: "flex flex-col gap-2 flex-1" })
 );
-
-const AllocationInput = forwardRef(function AllocationInput(
-  { ...props }: ComponentPropsWithRef<"input">,
-  ref
-) {
-  return (
-    <InputWrapper className="min-w-[160px]">
-      <Input
-        ref={ref}
-        {...props}
-        className="pr-16 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-      />
-      <InputAddon disabled={props.disabled}>OP</InputAddon>
-    </InputWrapper>
-  );
-});
 
 type Props = { allocations: Allocation[] };
 
@@ -128,8 +98,6 @@ export function AllocationForm({
                 ) : null}
                 <Td>
                   <AllocationInput
-                    type="number"
-                    min={0}
                     {...form.register(`allocations.${idx}.amount`, {
                       valueAsNumber: true,
                       onBlur: () => onSave(form.getValues()),

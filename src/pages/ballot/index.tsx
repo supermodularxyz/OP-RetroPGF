@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { type z } from "zod";
-import { AllocationForm, AllocationSchema } from "~/components/AllocationList";
+import { AllocationForm } from "~/components/AllocationList";
 import { Layout } from "~/components/Layout";
 import { SortByDropdown } from "~/components/SortByDropdown";
 import { Button } from "~/components/ui/Button";
@@ -15,6 +15,7 @@ import {
   useSaveBallot,
 } from "~/hooks/useBallot";
 import { type Filter } from "~/hooks/useFilter";
+import { AllocationsSchema } from "~/schemas/allocation";
 import { formatNumber } from "~/utils/formatNumber";
 
 const options = [
@@ -38,7 +39,7 @@ export default function BallotPage() {
   function handleSaveBallot({
     allocations,
   }: {
-    allocations: z.infer<typeof AllocationSchema>["allocations"];
+    allocations: z.infer<typeof AllocationsSchema>["allocations"];
   }) {
     save.mutate(arrayToBallot(allocations));
   }
@@ -46,7 +47,7 @@ export default function BallotPage() {
     <Layout sidebar="right">
       {isLoading ? null : (
         <Form
-          schema={AllocationSchema}
+          schema={AllocationsSchema}
           defaultValues={{ allocations }}
           onSubmit={handleSaveBallot}
         >
@@ -114,7 +115,7 @@ const TotalOP = () => {
   const form = useFormContext();
 
   const allocations = (form.watch("allocations") ?? []) as z.infer<
-    typeof AllocationSchema
+    typeof AllocationsSchema
   >["allocations"];
 
   const sum = sumBallot(allocations);

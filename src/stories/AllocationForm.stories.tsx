@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AllocationForm, AllocationSchema } from "~/components/AllocationList";
+import { AllocationForm } from "~/components/AllocationList";
 import { Form } from "~/components/ui/Form";
 import { Th, Thead, Tr } from "~/components/ui/Table";
 import { lists, projects } from "~/data/mock";
+import { AllocationsSchema } from "~/schemas/allocation";
 
 const allocations = projects
   .slice(0, 5)
@@ -25,7 +26,7 @@ export const Default: Story = {
   decorators: [
     (Story) => (
       <Form
-        schema={AllocationSchema}
+        schema={AllocationsSchema}
         defaultValues={{ allocations }}
         onSubmit={(values) => {
           console.log(values);
@@ -56,7 +57,7 @@ export const ListAndBallot: Story = {
   decorators: [
     (Story) => (
       <Form
-        schema={AllocationSchema}
+        schema={AllocationsSchema}
         defaultValues={{ allocations }}
         onSubmit={(values) => {
           console.log(values);
