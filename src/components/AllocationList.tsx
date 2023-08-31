@@ -19,6 +19,7 @@ import { type Filter } from "~/hooks/useFilter";
 import { Input, InputAddon, InputWrapper } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
 import { formatNumber } from "~/utils/formatNumber";
+import { AllocationInput } from "./AllocationInput";
 
 const Allocation = z.object({
   id: z.string(),
@@ -35,22 +36,6 @@ const AllocationListWrapper = createComponent(
   "div",
   tv({ base: "flex flex-col gap-2 flex-1" })
 );
-
-const AllocationInput = forwardRef(function AllocationInput(
-  { ...props }: ComponentPropsWithRef<"input">,
-  ref
-) {
-  return (
-    <InputWrapper className="min-w-[160px]">
-      <Input
-        ref={ref}
-        {...props}
-        className="pr-16 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-      />
-      <InputAddon disabled={props.disabled}>OP</InputAddon>
-    </InputWrapper>
-  );
-});
 
 type Props = { allocations: Allocation[] };
 
