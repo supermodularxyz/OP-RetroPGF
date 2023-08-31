@@ -28,6 +28,7 @@ import {
   useBallot,
   useRemoveFromBallot,
 } from "~/hooks/useBallot";
+import { formatNumber } from "~/utils/formatNumber";
 
 export const AddProjectToBallot = ({ project }: { project: Project }) => {
   const add = useAddToBallot();
@@ -44,7 +45,7 @@ export const AddProjectToBallot = ({ project }: { project: Project }) => {
           icon={Check}
           onClick={() => remove.mutate(project)}
         >
-          {inBallot.amount} OP allocated
+          {formatNumber(inBallot.amount)} OP allocated
         </IconButton>
       ) : (
         <IconButton

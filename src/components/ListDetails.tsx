@@ -18,6 +18,7 @@ import { Avatar } from "./ui/Avatar";
 import { useAccount } from "wagmi";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
+import { AllocationList } from "./AllocationList";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const isLiked = false;
@@ -127,22 +128,13 @@ export const ListDetails = ({ list }: { list: List }) => {
                 </IconButton>
               </div>
             </div>
-            <div className="grid gap-3 divide-y divide-neutral-300">
-              {list.projects?.map((project) => (
-                <div
-                  key={project.id}
-                  className="flex items-center justify-between gap-4 pt-3"
-                >
-                  <div className="flex items-center gap-4">
-                    <Avatar size={"s"} />
-                    <div>
-                      <h3 className="font-semibold">{project.displayName}</h3>
-                      <h5 className="text-sm text-neutral-600">@lorem</h5>
-                    </div>
-                  </div>
-                  <div className="">20.000 OP</div>
-                </div>
-              ))}
+            <div className="max-h-[480px] overflow-y-scroll">
+              <AllocationList
+                allocations={list.projects.map((p) => ({
+                  ...p,
+                  amount: 20_000,
+                }))}
+              />
             </div>
           </Card>
         </div>

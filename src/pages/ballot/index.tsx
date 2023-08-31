@@ -15,6 +15,7 @@ import {
   useSaveBallot,
 } from "~/hooks/useBallot";
 import { type Filter } from "~/hooks/useFilter";
+import { formatNumber } from "~/utils/formatNumber";
 
 const options = [
   "shuffle",
@@ -114,5 +115,5 @@ const TotalOP = () => {
 
   const sum = sumBallot(allocations);
 
-  return <div>{sum} OP</div>;
+  return <div>{formatNumber(sum)} OP</div>;
 };
