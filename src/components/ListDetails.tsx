@@ -151,11 +151,6 @@ export const ListDetails = ({ list }: { list: List }) => {
   );
 };
 
-const BorderedIcon = createComponent(
-  "div",
-  tv({ base: "border border-neutral-300 rounded-xl py-1 px-2 " })
-);
-
 const Card = createComponent(
   "div",
   tv({ base: "border border-neutral-300 rounded-2xl p-6" })
