@@ -109,22 +109,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 >
                   Website
                 </IconBadge>
-                {/* <div className="flex items-center gap-2">
-                  <code>{project?.payoutAddress}</code>
-                  <CopyButton value={project?.payoutAddress} />
-                </div>
-                <div>·</div>
-                {project?.websiteUrl ? (
-                  <IconButton
-                    as={Link}
-                    variant="link"
-                    icon={LinkIcon}
-                    href={project?.websiteUrl}
-                    target="_blank"
-                  >
-                    {project?.websiteUrl}
-                  </IconButton>
-                ) : null} */}
               </div>
             </div>
             <div className="flex gap-2">
