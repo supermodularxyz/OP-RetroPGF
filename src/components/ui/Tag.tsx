@@ -4,7 +4,7 @@ import { createComponent } from ".";
 export const Tag = createComponent(
   "div",
   tv({
-    base: "cursor-pointer inline-flex items-center justify-center gap-2 w-fit bg-gray-200 text-gray-700 whitespace-nowrap",
+    base: "cursor-pointer inline-flex items-center border border-gray-200 justify-center gap-2 w-fit bg-gray-200 text-gray-700 whitespace-nowrap",
     variants: {
       size: {
         sm: "rounded py-1 px-2 text-xs",
@@ -12,10 +12,10 @@ export const Tag = createComponent(
         lg: "rounded-xl py-2 px-4 text-lg",
       },
       selected: {
-        true: "bg-gray-100",
+        true: "border-gray-900",
       },
       disabled: {
-        true: "opacity-50 cursor-default",
+        true: "opacity-50 cursor-not-allowed",
       },
     },
     defaultVariants: {

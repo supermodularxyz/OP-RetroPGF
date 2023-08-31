@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { SortBy } from "~/components/SortBy";
+import { SortByDropdown } from "~/components/SortByDropdown";
 import { type Filter } from "~/hooks/useFilter";
 
 const meta = {
-  title: "Components/SortBy",
-  component: SortBy,
+  title: "Components/SortByDropdown",
+  component: SortByDropdown,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },
-} satisfies Meta<typeof SortBy>;
+} satisfies Meta<typeof SortByDropdown>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

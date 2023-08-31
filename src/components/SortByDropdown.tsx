@@ -9,7 +9,7 @@ type Props = {
   options: Filter["sort"][];
 };
 
-export const SortBy = ({ value, onChange, options = [] }: Props) => {
+export const SortByDropdown = ({ value, onChange, options = [] }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>

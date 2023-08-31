@@ -1,11 +1,12 @@
+import { useState } from "react";
+import Link from "next/link";
+import { useAccount } from "wagmi";
 import { type List } from "~/hooks/useLists";
-import { AvatarWithName } from "./Lists";
 import { Button, IconButton } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
   Like,
   Liked,
-  MoreHorizontal,
   Document,
   AddBallot,
   Adjustment,
@@ -15,12 +16,13 @@ import {
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
-import { useAccount } from "wagmi";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import Link from "next/link";
+import { AllocationList } from "./AllocationList";
+import { CopyButton } from "./CopyButton";
+import { MoreDropdown } from "./MoreDropdown";
 
 export const ListDetails = ({ list }: { list: List }) => {
-  const isLiked = false;
+  // TODO: temporary like
+  const [isLiked, setLiked] = useState(false);
   const allocatedOP = 0;
   const { address } = useAccount();
   return (
@@ -32,53 +34,48 @@ export const ListDetails = ({ list }: { list: List }) => {
           <div className="flex justify-between gap-4 sm:items-center">
             <div>
               <h3 className="mb-2 text-2xl font-bold">{list?.displayName}</h3>
-              <AvatarWithName name={list.creatorName} />
+              <div className="flex items-center gap-1">
+                <Avatar size="xs" rounded="full" />
+                <div className="flex items-center">
+                  <div className="text-sm font-semibold">
+                    {list.creatorName}
+                  </div>
+                  {/* TODO: should probably be address here  */}
+                  <CopyButton value={list.creatorName} />
+                </div>
+              </div>
             </div>
             <div className="flex h-fit gap-3">
-              <BorderedIcon>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs text-neutral-600">
-                    {list.likesNumber}
-                  </span>
-                  <IconButton
-                    icon={isLiked ? Liked : Like}
-                    variant={"ghost"}
-                    className="!m-0 !p-0 text-neutral-600"
-                  />
-                </div>
-              </BorderedIcon>
+              <Button
+                variant="outline"
+                className="text-gray-600"
+                onClick={() => setLiked(!isLiked)}
+              >
+                <span className="text-xs">{list.likesNumber}</span>
+                {isLiked ? (
+                  <Liked className="ml-2 h-4 w-4 text-primary-600" />
+                ) : (
+                  <Like className="ml-2 h-4 w-4" />
+                )}
+              </Button>
 
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger asChild>
-                  <BorderedIcon>
-                    <div className="flex items-center">
-                      <IconButton
-                        className="text-neutral-500"
-                        icon={MoreHorizontal}
-                        variant={"ghost"}
-                      />
-                    </div>
-                  </BorderedIcon>
-                </DropdownMenu.Trigger>
-
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    className="w-[200px] rounded-2xl border border-gray-300 bg-white p-2"
-                    sideOffset={5}
-                  >
-                    <DropdownMenu.Group>
-                      <div className="flex items-center gap-3 px-2 py-3">
-                        <Share className="text-neutral-600" />
-                        <span className="text-neutral-600">Share</span>
-                      </div>
-                      <div className="flex items-center gap-3 px-2 py-3">
-                        <Flag className="text-neutral-600" />
-                        <span className="text-neutral-600">Report</span>
-                      </div>
-                    </DropdownMenu.Group>
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
+              <MoreDropdown
+                align="end"
+                options={[
+                  {
+                    value: "share",
+                    onClick: () => alert("share"),
+                    label: "Share",
+                    icon: Share,
+                  },
+                  {
+                    value: "report",
+                    onClick: () => alert("report"),
+                    label: "Report",
+                    icon: Flag,
+                  },
+                ]}
+              />
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -127,22 +124,13 @@ export const ListDetails = ({ list }: { list: List }) => {
                 </IconButton>
               </div>
             </div>
-            <div className="grid gap-3 divide-y divide-neutral-300">
-              {list.projects?.map((project) => (
-                <div
-                  key={project.id}
-                  className="flex items-center justify-between gap-4 pt-3"
-                >
-                  <div className="flex items-center gap-4">
-                    <Avatar size={"s"} />
-                    <div>
-                      <h3 className="font-semibold">{project.displayName}</h3>
-                      <h5 className="text-sm text-neutral-600">@lorem</h5>
-                    </div>
-                  </div>
-                  <div className="">20.000 OP</div>
-                </div>
-              ))}
+            <div className="max-h-[480px] overflow-y-scroll">
+              <AllocationList
+                allocations={list.projects.map((p) => ({
+                  ...p,
+                  amount: 20_000,
+                }))}
+              />
             </div>
           </Card>
         </div>
@@ -150,11 +138,6 @@ export const ListDetails = ({ list }: { list: List }) => {
     </>
   );
 };
-
-const BorderedIcon = createComponent(
-  "div",
-  tv({ base: "border border-neutral-300 rounded-xl py-1 px-2 " })
-);
 
 const Card = createComponent(
   "div",

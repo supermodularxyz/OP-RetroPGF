@@ -6,8 +6,10 @@ import {
   Check,
   Code,
   Contribution,
+  Github,
   LayoutList,
   Link as LinkIcon,
+  Twitter,
 } from "~/components/icons";
 import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import Link from "next/link";
@@ -22,12 +24,15 @@ import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
-import { CopyButton } from "~/components/CopyButton";
 import {
   useAddToBallot,
   useBallot,
   useRemoveFromBallot,
 } from "~/hooks/useBallot";
+import { formatNumber } from "~/utils/formatNumber";
+import { MoreDropdown } from "./MoreDropdown";
+import { useCopyToClipboard } from "react-use";
+import { IconBadge } from "./ui/Badge";
 
 export const AddProjectToBallot = ({ project }: { project: Project }) => {
   const add = useAddToBallot();
@@ -44,7 +49,7 @@ export const AddProjectToBallot = ({ project }: { project: Project }) => {
           icon={Check}
           onClick={() => remove.mutate(project)}
         >
-          {inBallot.amount} OP allocated
+          {formatNumber(inBallot.amount)} OP allocated
         </IconButton>
       ) : (
         <IconButton
@@ -61,6 +66,7 @@ export const AddProjectToBallot = ({ project }: { project: Project }) => {
 };
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
+  const [_, copy] = useCopyToClipboard();
   return (
     <>
       <div className="mb-8 hidden justify-between md:flex">
@@ -71,13 +77,39 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       </div>
       <div>
         <div className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]" />
-        <div className="-mt-20 items-end gap-6 md:mx-8 md:flex">
+        <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar size="lg" />
           <div className="flex-1 items-center justify-between md:flex">
             <div>
-              <h3 className="text-2xl font-bold">{project?.displayName}</h3>
-              <div className="flex items-center gap-1 text-gray-700">
-                <div className="flex items-center gap-2">
+              <h3 className="mb-2 text-2xl font-bold">
+                {project?.displayName}
+              </h3>
+              <div className="flex items-center gap-2">
+                <IconBadge
+                  icon={Github}
+                  as={Link}
+                  target="_blank"
+                  href={`https://www.github.com/`}
+                >
+                  GitHub
+                </IconBadge>
+                <IconBadge
+                  icon={Twitter}
+                  as={Link}
+                  target="_blank"
+                  href={`https://www.twitter.com/`}
+                >
+                  Twitter
+                </IconBadge>
+                <IconBadge
+                  icon={LinkIcon}
+                  as={Link}
+                  target="_blank"
+                  href={project.websiteUrl}
+                >
+                  Website
+                </IconBadge>
+                {/* <div className="flex items-center gap-2">
                   <code>{project?.payoutAddress}</code>
                   <CopyButton value={project?.payoutAddress} />
                 </div>
@@ -92,10 +124,32 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   >
                     {project?.websiteUrl}
                   </IconButton>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
-            <AddProjectToBallot project={project} />
+            <div className="flex gap-2">
+              <MoreDropdown
+                align="start"
+                options={[
+                  {
+                    value: "copy",
+                    label: "Copy address",
+                    onClick: () => copy(project.payoutAddress),
+                  },
+                  {
+                    value: "profile",
+                    label: "View Optimist Profile",
+                    onClick: () => alert("View Optimist Profile"),
+                  },
+                  {
+                    value: "flag",
+                    label: "Report",
+                    onClick: () => alert("Report"),
+                  },
+                ]}
+              />
+              <AddProjectToBallot project={project} />
+            </div>
           </div>
         </div>
       </div>
@@ -141,14 +195,24 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               CONTRACT_ADDRESS: Code,
               OTHER: "div",
             }[link.type];
+
+            const linkUrl = {
+              GITHUB_REPO: link.url,
+              CONTRACT_ADDRESS: `https://optimistic.etherscan.io/address/${link.url}`,
+              OTHER: link.url,
+            }[link.type];
             return (
               <ImpactCard key={link.url} className="space-y-2">
                 <H4>{link.description}</H4>
                 <p>{link.description}</p>
-                <div className="flex items-center gap-1 text-gray-700">
+                <Link
+                  href={linkUrl}
+                  target="_blank"
+                  className="flex items-center gap-1 text-gray-700 hover:underline "
+                >
                   <Icon className="h-4 w-4" />
                   {link.url}
-                </div>
+                </Link>
               </ImpactCard>
             );
           })}

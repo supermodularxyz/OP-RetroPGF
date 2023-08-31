@@ -18,6 +18,7 @@ import { type Project, sortAndFilter } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
 import { Input, InputAddon, InputWrapper } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
+import { formatNumber } from "~/utils/formatNumber";
 
 const Allocation = z.object({
   id: z.string(),
@@ -29,6 +30,7 @@ export const AllocationSchema = z.object({
 });
 
 type Allocation = Project & { amount: number };
+
 const AllocationListWrapper = createComponent(
   "div",
   tv({ base: "flex flex-col gap-2 flex-1" })
@@ -61,7 +63,9 @@ export const AllocationList = ({ allocations }: Props) => (
             <Td className={"w-full"}>
               <ProjectAvatarWithName project={project} subtitle="@project" />
             </Td>
-            <Td className="whitespace-nowrap">{project.amount} OP</Td>
+            <Td className="whitespace-nowrap">
+              {formatNumber(project.amount)} OP
+            </Td>
           </Tr>
         ))}
       </Tbody>
@@ -163,7 +167,7 @@ const ProjectAvatarWithName = ({
 }) => (
   <Link
     tabIndex={-1}
-    className="flex flex-1 items-center gap-2 hover:underline"
+    className="flex flex-1 items-center gap-2 py-1 hover:underline"
     href={`/projects/${project.id}`}
   >
     <Avatar size="sm" />

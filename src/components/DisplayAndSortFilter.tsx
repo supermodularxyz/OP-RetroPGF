@@ -2,18 +2,21 @@ import Link from "next/link";
 import { toURL, type Filter } from "~/hooks/useFilter";
 import { useRouter } from "next/router";
 import { Divider } from "./ui/Divider";
-import { SortBy } from "./SortBy";
+import { SortByDropdown } from "./SortByDropdown";
 import { IconButton } from "~/components/ui/Button";
 import { LayoutGrid, LayoutList } from "~/components/icons";
 
 type Props = {
   baseUrl: string;
   filter: Filter;
+  sortOptions: Filter["sort"][];
 };
 
-const options = ["shuffle", "asc", "desc"] as Filter["sort"][];
-
-export const DisplayAndSortFilter = ({ baseUrl, filter }: Props) => {
+export const DisplayAndSortFilter = ({
+  baseUrl,
+  filter,
+  sortOptions,
+}: Props) => {
   const router = useRouter();
   const query = router.query as unknown as Filter;
 
@@ -24,8 +27,8 @@ export const DisplayAndSortFilter = ({ baseUrl, filter }: Props) => {
         <Divider orientation={"vertical"} />
       </div>
       <DisplayButton filter={filter} display="grid" baseUrl={baseUrl} />
-      <SortBy
-        options={options}
+      <SortByDropdown
+        options={sortOptions}
         value={filter?.sort}
         onChange={(sort) =>
           void router.push(`${baseUrl}?${toURL(query, { sort })}`)
