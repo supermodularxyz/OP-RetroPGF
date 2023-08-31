@@ -112,9 +112,9 @@ const ProjectAllocation = ({
           variant="primary"
           type="submit"
           className="w-full"
-          disabled={isError}
+          disabled={isError || !amount}
         >
-          Add votes
+          {inBallot ? "Update" : "Add"} votes
         </Button>
         {inBallot ? (
           <Button
