@@ -96,7 +96,11 @@ export const LikesNumber = ({
 }) => (
   <div className="flex items-center gap-1">
     <span className="text-xs">{likesNumber}</span>
-    <IconButton icon={isLiked ? Liked : Like} variant={"ghost"} />
+    <IconButton
+      icon={isLiked ? Liked : Like}
+      variant={"ghost"}
+      data-testid="like-btn"
+    />
   </div>
 );
 
