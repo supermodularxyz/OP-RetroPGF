@@ -23,11 +23,7 @@ export const Lists = ({ filter, lists }: Props) => {
     >
       {lists?.map((list) => (
         <Link href={`/lists/${list.id}`} key={list.id}>
-          {isList ? (
-            <ListListItem list={list} />
-          ) : (
-            <ListGridItem list={list} />
-          )}
+          {isList ? <ListListItem list={list} /> : <ListGridItem list={list} />}
         </Link>
       ))}
     </div>
@@ -64,7 +60,7 @@ export const ListListItem = ({
   list: List;
 }) => {
   return (
-    <div className="cursor-pointer space-y-3 pt-6">
+    <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

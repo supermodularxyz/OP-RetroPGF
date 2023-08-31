@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 
 import { Dialog } from "./ui/Dialog";
 import { Banner } from "./ui/Banner";
@@ -7,12 +7,15 @@ import { useBadgeHolder } from "~/hooks/useBadgeHolder";
 
 export const EligibilityDialog = () => {
   const { address } = useAccount();
+  const { disconnect } = useDisconnect();
   const { data, isLoading } = useBadgeHolder(address!);
 
-  const isBadgeholder = data && !isLoading;
+  if (isLoading || !address) return null;
+
   return (
     <Dialog
-      isOpen={Boolean(address) && !isBadgeholder}
+      isOpen={!data}
+      onOpenChange={() => disconnect()}
       title={
         <>
           You are not eligible to vote <span className="font-serif">😔</span>

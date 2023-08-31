@@ -109,6 +109,8 @@ export function sortAndFilter<
       arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? 1 : -1)),
     descOP: (arr: T[]) =>
       arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? -1 : 1)),
+    // TODO: sort by likes
+    liked: (arr: T[]) => arr,
   }[sort];
 
   return sortFn([...collection])
