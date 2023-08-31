@@ -1,11 +1,12 @@
+import { useState } from "react";
+import Link from "next/link";
+import { useAccount } from "wagmi";
 import { type List } from "~/hooks/useLists";
-import { AvatarWithName } from "./Lists";
 import { Button, IconButton } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
   Like,
   Liked,
-  MoreHorizontal,
   Document,
   AddBallot,
   Adjustment,
@@ -15,12 +16,8 @@ import {
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
-import { useAccount } from "wagmi";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import Link from "next/link";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
-import { useState } from "react";
 import { MoreDropdown } from "./MoreDropdown";
 
 export const ListDetails = ({ list }: { list: List }) => {
@@ -63,16 +60,17 @@ export const ListDetails = ({ list }: { list: List }) => {
               </Button>
 
               <MoreDropdown
+                align="end"
                 options={[
                   {
                     value: "share",
-                    href: `/lists/${list.id}?share`,
+                    onClick: () => alert("share"),
                     label: "Share",
                     icon: Share,
                   },
                   {
                     value: "report",
-                    href: `/lists/${list.id}?report`,
+                    onClick: () => alert("report"),
                     label: "Report",
                     icon: Flag,
                   },

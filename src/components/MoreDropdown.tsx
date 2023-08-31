@@ -4,17 +4,22 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { createElement } from "react";
 import Link from "next/link";
 import { type IconBase } from "react-icons";
+import { createComponent } from "./ui";
+import { tv } from "tailwind-variants";
 
-export const MoreDropdown = ({
-  options,
-}: {
+type Props = {
+  align?: "start" | "center" | "end";
   options: {
     label: string;
     value: string;
-    icon: typeof IconBase;
-    href: string;
+    icon?: typeof IconBase;
+    href?: string;
+    target?: string;
+    onClick?: () => void;
   }[];
-}) => {
+};
+
+export const MoreDropdown = ({ align, options }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -27,20 +32,20 @@ export const MoreDropdown = ({
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="w-[200px] rounded-2xl border border-gray-300 bg-white p-2"
+          align={align}
+          className="rounded-2xl border border-gray-300 bg-white p-2"
           sideOffset={5}
         >
           <DropdownMenu.Group>
             {options.map((option) => (
-              <div
+              <DropdownMenu.Item
                 key={option.value}
-                className="flex items-center gap-3 px-2 py-3"
+                {...option}
+                className="flex cursor-pointer items-center gap-3 p-2 text-gray-700  hover:text-gray-900"
               >
-                {createElement(option.icon, { className: "text-neutral-600" })}
-                <Link href={option.href} className="text-neutral-600">
-                  {option.label}
-                </Link>
-              </div>
+                {option.icon ? createElement(option.icon, {}) : null}
+                {option.label}
+              </DropdownMenu.Item>
             ))}
           </DropdownMenu.Group>
         </DropdownMenu.Content>

@@ -29,6 +29,8 @@ import {
   useRemoveFromBallot,
 } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
+import { MoreDropdown } from "./MoreDropdown";
+import { useCopyToClipboard } from "react-use";
 
 export const AddProjectToBallot = ({ project }: { project: Project }) => {
   const add = useAddToBallot();
@@ -62,6 +64,7 @@ export const AddProjectToBallot = ({ project }: { project: Project }) => {
 };
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
+  const [_, copy] = useCopyToClipboard();
   return (
     <>
       <div className="mb-8 hidden justify-between md:flex">
@@ -96,7 +99,29 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 ) : null}
               </div>
             </div>
-            <AddProjectToBallot project={project} />
+            <div className="flex gap-2">
+              <MoreDropdown
+                align="start"
+                options={[
+                  {
+                    value: "copy",
+                    label: "Copy address",
+                    onClick: () => copy(project.payoutAddress),
+                  },
+                  {
+                    value: "profile",
+                    label: "View Optimist Profile",
+                    onClick: () => alert("View Optimist Profile"),
+                  },
+                  {
+                    value: "flag",
+                    label: "Report",
+                    onClick: () => alert("Report"),
+                  },
+                ]}
+              />
+              <AddProjectToBallot project={project} />
+            </div>
           </div>
         </div>
       </div>
