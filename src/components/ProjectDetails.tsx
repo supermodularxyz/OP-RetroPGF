@@ -15,13 +15,19 @@ import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
 import { ListListItem } from "~/components/Lists";
-import { impactCategoryLabels } from "~/hooks/useCategories";
+import { impactCategoryDescriptions, impactCategoryLabels } from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
 import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
-
+import { CopyButton } from "~/components/CopyButton";
+import {
+  useAddToBallot,
+  useBallot,
+  useRemoveFromBallot,
+} from "~/hooks/useBallot";
+import * as HoverCard from "@radix-ui/react-hover-card";
 import { MoreDropdown } from "./MoreDropdown";
 import { useCopyToClipboard } from "react-use";
 import { IconBadge } from "./ui/Badge";
@@ -49,6 +55,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               </h3>
               <div className="flex items-center gap-2">
                 <IconBadge
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   icon={Github}
                   as={Link}
                   target="_blank"
@@ -57,6 +64,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   GitHub
                 </IconBadge>
                 <IconBadge
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   icon={Twitter}
                   as={Link}
                   target="_blank"
@@ -126,7 +134,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         </h6>
         <div className="flex flex-wrap gap-1">
           {project?.impactCategory.map((category) => (
-            <Tag key={category}>{impactCategoryLabels[category]}</Tag>
+            <HoverTagCard
+              key={category}
+              tag={impactCategoryLabels[category]}
+              description={impactCategoryDescriptions[category]}
+              includedProjectsNumber={1}
+              totalProjectsNumber={150}
+            />
           ))}
         </div>
         <DividerIcon icon={Contribution} className="my-4" />
@@ -236,3 +250,37 @@ const ImpactCard = createComponent(
     base: "rounded-xl bg-gray-100 p-4",
   })
 );
+
+export const HoverTagCard = ({
+  tag,
+  description,
+  includedProjectsNumber,
+  totalProjectsNumber,
+}: {
+  tag: string;
+  description: string;
+  includedProjectsNumber: number;
+  totalProjectsNumber: number;
+}) => {
+  return (
+    <HoverCard.Root>
+      <HoverCard.Trigger asChild>
+        <Tag>{tag}</Tag>
+      </HoverCard.Trigger>
+      <HoverCard.Portal>
+        <HoverCard.Content className="HoverCardContent" sideOffset={5}>
+          <div className="flex gap-6 rounded-xl bg-neutral-0 p-6 shadow-md max-w-xs">
+            <div className="grid gap-1">
+              <h5 className="font-semibold">{tag}</h5>
+              <p className="text-neutral-700 text-sm">{description}</p>
+              <p className="text-neutral-500 mt-2 text-xs">
+                {includedProjectsNumber} of {totalProjectsNumber} projects
+              </p>
+            </div>
+            <Avatar size={"sm"} className="flex-shrink-0" />
+          </div>
+        </HoverCard.Content>
+      </HoverCard.Portal>
+    </HoverCard.Root>
+  );
+};

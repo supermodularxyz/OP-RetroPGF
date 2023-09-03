@@ -16,6 +16,17 @@ export const impactCategoryLabels = {
   END_USER_EXPERIENCE_AND_ADOPTION: "End user UX",
 };
 
+export const impactCategoryDescriptions = {
+  COLLECTIVE_GOVERNANCE:
+    "Work that increased the efficiency, security, resilience and awareness of the OP Stack",
+  OP_STACK:
+    "Work that increased the efficiency, security, resilience and awareness of the OP Stack",
+  DEVELOPER_ECOSYSTEM:
+    "Work that increased the efficiency, security, resilience and awareness of the OP Stack",
+  END_USER_EXPERIENCE_AND_ADOPTION:
+    "Work that increased the efficiency, security, resilience and awareness of the OP Stack",
+};
+
 export const useCategories = (type: "projects" | "lists") => {
   return useMemo(() => {
     // Set each category to 0 - { OP_STACK: 0, COLLECTIVE_GOVERNANCE: 0, ...}
