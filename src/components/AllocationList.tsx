@@ -52,7 +52,7 @@ export function AllocationForm({
   list?: List[];
   header?: ReactNode;
   filter: Partial<Filter>;
-  onSave: (v: { allocations: Allocation[] }) => void;
+  onSave?: (v: { allocations: Allocation[] }) => void;
 }) {
   const form = useFormContext<{ allocations: Allocation[] }>();
 
@@ -100,7 +100,7 @@ export function AllocationForm({
                   <AllocationInput
                     {...form.register(`allocations.${idx}.amount`, {
                       valueAsNumber: true,
-                      onBlur: () => onSave(form.getValues()),
+                      onBlur: () => onSave?.(form.getValues()),
                     })}
                   />
                 </Td>
@@ -112,7 +112,7 @@ export function AllocationForm({
                     icon={Trash}
                     onClick={() => {
                       remove(idx);
-                      onSave(form.getValues());
+                      onSave?.(form.getValues());
                     }}
                   />
                 </Td>

@@ -6,6 +6,7 @@ const banner = tv({
   variants: {
     variant: {
       warning: "bg-error-100 text-error-700",
+      info: "bg-secondary-100 text-gray-900",
     },
   },
 });

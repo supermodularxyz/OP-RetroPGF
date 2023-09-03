@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
 import { type Project } from "./useProjects";
-import { formatNumber } from "~/utils/formatNumber";
 
 type Allocation = Project & { amount?: number };
 

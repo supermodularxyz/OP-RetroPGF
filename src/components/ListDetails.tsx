@@ -9,7 +9,6 @@ import {
   Liked,
   Document,
   AddBallot,
-  Adjustment,
   Share,
   Flag,
 } from "~/components/icons";
@@ -19,6 +18,7 @@ import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
+import { ListEditDistribution } from "./ListEditDistribution";
 
 export const ListDetails = ({ list }: { list: List }) => {
   // TODO: temporary like
@@ -106,14 +106,7 @@ export const ListDetails = ({ list }: { list: List }) => {
                 <p className="font-bold">{allocatedOP} OP allocated</p>
               </div>
               <div className="mt-2 flex flex-col items-center gap-4 sm:mt-0 sm:flex-row">
-                <IconButton
-                  variant=""
-                  icon={Adjustment}
-                  className="w-full md:w-auto"
-                  disabled={!address}
-                >
-                  Edit distribution
-                </IconButton>
+                <ListEditDistribution list={list} />
                 <IconButton
                   variant="primary"
                   icon={AddBallot}
