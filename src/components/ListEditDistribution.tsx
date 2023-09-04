@@ -1,5 +1,5 @@
 import { Button, IconButton } from "~/components/ui/Button";
-import { AddBallot, Adjustment } from "~/components/icons";
+import { AddBallot, Adjustment, ArrowRotateLeft } from "~/components/icons";
 import { Dialog } from "./ui/Dialog";
 import { useState } from "react";
 import { Form } from "./ui/Form";
@@ -117,8 +117,13 @@ const TotalOPBanner = () => {
 const ResetDistribution = () => {
   const form = useFormContext();
   return (
-    <Button variant="ghost" onClick={() => form.reset()}>
+    <IconButton
+      className="text-gray-400"
+      icon={ArrowRotateLeft}
+      variant="ghost"
+      onClick={() => form.reset()}
+    >
       Reset distribution
-    </Button>
+    </IconButton>
   );
 };
