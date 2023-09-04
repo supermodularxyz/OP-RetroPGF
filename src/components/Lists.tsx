@@ -1,19 +1,43 @@
 import { type Filter } from "~/hooks/useFilter";
 import { type Project } from "~/hooks/useProjects";
-import { type List } from "~/hooks/useLists";
+import { useLikeList, type List, useAllListsLikes } from "~/hooks/useLists";
 import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
-import { IconButton } from "./ui/Button";
+import { Button } from "./ui/Button";
 import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import Link from "next/link";
+import { useAccount } from "wagmi";
 
 type Props = { filter?: Filter; lists?: List[] };
 
 export const Lists = ({ filter, lists }: Props) => {
   const isList = filter?.display === "list";
+
+  const { data: likes } = useAllListsLikes();
+  const like = useLikeList();
+  const { address } = useAccount();
+
+  const isLiked = (id: string) =>
+    !!address && listLikesByListId(id)?.includes(address);
+
+  const listLikesByListId = (id: string) => {
+    if (!likes) return;
+    return likes.likes[id];
+  };
+
+  const handleLikeClick = (id: string) => {
+    if (!isLiked(id)) {
+      like.mutate(id);
+      window.alert("handle like");
+    } else {
+      window.alert("handle undo like");
+      // TODO: add toggle like
+    }
+  };
+
   return (
     <div
       className={clsx("mb-8 grid gap-4", {
@@ -23,14 +47,38 @@ export const Lists = ({ filter, lists }: Props) => {
     >
       {lists?.map((list) => (
         <Link href={`/lists/${list.id}`} key={list.id}>
-          {isList ? <ListListItem list={list} /> : <ListGridItem list={list} />}
+          {isList ? (
+            <ListListItem
+              list={list}
+              likes={listLikesByListId(list.id)}
+              isLiked={isLiked(list.id)}
+              handleLikeClick={handleLikeClick}
+            />
+          ) : (
+            <ListGridItem
+              list={list}
+              likes={listLikesByListId(list.id)}
+              isLiked={isLiked(list.id)}
+              handleLikeClick={handleLikeClick}
+            />
+          )}
         </Link>
       ))}
     </div>
   );
 };
 
-export const ListGridItem = ({ list }: { list: List }) => {
+export const ListGridItem = ({
+  list,
+  likes,
+  isLiked,
+  handleLikeClick,
+}: {
+  list: List;
+  likes?: string[];
+  isLiked?: boolean;
+  handleLikeClick: (id: string) => void;
+}) => {
   return (
     <Card>
       <div className="space-y-3 p-3">
@@ -39,7 +87,11 @@ export const ListGridItem = ({ list }: { list: List }) => {
             <CardTitle>{list.displayName}</CardTitle>
             <AvatarWithName name={list.creatorName} />
           </div>
-          <LikesNumber likesNumber={list.likesNumber} />
+          <LikesNumber
+            likesNumber={likes?.length}
+            isLiked={isLiked}
+            handleClick={() => handleLikeClick(list.id)}
+          />
         </div>
 
         <ProjectsLogosCard projects={list.projects} />
@@ -55,9 +107,15 @@ export const ListGridItem = ({ list }: { list: List }) => {
 export const ListListItem = ({
   list,
   allocation,
+  likes,
+  isLiked,
+  handleLikeClick,
 }: {
   allocation?: string;
   list: List;
+  likes?: string[];
+  isLiked?: boolean;
+  handleLikeClick: (id: string) => void;
 }) => {
   return (
     <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
@@ -66,7 +124,11 @@ export const ListListItem = ({
           <div className="flex items-center gap-2">
             <CardTitle>{list.displayName}</CardTitle>
             <Divider orientation={"vertical"} />
-            <LikesNumber likesNumber={list.likesNumber} />
+            <LikesNumber
+              likesNumber={likes?.length}
+              isLiked={isLiked}
+              handleClick={() => handleLikeClick(list.id)}
+            />
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
@@ -86,14 +148,29 @@ export const ListListItem = ({
 export const LikesNumber = ({
   likesNumber,
   isLiked,
+  handleClick,
+  variant = "ghost",
 }: {
-  likesNumber: number;
+  likesNumber?: number;
   isLiked?: boolean;
+  handleClick: () => void;
+  variant?: "ghost" | "outline";
 }) => (
-  <div className="flex items-center gap-1">
+  <Button
+    variant={variant}
+    className="text-gray-600"
+    onClick={(e) => {
+      e.stopPropagation();
+      handleClick();
+    }}
+  >
     <span className="text-xs">{likesNumber}</span>
-    <IconButton icon={isLiked ? Liked : Like} variant={"ghost"} />
-  </div>
+    {isLiked ? (
+      <Liked className="ml-2 h-4 w-4 text-primary-600" />
+    ) : (
+      <Like className="ml-2 h-4 w-4" />
+    )}
+  </Button>
 );
 
 export const AvatarWithName = ({ name }: { name: string }) => (

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
-import { type List } from "~/hooks/useLists";
+import { useListLikes, type List } from "~/hooks/useLists";
 import { Button, IconButton } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
@@ -19,12 +19,16 @@ import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
+import { LikesNumber } from "./Lists";
 
 export const ListDetails = ({ list }: { list: List }) => {
-  // TODO: temporary like
-  const [isLiked, setLiked] = useState(false);
-  const allocatedOP = 0;
   const { address } = useAccount();
+  const { data: likes } = useListLikes(list.id);
+
+  // TODO: temporary like
+  const [isLiked, setLiked] = useState(!!address && !!likes?.includes(address));
+  const allocatedOP = 0;
+
   return (
     <>
       {!list ? (
@@ -46,18 +50,12 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="flex h-fit gap-3">
-              <Button
+              <LikesNumber
+                likesNumber={likes?.length ?? 0}
+                isLiked={isLiked}
+                handleClick={() => setLiked(!isLiked)}
                 variant="outline"
-                className="text-gray-600"
-                onClick={() => setLiked(!isLiked)}
-              >
-                <span className="text-xs">{list.likesNumber}</span>
-                {isLiked ? (
-                  <Liked className="ml-2 h-4 w-4 text-primary-600" />
-                ) : (
-                  <Like className="ml-2 h-4 w-4" />
-                )}
-              </Button>
+              />
 
               <MoreDropdown
                 align="end"

@@ -94,5 +94,9 @@ export const lists: List[] = Array.from({ length: 25 })
               nisi ut aliquip ex ea commodo consequasssd.`,
     impactEvaluationLink: "http://example.com/metrics1",
     projects,
-    likesNumber: 12,
   }));
+
+export const allListsLikes: Record<string, string[]> = lists.reduce(
+  (obj, item) => ({ ...obj, [item.id]: ["0x", "0x", "0x"] }),
+  {}
+);

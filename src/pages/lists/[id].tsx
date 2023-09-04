@@ -9,9 +9,7 @@ export default function ViewListPage() {
   const id = router.query.id as string;
   const { data: list } = useList(id);
 
-  return (
-    <Layout>
-      <ListDetails list={list!} />
-    </Layout>
-  );
+  return <Layout>{!list ? 
+    // TODO: add list not found/redirect to 404 after handling loading state
+  <div></div> : <ListDetails list={list} />}</Layout>;
 }

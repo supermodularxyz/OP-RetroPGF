@@ -1,7 +1,7 @@
-import { useQuery } from "wagmi";
+import { useAccount, useMutation, useQuery, useQueryClient } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
 import { sortAndFilter, type Project, paginate } from "./useProjects";
-import { lists } from "~/data/mock";
+import { allListsLikes, lists } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
 
 export type List = {
@@ -14,7 +14,6 @@ export type List = {
   impactEvaluation: string;
   impactEvaluationLink: string;
   projects: Project[];
-  likesNumber: number;
 };
 
 export function useLists(filter: Filter) {
@@ -41,10 +40,34 @@ export function useLists(filter: Filter) {
 }
 
 export function useList(id: string) {
-  return useQuery(
-    ["lists", id],
-    async () => lists.find((p) => p.id === id),
-    { enabled: Boolean(id) }
+  return useQuery(["lists", id], async () => lists.find((p) => p.id === id), {
+    enabled: Boolean(id),
+  });
+}
+
+// /likes/:list_id/like
+export function useLikeList() {
+  const queryClient = useQueryClient();
+  return useMutation(async (listId: string) =>
+    queryClient.setQueryData(["listId"], listId)
   );
 }
 
+// /likes/:list_id
+export function useListLikes(id: string) {
+  const { address } = useAccount();
+  // return array of addresses that likes this list
+  return useQuery(["listLikes", id], async () =>
+    Number(id) % 2 == 0 && address ? [address] : []
+  );
+}
+
+// /likes
+export function useAllListsLikes() {
+  
+  return useQuery(["allListsLikes"], async () => {
+    return {
+      likes: allListsLikes,
+    };
+  });
+}
