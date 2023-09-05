@@ -39,6 +39,14 @@ export function useSaveBallot() {
   );
 }
 
+/*
+Ballot only include id and amount.
+To be able to search for projects we need to have the project displayName.
+Fetch the data for the project from the cache. The data will be there because it's being loaded in the AllocationForm.
+
+The reason we do this instead of adding the project data to the ballot 
+is because the lists only contain project id and OP amount (see ListEditDistribution) 
+*/
 export function useBallotProjectData() {
   const queryClient = useQueryClient();
 

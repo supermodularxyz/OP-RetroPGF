@@ -10,7 +10,7 @@ import { AllocationsSchema } from "~/schemas/allocation";
 import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
-import { sumBallot, useBallot } from "~/hooks/useBallot";
+import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
 import { OP_TO_ALLOCATE } from "./BallotOverview";
 import { type z } from "zod";
 import { useAddToBallot } from "~/hooks/useBallot";
