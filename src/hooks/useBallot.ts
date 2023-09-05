@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "wagmi";
 import { type Project } from "./useProjects";
 import { formatNumber } from "~/utils/formatNumber";
 
-type Allocation = Project & { amount?: number };
+export type Allocation = Project & { amount?: number };
 
 type Ballot = Record<string, Allocation>;
 
@@ -45,7 +45,7 @@ export const ballotToArray = (ballot: Ballot = {}) =>
   Object.keys(ballot).map((id) => ({
     id,
     ...ballot[id],
-  }));
+  })) as Allocation[];
 
 export const arrayToBallot = (
   allocations: { id: string; amount: number }[] = []

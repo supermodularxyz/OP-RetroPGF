@@ -14,8 +14,7 @@ import { type Filter } from "~/hooks/useFilter";
 import { type List } from "~/hooks/useLists";
 import { formatNumber } from "~/utils/formatNumber";
 import { AllocationInput } from "./AllocationInput";
-
-type Allocation = Project & { amount: number };
+import { type Allocation } from "~/hooks/useBallot";
 
 const AllocationListWrapper = createComponent(
   "div",
