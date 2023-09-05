@@ -3,23 +3,22 @@ import { useState, useEffect } from "react";
 import { type Allocation, ballotToArray, useBallot } from "~/hooks/useBallot";
 import Link from "next/link";
 import { Card } from "./ui/Card";
-import { AllocationList } from "./AllocationList";
 import Image from "next/image";
 import ballotConfirmationSunny from "../assets/ballot-confirmation-sunny.png";
 import { Lock } from "./icons";
-import ConfettiExplosion, { type ConfettiProps } from "react-confetti-explosion";
+import ConfettiExplosion, {
+  type ConfettiProps,
+} from "react-confetti-explosion";
 import React from "react";
+import dynamic from "next/dynamic";
+const AllocationListSection = dynamic<{allocations: Allocation[]}>(() => import("./AllocationListSection").then((module) => module.AllocationListSection), {
+  ssr: false,
+});
 
 export const BallotConfirmation = () => {
   const { data: ballot } = useBallot();
 
-  const [allocations, setAllocations] = useState<Allocation[] | undefined>(
-    undefined
-  );
-  useEffect(() => {
-    if (!ballot) return;
-    setAllocations(ballotToArray(ballot));
-  }, [ballot]);
+  const allocations = ballotToArray(ballot);
 
   const confettiProps: ConfettiProps = {
     force: 0.4,
@@ -76,7 +75,11 @@ export const BallotConfirmation = () => {
           </div>
 
           <section className="max-h-[480px] overflow-y-scroll">
-            {allocations && <AllocationList allocations={allocations} />}
+            {allocations && (
+              <AllocationListSection
+                allocations={allocations}
+              />
+            )}
           </section>
         </Card>
         <Card className="px-9 py-8">

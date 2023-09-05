@@ -1,5 +1,4 @@
 import { type ReactNode, useMemo } from "react";
-import { z } from "zod";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -12,34 +11,12 @@ import { Trash } from "./icons";
 import { type Project, sortAndFilter } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
 import { type List } from "~/hooks/useLists";
-import { formatNumber } from "~/utils/formatNumber";
 import { AllocationInput } from "./AllocationInput";
 import { type Allocation } from "~/hooks/useBallot";
 
-const AllocationListWrapper = createComponent(
+export const AllocationListWrapper = createComponent(
   "div",
   tv({ base: "flex flex-col gap-2 flex-1" })
-);
-
-type Props = { allocations: Allocation[] };
-
-export const AllocationList = ({ allocations }: Props) => (
-  <AllocationListWrapper>
-    <Table>
-      <Tbody>
-        {allocations.map((project) => (
-          <Tr key={project.id}>
-            <Td className={"w-full"}>
-              <ProjectAvatarWithName project={project} subtitle="@project" />
-            </Td>
-            <Td className="whitespace-nowrap">
-              {formatNumber(project.amount)} OP
-            </Td>
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
-  </AllocationListWrapper>
 );
 
 export function AllocationForm({
@@ -125,7 +102,7 @@ export function AllocationForm({
   );
 }
 
-const ProjectAvatarWithName = ({
+export const ProjectAvatarWithName = ({
   project,
   subtitle,
 }: {
