@@ -10,7 +10,7 @@ import { Lock } from "./icons";
 import ConfettiExplosion, { type ConfettiProps } from "react-confetti-explosion";
 import React from "react";
 
-export const BallowConfirmation = () => {
+export const BallotConfirmation = () => {
   const { data: ballot } = useBallot();
 
   const [allocations, setAllocations] = useState<Allocation[] | undefined>(
