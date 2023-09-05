@@ -1,5 +1,4 @@
 import { type ReactNode, useMemo } from "react";
-import { z } from "zod";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -9,11 +8,12 @@ import { Avatar } from "./ui/Avatar";
 import { Table, Tbody, Tr, Td } from "./ui/Table";
 import { IconButton } from "./ui/Button";
 import { Trash } from "./icons";
-import { type Project, sortAndFilter } from "~/hooks/useProjects";
+import { type Project, sortAndFilter, useProject } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
 import { type List } from "~/hooks/useLists";
 import { formatNumber } from "~/utils/formatNumber";
 import { AllocationInput } from "./AllocationInput";
+import { useBallotProjectData } from "~/hooks/useBallot";
 
 type Allocation = Project & { amount: number };
 
@@ -31,7 +31,7 @@ export const AllocationList = ({ allocations }: Props) => (
         {allocations.map((project) => (
           <Tr key={project.id}>
             <Td className={"w-full"}>
-              <ProjectAvatarWithName project={project} subtitle="@project" />
+              <ProjectAvatarWithName id={project.id} subtitle="@project" />
             </Td>
             <Td className="whitespace-nowrap">
               {formatNumber(project.amount)} OP
@@ -61,13 +61,15 @@ export function AllocationForm({
     keyName: "key",
     control: form.control,
   });
+  const mapProjectData = useBallotProjectData();
 
   // Map each id to the index so we can sort and filter
   const indexes = new Map(fields.map(({ key }, index) => [key, index]));
 
+  // TODO: Merge fields with data in QueryData(["projects", id])
   const sortedFields = useMemo(
-    () => sortAndFilter(fields, filter),
-    [fields, filter]
+    () => sortAndFilter(mapProjectData(fields), filter),
+    [fields, filter, mapProjectData]
   );
 
   return (
@@ -86,7 +88,7 @@ export function AllocationForm({
             return (
               <Tr key={project.key}>
                 <Td className={"w-full"}>
-                  <ProjectAvatarWithName project={project} />
+                  <ProjectAvatarWithName id={project.id} />
                 </Td>
                 {list ? (
                   <Td>
@@ -127,21 +129,26 @@ export function AllocationForm({
 }
 
 const ProjectAvatarWithName = ({
-  project,
+  id,
   subtitle,
 }: {
-  project: Project;
+  id: string;
   subtitle?: string;
-}) => (
-  <Link
-    tabIndex={-1}
-    className="flex flex-1 items-center gap-2 py-1 hover:underline"
-    href={`/projects/${project.id}`}
-  >
-    <Avatar size="sm" />
-    <div>
-      <div className="whitespace-nowrap font-bold">{project.displayName}</div>
-      <div className="text-muted">{subtitle}</div>
-    </div>
-  </Link>
-);
+}) => {
+  const { data: project } = useProject(id);
+  return (
+    <Link
+      tabIndex={-1}
+      className="flex flex-1 items-center gap-2 py-1 hover:underline"
+      href={`/projects/${project?.id}`}
+    >
+      <Avatar size="sm" />
+      <div>
+        <div className="whitespace-nowrap font-bold">
+          {project?.displayName}
+        </div>
+        <div className="text-muted">{subtitle}</div>
+      </div>
+    </Link>
+  );
+};

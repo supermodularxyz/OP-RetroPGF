@@ -119,7 +119,11 @@ export function sortAndFilter<
         ? categories.every((c) => item.impactCategory.includes(c))
         : item
     )
-    .filter((p) => p.displayName?.toLowerCase().includes(search.toLowerCase()));
+    .filter((p) =>
+      p.displayName
+        ? p.displayName?.toLowerCase().includes(search.toLowerCase())
+        : true
+    );
 }
 
 export function paginate<T>(collection: T[], page = 1) {

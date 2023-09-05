@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
-import { type Project } from "./useProjects";
+import { Project } from "./useProjects";
 
-type Allocation = Project & { amount?: number };
-
+type Allocation = { id: string; amount?: number };
 type Ballot = Record<string, Allocation>;
 
 export function useAddToBallot() {
@@ -40,17 +39,28 @@ export function useSaveBallot() {
   );
 }
 
+export function useBallotProjectData() {
+  const queryClient = useQueryClient();
+
+  return (
+    allocations: { id: string; amount: number }[]
+  ): (Project & { key: string })[] =>
+    allocations.map((p) => ({
+      ...queryClient.getQueryData(["projects", p.id])!,
+      ...p,
+    }));
+}
+
 export const ballotToArray = (ballot: Ballot = {}) =>
   Object.keys(ballot).map((id) => ({
     id,
     ...ballot[id],
   }));
 
-export const arrayToBallot = (
-  allocations: { id: string; amount: number }[] = []
-) => allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
+export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
+  allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
 
-export const sumBallot = (allocations: { amount?: number }[]) =>
+export const sumBallot = (allocations: Allocation[]) =>
   allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
 
 export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;

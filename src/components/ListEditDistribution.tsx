@@ -10,7 +10,7 @@ import { AllocationsSchema } from "~/schemas/allocation";
 import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
-import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
+import { sumBallot, useBallot } from "~/hooks/useBallot";
 import { OP_TO_ALLOCATE } from "./BallotOverview";
 import { type z } from "zod";
 import { useAddToBallot } from "~/hooks/useBallot";
@@ -35,7 +35,7 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
 
     // TODO: how do we get the project details here?
     // Or perhaps better to fetch that in another way. Challenge is to make sorting work.
-    // add.mutate(allocations);
+    add.mutate(allocations);
   }
   return (
     <div>
@@ -53,33 +53,39 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
         onOpenChange={setOpen}
         title={`Edit distribution`}
       >
-        <Form
-          schema={AllocationsSchema}
-          defaultValues={{ allocations }}
-          onSubmit={handleAddToBallot}
-        >
-          <ResetDistribution />
-          <AllocationForm filter={{}} />
-          <TotalOPBanner />
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              className={"w-full"}
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <IconButton
-              type="submit"
-              variant="primary"
-              className={"w-full"}
-              icon={AddBallot}
-            >
-              Add to ballot
-            </IconButton>
-          </div>
-        </Form>
+        {add.isSuccess ? (
+          <div>List added to ballot</div>
+        ) : add.isLoading ? (
+          <div>Adding list to ballot</div>
+        ) : (
+          <Form
+            schema={AllocationsSchema}
+            defaultValues={{ allocations }}
+            onSubmit={handleAddToBallot}
+          >
+            <ResetDistribution />
+            <AllocationForm filter={{}} />
+            <TotalOPBanner />
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className={"w-full"}
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <IconButton
+                type="submit"
+                variant="primary"
+                className={"w-full"}
+                icon={AddBallot}
+              >
+                Add to ballot
+              </IconButton>
+            </div>
+          </Form>
+        )}
       </Dialog>
     </div>
   );

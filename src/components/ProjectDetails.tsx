@@ -15,18 +15,16 @@ import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
 import { ListListItem } from "~/components/Lists";
-import { impactCategoryDescriptions, impactCategoryLabels } from "~/hooks/useCategories";
+import {
+  impactCategoryDescriptions,
+  impactCategoryLabels,
+} from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
 import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
-import { CopyButton } from "~/components/CopyButton";
-import {
-  useAddToBallot,
-  useBallot,
-  useRemoveFromBallot,
-} from "~/hooks/useBallot";
+
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { MoreDropdown } from "./MoreDropdown";
 import { useCopyToClipboard } from "react-use";
@@ -269,11 +267,11 @@ export const HoverTagCard = ({
       </HoverCard.Trigger>
       <HoverCard.Portal>
         <HoverCard.Content className="HoverCardContent" sideOffset={5}>
-          <div className="flex gap-6 rounded-xl bg-neutral-0 p-6 shadow-md max-w-xs">
+          <div className="flex max-w-xs gap-6 rounded-xl bg-neutral-0 p-6 shadow-md">
             <div className="grid gap-1">
               <h5 className="font-semibold">{tag}</h5>
-              <p className="text-neutral-700 text-sm">{description}</p>
-              <p className="text-neutral-500 mt-2 text-xs">
+              <p className="text-sm text-neutral-700">{description}</p>
+              <p className="mt-2 text-xs text-neutral-500">
                 {includedProjectsNumber} of {totalProjectsNumber} projects
               </p>
             </div>
