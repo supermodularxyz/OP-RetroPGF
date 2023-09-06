@@ -12,14 +12,14 @@ import { useRouter } from "next/router";
 
 export const OP_TO_ALLOCATE = 30_000_000;
 export const BallotOverview = () => {
-  const { route } = useRouter();
+  const router = useRouter();
 
   const { data: ballot } = useBallot();
 
   const allocations = ballotToArray(ballot);
-  const sum = sumBallot(allocations) ?? 0;
+  const sum = sumBallot(allocations);
 
-  const canSubmit = route === "/ballot" && allocations.length;
+  const canSubmit = router.route === "/ballot" && allocations.length;
   return (
     <div className="w-[336px] space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
@@ -52,7 +52,15 @@ export const BallotOverview = () => {
         </div>
       </BallotSection>
       {canSubmit ? (
-        <Button variant="primary">Submit ballot</Button>
+        <Button
+          variant="primary"
+          onClick={async () => {
+            console.log("TODO: Submit ballot dialog");
+            await router.push("/ballot/confirmation");
+          }}
+        >
+          Submit ballot
+        </Button>
       ) : allocations.length ? (
         <Button variant="outline" as={Link} href={"/ballot"}>
           View ballot

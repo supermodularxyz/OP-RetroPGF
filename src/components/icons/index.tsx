@@ -28,6 +28,7 @@ import { FiMoreHorizontal, FiFlag } from "react-icons/fi";
 import { RxExternalLink } from "react-icons/rx";
 import { IoIosDocument } from "react-icons/io";
 import { PiShareFat } from "react-icons/pi";
+import { GoLock } from "react-icons/go";
 
 export const Like = FaRegHeart;
 export const Liked = FaHeart;
@@ -52,6 +53,7 @@ export const Flag = FiFlag;
 export const Share = PiShareFat;
 export const Github = FaGithub;
 export const Twitter = FaTwitter;
+export const Lock = GoLock;
 export const ArrowRotateLeft = FaArrowRotateLeft;
 export const CircleCheck = FaRegCircleCheck;
 export const CircleExclamation = FaCircleExclamation;

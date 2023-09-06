@@ -2,7 +2,6 @@ import { type ReactNode, useMemo } from "react";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { useFieldArray, useFormContext } from "react-hook-form";
-
 import { createComponent } from "./ui";
 import { Avatar } from "./ui/Avatar";
 import { Table, Tbody, Tr, Td } from "./ui/Table";
@@ -10,20 +9,20 @@ import { IconButton } from "./ui/Button";
 import { Trash } from "./icons";
 import { sortAndFilter, useProject } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
-import { formatNumber } from "~/utils/formatNumber";
 import { AllocationInput } from "./AllocationInput";
+import { type Allocation } from "~/hooks/useBallot";
 import { useBallotProjectData } from "~/hooks/useBallot";
-
-type Allocation = { id: string; amount: number };
+import { formatNumber } from "~/utils/formatNumber";
 
 const AllocationListWrapper = createComponent(
   "div",
   tv({ base: "flex flex-col gap-2 flex-1" })
 );
-
-type Props = { allocations: Allocation[] };
-
-export const AllocationList = ({ allocations }: Props) => (
+export const AllocationList = ({
+  allocations,
+}: {
+  allocations: Allocation[];
+}) => (
   <AllocationListWrapper>
     <Table>
       <Tbody>
@@ -127,7 +126,7 @@ export function AllocationForm({
   );
 }
 
-const ProjectAvatarWithName = ({
+export const ProjectAvatarWithName = ({
   id,
   subtitle,
 }: {
