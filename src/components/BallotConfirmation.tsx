@@ -1,8 +1,7 @@
+import dynamic from "next/dynamic";
+import { tv } from "tailwind-variants";
 import { Button } from "./ui/Button";
-import { useState, useEffect } from "react";
-import { type Allocation, ballotToArray, useBallot } from "~/hooks/useBallot";
 import Link from "next/link";
-import { Card } from "./ui/Card";
 import Image from "next/image";
 import ballotConfirmationSunny from "../assets/ballot-confirmation-sunny.png";
 import { Lock } from "./icons";
@@ -10,16 +9,17 @@ import ConfettiExplosion, {
   type ConfettiProps,
 } from "react-confetti-explosion";
 import React from "react";
-import dynamic from "next/dynamic";
-const AllocationListSection = dynamic<{allocations: Allocation[]}>(() => import("./AllocationListSection").then((module) => module.AllocationListSection), {
-  ssr: false,
-});
+import { createComponent } from "./ui";
+import { type Allocation } from "~/hooks/useBallot";
+import { AllocationList } from "./AllocationList";
 
-export const BallotConfirmation = () => {
-  const { data: ballot } = useBallot();
+const Card = createComponent("div", tv({ base: "rounded-3xl border p-8" }));
 
-  const allocations = ballotToArray(ballot);
-
+export const BallotConfirmation = ({
+  allocations,
+}: {
+  allocations: Allocation[];
+}) => {
   const confettiProps: ConfettiProps = {
     force: 0.4,
     duration: 3000,
@@ -33,8 +33,8 @@ export const BallotConfirmation = () => {
       <div className="flex items-center justify-around">
         <ConfettiExplosion {...confettiProps} />
       </div>
-      <div className="m-auto grid max-w-5xl gap-6">
-        <Card className="px-9 py-8">
+      <div className="grid gap-6">
+        <Card>
           <div className="flex flex-col items-center gap-10 sm:flex-row sm:gap-16">
             <div>
               <h3 className="mb-3 text-2xl font-bold text-neutral-900 md:text-4xl">
@@ -45,7 +45,12 @@ export const BallotConfirmation = () => {
                 improve the process by providing feedback on your experience as
                 a badgeholder!
               </p>
-              <Button variant="outline" as={Link} href={"www.example.com"}>
+              <Button
+                variant="outline"
+                as={Link}
+                target="_blank"
+                href={"www.example.com"}
+              >
                 Share your feedback
               </Button>
             </div>
@@ -57,7 +62,7 @@ export const BallotConfirmation = () => {
           </div>
         </Card>
 
-        <Card className="px-9 py-8">
+        <Card>
           <div className="mb-6">
             <h5 className="mb-3 text-2xl font-bold">
               Here&apos;s how you voted!
@@ -69,20 +74,16 @@ export const BallotConfirmation = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-between gap-4 border-b py-3">
+          <div className="flex items-center justify-between border-b py-3">
             <p className="text-neutral-600">Project name</p>
             <p className="text-neutral-600">OP allocated by you</p>
           </div>
 
           <section className="max-h-[480px] overflow-y-scroll">
-            {allocations && (
-              <AllocationListSection
-                allocations={allocations}
-              />
-            )}
+            {allocations && <AllocationList allocations={allocations} />}
           </section>
         </Card>
-        <Card className="px-9 py-8">
+        <Card>
           <div>
             <h5 className="mb-3 text-2xl font-bold">
               Help us improve next round of RetroPGF
@@ -91,7 +92,12 @@ export const BallotConfirmation = () => {
               Your anonymized feedback will be influential to help us iterate on
               Optimism&apos;s RetroPGF process.
             </p>
-            <Button variant="primary" as={Link} href={"example.com"}>
+            <Button
+              variant="primary"
+              as={Link}
+              target="_blank"
+              href={"example.com"}
+            >
               Share your feedback
             </Button>
           </div>

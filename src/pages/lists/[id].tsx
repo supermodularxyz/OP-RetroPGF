@@ -10,7 +10,7 @@ export default function ViewListPage() {
   const { data: list } = useList(id);
 
   return (
-    <Layout>
+    <Layout sidebar="left">
       <ListDetails list={list!} />
     </Layout>
   );

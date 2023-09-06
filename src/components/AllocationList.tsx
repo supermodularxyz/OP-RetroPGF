@@ -12,10 +12,33 @@ import { type Filter } from "~/hooks/useFilter";
 import { AllocationInput } from "./AllocationInput";
 import { type Allocation } from "~/hooks/useBallot";
 import { useBallotProjectData } from "~/hooks/useBallot";
+import { formatNumber } from "~/utils/formatNumber";
 
-export const AllocationListWrapper = createComponent(
+const AllocationListWrapper = createComponent(
   "div",
   tv({ base: "flex flex-col gap-2 flex-1" })
+);
+export const AllocationList = ({
+  allocations,
+}: {
+  allocations: Allocation[];
+}) => (
+  <AllocationListWrapper>
+    <Table>
+      <Tbody>
+        {allocations.map((project) => (
+          <Tr key={project.id}>
+            <Td className={"w-full"}>
+              <ProjectAvatarWithName id={project.id} subtitle="@project" />
+            </Td>
+            <Td className="whitespace-nowrap">
+              {formatNumber(project.amount)} OP
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  </AllocationListWrapper>
 );
 
 export function AllocationForm({

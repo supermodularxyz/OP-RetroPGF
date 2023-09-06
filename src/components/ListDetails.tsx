@@ -15,7 +15,7 @@ import {
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
-import { AllocationListSection } from "./AllocationListSection";
+import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
 import { ListEditDistribution } from "./ListEditDistribution";
@@ -124,7 +124,7 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationListSection allocations={listProjects} />
+              <AllocationList allocations={listProjects} />
             </div>
           </Card>
         </div>
