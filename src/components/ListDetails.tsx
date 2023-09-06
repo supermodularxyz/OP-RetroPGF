@@ -19,12 +19,18 @@ import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
 import { ListEditDistribution } from "./ListEditDistribution";
+import { sumBallot } from "~/hooks/useBallot";
 
 export const ListDetails = ({ list }: { list: List }) => {
   // TODO: temporary like
   const [isLiked, setLiked] = useState(false);
-  const allocatedOP = 0;
   const { address } = useAccount();
+
+  const allocations = list?.projects.slice(0, 5).map((p) => ({
+    ...p,
+    amount: 20_000,
+  }));
+  const allocatedOP = sumBallot(allocations);
   return (
     <>
       {!list ? (
@@ -118,12 +124,7 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationList
-                allocations={list?.projects.slice(0, 5).map((p) => ({
-                  ...p,
-                  amount: 20_000,
-                }))}
-              />
+              <AllocationList allocations={allocations} />
             </div>
           </Card>
         </div>

@@ -26,6 +26,7 @@ import { OP_TO_ALLOCATE } from "./BallotOverview";
 
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
+import Link from "next/link";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
 
@@ -64,6 +65,8 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
   }) {
     add.mutate(allocations);
   }
+
+  const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
     <div>
       <IconButton
@@ -78,14 +81,17 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
       <Dialog
         isOpen={isOpen}
         onOpenChange={setOpen}
-        title={`Edit distribution`}
+        title={showDialogTitle ? `Edit distribution` : null}
       >
         {add.isSuccess ? (
-          <FeedbackDialog variant="info" icon={Spinner}>
+          <FeedbackDialog variant="success" icon={CircleCheck}>
             <div className="font-semibold">List added to ballot</div>
+            <Button as={Link} href={"/ballot"}>
+              View ballot
+            </Button>
           </FeedbackDialog>
         ) : add.isLoading ? (
-          <FeedbackDialog variant="info" icon={CircleCheck}>
+          <FeedbackDialog variant="info" icon={Spinner}>
             <div className="font-semibold">Adding list to ballot</div>
           </FeedbackDialog>
         ) : (
