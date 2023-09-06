@@ -1,12 +1,9 @@
-import { useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
-import { useListLikes, type List } from "~/hooks/useLists";
+import { type List } from "~/hooks/useLists";
 import { Button, IconButton } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
-  Like,
-  Liked,
   Document,
   AddBallot,
   Adjustment,
@@ -23,10 +20,7 @@ import { LikesNumber } from "./Lists";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const { address } = useAccount();
-  const { data: likes } = useListLikes(list.id);
 
-  // TODO: temporary like
-  const [isLiked, setLiked] = useState(!!address && !!likes?.includes(address));
   const allocatedOP = 0;
 
   return (
@@ -50,12 +44,7 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="flex h-fit gap-3">
-              <LikesNumber
-                likesNumber={likes?.length ?? 0}
-                isLiked={isLiked}
-                handleClick={() => setLiked(!isLiked)}
-                variant="outline"
-              />
+              <LikesNumber listId={list.id} variant="outline" />
 
               <MoreDropdown
                 align="end"

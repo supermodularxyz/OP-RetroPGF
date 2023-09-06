@@ -40,9 +40,6 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
-  const handleLikeClick = () => {
-    window.alert("handle like");
-  };
   return (
     <>
       <div className="mb-8 hidden justify-between md:flex">
@@ -234,7 +231,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <Card className="space-y-4 divide-y divide-gray-200">
           {lists.slice(0, 3).map((list) => (
             <ListListItem
-              handleLikeClick={handleLikeClick}
               key={list.id}
               list={list}
               allocation={formatCurrency(36_000, "OP", false)}

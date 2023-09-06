@@ -1,4 +1,10 @@
-import { useAccount, useMutation, useQuery, useQueryClient } from "wagmi";
+import {
+  type Address,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useAccount,
+} from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
 import { sortAndFilter, type Project, paginate } from "./useProjects";
 import { allListsLikes, lists } from "~/data/mock";
@@ -45,29 +51,51 @@ export function useList(id: string) {
   });
 }
 
-// /likes/:list_id/like
-export function useLikeList() {
-  const queryClient = useQueryClient();
-  return useMutation(async (listId: string) =>
-    queryClient.setQueryData(["listId"], listId)
-  );
-}
-
-// /likes/:list_id
-export function useListLikes(id: string) {
+export function useLikes(listId: string) {
   const { address } = useAccount();
-  // return array of addresses that likes this list
-  return useQuery(["listLikes", id], async () =>
-    Number(id) % 2 == 0 && address ? [address] : []
+  return useQuery(
+    ["likes", listId],
+    () => {
+      // Call API
+      // axios.get(`/likes/${listId}`).then(r => r.data);
+      // Temp mock data (even numbers are liked)
+      return Number(listId) % 2 == 0 && address ? [address] : [];
+    },
+    { enabled: Boolean(listId) }
   );
 }
 
-// /likes
-export function useAllListsLikes() {
-  
-  return useQuery(["allListsLikes"], async () => {
-    return {
-      likes: allListsLikes,
-    };
-  });
+export function useLikeList(listId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (state: boolean) => {
+      // Call API
+      // axios.post(`/likes/${listId}/like`).then(r => r.data)
+      window.alert("toggle like");
+    },
+    {
+      // Optimistically update state
+      onMutate: (state: boolean) => {
+        // This will update the cached data for this list with the new state
+        queryClient.setQueryData(["likes", listId], state);
+        // This might be possible also
+        queryClient.setQueryData(
+          ["likes", listId],
+          (prev: boolean | undefined) => !prev
+        );
+        return { listId, state };
+      },
+      onError: (err, state, prev) => {
+        // Revert if request fails
+        queryClient.setQueryData(["likes", prev?.listId], prev?.state);
+      },
+      // Refetch all likes so it's included in the counts everywhere.
+      onSettled: () => queryClient.invalidateQueries({ queryKey: ["likes"] }),
+    }
+  );
+}
+
+export function useAllLikes() {
+  return useQuery(["likes"], () => allListsLikes);
 }

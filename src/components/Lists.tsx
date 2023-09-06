@@ -1,6 +1,6 @@
 import { type Filter } from "~/hooks/useFilter";
 import { type Project } from "~/hooks/useProjects";
-import { useLikeList, type List, useAllListsLikes } from "~/hooks/useLists";
+import { useLikeList, type List, useLikes } from "~/hooks/useLists";
 import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
@@ -16,69 +16,31 @@ type Props = { filter?: Filter; lists?: List[] };
 export const Lists = ({ filter, lists }: Props) => {
   const isList = filter?.display === "list";
 
-  const { data: likes } = useAllListsLikes();
-  const like = useLikeList();
-  const { address } = useAccount();
-
-  const isLiked = (id: string) =>
-    !!address && listLikesByListId(id)?.includes(address);
-
-  const listLikesByListId = (id: string) => {
-    if (!likes) return;
-    return likes.likes[id];
-  };
-
-  const handleLikeClick = (id: string) => {
-    if (!isLiked(id)) {
-      like.mutate(id);
-      window.alert("handle like");
-    } else {
-      window.alert("handle undo like");
-      // TODO: add toggle like
-    }
-  };
-
   return (
-    <div
-      className={clsx("mb-8 grid gap-4", {
-        ["md:grid-cols-3"]: !isList,
-        ["gap-6 divide-y divide-neutral-200"]: isList,
-      })}
-    >
-      {lists?.map((list) => (
-        <Link href={`/lists/${list.id}`} key={list.id}>
-          {isList ? (
-            <ListListItem
-              list={list}
-              likes={listLikesByListId(list.id)}
-              isLiked={isLiked(list.id)}
-              handleLikeClick={handleLikeClick}
-            />
-          ) : (
-            <ListGridItem
-              list={list}
-              likes={listLikesByListId(list.id)}
-              isLiked={isLiked(list.id)}
-              handleLikeClick={handleLikeClick}
-            />
-          )}
-        </Link>
-      ))}
-    </div>
+    <>
+      {!lists ? null : (
+        <div
+          className={clsx("mb-8 grid gap-4", {
+            ["md:grid-cols-3"]: !isList,
+            ["gap-6 divide-y divide-neutral-200"]: isList,
+          })}
+        >
+          {lists?.map((list) => (
+            <Link href={`/lists/${list.id}`} key={list.id}>
+              {isList ? (
+                <ListListItem list={list} />
+              ) : (
+                <ListGridItem list={list} />
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
-export const ListGridItem = ({
-  list,
-  likes,
-  isLiked,
-  handleLikeClick,
-}: {
-  list: List;
-  likes?: string[];
-  isLiked?: boolean;
-  handleLikeClick: (id: string) => void;
-}) => {
+export const ListGridItem = ({ list }: { list: List }) => {
   return (
     <Card>
       <div className="space-y-3 p-3">
@@ -87,11 +49,7 @@ export const ListGridItem = ({
             <CardTitle>{list.displayName}</CardTitle>
             <AvatarWithName name={list.creatorName} />
           </div>
-          <LikesNumber
-            likesNumber={likes?.length}
-            isLiked={isLiked}
-            handleClick={() => handleLikeClick(list.id)}
-          />
+          <LikesNumber listId={list.id} />
         </div>
 
         <ProjectsLogosCard projects={list.projects} />
@@ -107,16 +65,11 @@ export const ListGridItem = ({
 export const ListListItem = ({
   list,
   allocation,
-  likes,
-  isLiked,
-  handleLikeClick,
 }: {
   allocation?: string;
   list: List;
-  likes?: string[];
-  isLiked?: boolean;
-  handleLikeClick: (id: string) => void;
 }) => {
+  console.log(list);
   return (
     <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
       <div>
@@ -124,11 +77,7 @@ export const ListListItem = ({
           <div className="flex items-center gap-2">
             <CardTitle>{list.displayName}</CardTitle>
             <Divider orientation={"vertical"} />
-            <LikesNumber
-              likesNumber={likes?.length}
-              isLiked={isLiked}
-              handleClick={() => handleLikeClick(list.id)}
-            />
+            <LikesNumber listId={list.id} />
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
@@ -146,32 +95,40 @@ export const ListListItem = ({
 };
 
 export const LikesNumber = ({
-  likesNumber,
-  isLiked,
-  handleClick,
+  listId,
   variant = "ghost",
 }: {
-  likesNumber?: number;
-  isLiked?: boolean;
-  handleClick: () => void;
+  listId: string;
   variant?: "ghost" | "outline";
-}) => (
-  <Button
-    variant={variant}
-    className="text-gray-600"
-    onClick={(e) => {
-      e.stopPropagation();
-      handleClick();
-    }}
-  >
-    <span className="text-xs">{likesNumber}</span>
-    {isLiked ? (
-      <Liked className="ml-2 h-4 w-4 text-primary-600" />
-    ) : (
-      <Like className="ml-2 h-4 w-4" />
-    )}
-  </Button>
-);
+}) => {
+  const { address } = useAccount();
+  const like = useLikeList(listId);
+  const { data: likes } = useLikes(listId);
+  const isLiked = () => !!(address && likes?.includes(address));
+
+  function handleLike() {
+    like.mutate(!isLiked());
+  }
+
+  return (
+    <Button
+      variant={variant}
+      className="text-gray-600"
+      onClick={(e) => {
+        e.stopPropagation();
+        handleLike();
+        
+      }}
+    >
+      <span className="text-xs">{likes?.length ?? 0}</span>
+      {isLiked() ? (
+        <Liked className="ml-2 h-4 w-4 text-primary-600" />
+      ) : (
+        <Like className="ml-2 h-4 w-4" />
+      )}
+    </Button>
+  );
+};
 
 export const AvatarWithName = ({ name }: { name: string }) => (
   <div className="flex items-center gap-2">
