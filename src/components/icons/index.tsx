@@ -12,6 +12,9 @@ import {
   FaLink,
   FaGithub,
   FaTwitter,
+  FaArrowRotateLeft,
+  FaRegCircleCheck,
+  FaCircleExclamation,
 } from "react-icons/fa6";
 import { FaExternalLinkSquareAlt } from "react-icons/fa";
 
@@ -49,6 +52,9 @@ export const Flag = FiFlag;
 export const Share = PiShareFat;
 export const Github = FaGithub;
 export const Twitter = FaTwitter;
+export const ArrowRotateLeft = FaArrowRotateLeft;
+export const CircleCheck = FaRegCircleCheck;
+export const CircleExclamation = FaCircleExclamation;
 
 export const Contribution = (props: ComponentProps<typeof IconBase>) => (
   <IconBase {...props}>
