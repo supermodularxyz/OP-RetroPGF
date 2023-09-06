@@ -1,12 +1,9 @@
-import { useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
-import { type List } from "~/hooks/useLists";
+import { useLikeList, type List } from "~/hooks/useLists";
 import { Button, IconButton } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
-  Like,
-  Liked,
   Document,
   AddBallot,
   Share,
@@ -20,11 +17,11 @@ import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
 import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
+import { LikeCount } from "./Lists";
 
 export const ListDetails = ({ list }: { list: List }) => {
-  // TODO: temporary like
-  const [isLiked, setLiked] = useState(false);
   const { address } = useAccount();
+  const like = useLikeList(list?.id);
 
   const listProjects = list?.projects.slice(0, 5).map((p) => ({
     ...p,
@@ -53,18 +50,14 @@ export const ListDetails = ({ list }: { list: List }) => {
             </div>
             <div className="flex h-fit gap-3">
               <Button
-                variant="outline"
+                disabled={!address}
+                variant={"outline"}
+                type="button"
                 className="text-gray-600"
-                onClick={() => setLiked(!isLiked)}
+                onClick={(e) => like.mutate()}
               >
-                <span className="text-xs">{list.likesNumber}</span>
-                {isLiked ? (
-                  <Liked className="ml-2 h-4 w-4 text-primary-600" />
-                ) : (
-                  <Like className="ml-2 h-4 w-4" />
-                )}
+                <LikeCount listId={list.id} />
               </Button>
-
               <MoreDropdown
                 align="end"
                 options={[

@@ -34,6 +34,7 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
+
   return (
     <>
       <div className="mb-8 hidden justify-between md:flex">

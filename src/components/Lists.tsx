@@ -1,32 +1,42 @@
 import { type Filter } from "~/hooks/useFilter";
 import { type Project } from "~/hooks/useProjects";
-import { type List } from "~/hooks/useLists";
+import { useLikeList, type List, useLikes } from "~/hooks/useLists";
 import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
-import { IconButton } from "./ui/Button";
+import { Button } from "./ui/Button";
 import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import Link from "next/link";
+import { useAccount } from "wagmi";
 
 type Props = { filter?: Filter; lists?: List[] };
 
 export const Lists = ({ filter, lists }: Props) => {
   const isList = filter?.display === "list";
+
   return (
-    <div
-      className={clsx("mb-8 grid gap-4", {
-        ["md:grid-cols-3"]: !isList,
-        ["gap-6 divide-y divide-neutral-200"]: isList,
-      })}
-    >
-      {lists?.map((list) => (
-        <Link href={`/lists/${list.id}`} key={list.id}>
-          {isList ? <ListListItem list={list} /> : <ListGridItem list={list} />}
-        </Link>
-      ))}
-    </div>
+    <>
+      {!lists ? null : (
+        <div
+          className={clsx("mb-8 grid gap-4", {
+            ["md:grid-cols-3"]: !isList,
+            ["gap-6 divide-y divide-neutral-200"]: isList,
+          })}
+        >
+          {lists?.map((list) => (
+            <Link href={`/lists/${list.id}`} key={list.id}>
+              {isList ? (
+                <ListListItem list={list} />
+              ) : (
+                <ListGridItem list={list} />
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
@@ -39,7 +49,7 @@ export const ListGridItem = ({ list }: { list: List }) => {
             <CardTitle>{list.displayName}</CardTitle>
             <AvatarWithName name={list.creatorName} />
           </div>
-          <LikesNumber likesNumber={list.likesNumber} />
+          <LikeCount listId={list.id} />
         </div>
 
         <ProjectsLogosCard projects={list.projects} />
@@ -58,43 +68,45 @@ export const ListListItem = ({
 }: {
   allocation?: string;
   list: List;
-}) => {
-  return (
-    <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
-      <div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle>{list.displayName}</CardTitle>
-            <Divider orientation={"vertical"} />
-            <LikesNumber likesNumber={list.likesNumber} />
-          </div>
-          <div className="font-semibold">{allocation}</div>
+}) => (
+  <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
+    <div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CardTitle>{list.displayName}</CardTitle>
+          <Divider orientation={"vertical"} />
+          <LikeCount listId={list.id} />
         </div>
-        <AvatarWithName name={list.creatorName} />
+        <div className="font-semibold">{allocation}</div>
       </div>
-      <ProjectsLogosCard projects={list.projects} />
+      <AvatarWithName name={list.creatorName} />
+    </div>
+    <ProjectsLogosCard projects={list.projects} />
 
-      <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-        {list.bio}
-      </p>
+    <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
+      {list.bio}
+    </p>
 
-      <ImpactCategories tags={list.impactCategory} />
+    <ImpactCategories tags={list.impactCategory} />
+  </div>
+);
+
+export const LikeCount = ({ listId = "" }) => {
+  const { address } = useAccount();
+  const { data: likes } = useLikes(listId);
+  const isLiked = () => !!(address && likes?.includes(address));
+
+  return (
+    <div className="flex">
+      <span className="text-xs">{likes?.length ?? 0}</span>
+      {isLiked() ? (
+        <Liked className="ml-2 h-4 w-4 text-primary-600" />
+      ) : (
+        <Like className="ml-2 h-4 w-4" />
+      )}
     </div>
   );
 };
-
-export const LikesNumber = ({
-  likesNumber,
-  isLiked,
-}: {
-  likesNumber: number;
-  isLiked?: boolean;
-}) => (
-  <div className="flex items-center gap-1">
-    <span className="text-xs">{likesNumber}</span>
-    <IconButton icon={isLiked ? Liked : Like} variant={"ghost"} />
-  </div>
-);
 
 export const AvatarWithName = ({ name }: { name: string }) => (
   <div className="flex items-center gap-2">
