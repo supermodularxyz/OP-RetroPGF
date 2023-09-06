@@ -10,7 +10,7 @@ export default function ViewProjectPage() {
   const { data: project } = useProject(id);
 
   return (
-    <Layout>
+    <Layout sidebar="left">
       <ProjectDetails project={project!} />
     </Layout>
   );

@@ -67,7 +67,7 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
             current={sum}
             inBallot={Boolean(inBallot)}
             onRemove={() => {
-              remove.mutate(project);
+              remove.mutate(project.id);
               setOpen(false);
             }}
           />

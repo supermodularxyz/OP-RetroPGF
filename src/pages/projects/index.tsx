@@ -19,7 +19,7 @@ export default function ProjectsPage() {
   useUpdateFilterFromRouter("projects");
 
   return (
-    <Layout>
+    <Layout sidebar="left">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
         <DisplayAndSortFilter

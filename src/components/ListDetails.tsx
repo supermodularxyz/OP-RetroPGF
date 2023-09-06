@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { useAccount } from "wagmi";
-import { type List } from "~/hooks/useLists";
+import { useLikeList, type List } from "~/hooks/useLists";
 import { Button, IconButton } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
   Document,
   AddBallot,
-  Adjustment,
   Share,
   Flag,
 } from "~/components/icons";
@@ -16,13 +15,19 @@ import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
-import { LikesNumber } from "./Lists";
+import { ListEditDistribution } from "./ListEditDistribution";
+import { sumBallot } from "~/hooks/useBallot";
+import { LikeCount } from "./Lists";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const { address } = useAccount();
+  const like = useLikeList(list?.id);
 
-  const allocatedOP = 0;
-
+  const listProjects = list?.projects.slice(0, 5).map((p) => ({
+    ...p,
+    amount: 20_000,
+  }));
+  const allocatedOP = sumBallot(listProjects);
   return (
     <>
       {!list ? (
@@ -44,8 +49,15 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="flex h-fit gap-3">
-              <LikesNumber listId={list.id} variant="outline" />
-
+              <Button
+                disabled={!address}
+                variant={"outline"}
+                type="button"
+                className="text-gray-600"
+                onClick={(e) => like.mutate()}
+              >
+                <LikeCount listId={list.id} />
+              </Button>
               <MoreDropdown
                 align="end"
                 options={[
@@ -93,14 +105,7 @@ export const ListDetails = ({ list }: { list: List }) => {
                 <p className="font-bold">{allocatedOP} OP allocated</p>
               </div>
               <div className="mt-2 flex flex-col items-center gap-4 sm:mt-0 sm:flex-row">
-                <IconButton
-                  variant=""
-                  icon={Adjustment}
-                  className="w-full md:w-auto"
-                  disabled={!address}
-                >
-                  Edit distribution
-                </IconButton>
+                <ListEditDistribution list={list} listProjects={listProjects} />
                 <IconButton
                   variant="primary"
                   icon={AddBallot}
@@ -112,12 +117,7 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationList
-                allocations={list.projects.map((p) => ({
-                  ...p,
-                  amount: 20_000,
-                }))}
-              />
+              <AllocationList allocations={listProjects} />
             </div>
           </Card>
         </div>

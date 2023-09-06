@@ -28,7 +28,7 @@ export default function ListsPage() {
   useUpdateFilterFromRouter("lists");
 
   return (
-    <Layout>
+    <Layout sidebar="left">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Lists</h1>
 

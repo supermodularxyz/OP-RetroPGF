@@ -1,9 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "wagmi";
 import { type Project } from "./useProjects";
-import { formatNumber } from "~/utils/formatNumber";
 
-type Allocation = Project & { amount?: number };
-
+export type Allocation = { id: string; amount: number };
 type Ballot = Record<string, Allocation>;
 
 export function useAddToBallot() {
@@ -18,9 +16,9 @@ export function useAddToBallot() {
 
 export function useRemoveFromBallot() {
   const queryClient = useQueryClient();
-  return useMutation(async (project: Allocation) =>
+  return useMutation(async (allocationId: string) =>
     queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) => {
-      const { [project.id]: removed, ..._ballot } = ballot;
+      const { [allocationId]: removed, ..._ballot } = ballot;
       return _ballot;
     })
   );
@@ -41,17 +39,36 @@ export function useSaveBallot() {
   );
 }
 
+/*
+Ballot only include id and amount.
+To be able to search for projects we need to have the project displayName.
+Fetch the data for the project from the cache. The data will be there because it's being loaded in the AllocationForm.
+
+The reason we do this instead of adding the project data to the ballot 
+is because the lists only contain project id and OP amount (see ListEditDistribution) 
+*/
+export function useBallotProjectData() {
+  const queryClient = useQueryClient();
+
+  return (
+    allocations: { id: string; amount: number }[]
+  ): (Project & { key: string })[] =>
+    allocations.map((p) => ({
+      ...queryClient.getQueryData(["projects", p.id])!,
+      ...p,
+    }));
+}
+
 export const ballotToArray = (ballot: Ballot = {}) =>
   Object.keys(ballot).map((id) => ({
     id,
     ...ballot[id],
-  }));
+  })) as Allocation[];
 
-export const arrayToBallot = (
-  allocations: { id: string; amount: number }[] = []
-) => allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
+export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
+  allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
 
-export const sumBallot = (allocations: { amount?: number }[]) =>
+export const sumBallot = (allocations: Allocation[] = []) =>
   allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
 
 export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;

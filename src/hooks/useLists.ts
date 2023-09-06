@@ -52,14 +52,16 @@ export function useList(id: string) {
 }
 
 export function useLikes(listId: string) {
+  const queryClient = useQueryClient();
   const { address } = useAccount();
-  return useQuery(
+  return useQuery<Address[]>(
     ["likes", listId],
     () => {
       // Call API
       // axios.get(`/likes/${listId}`).then(r => r.data);
       // Temp mock data (even numbers are liked)
-      return Number(listId) % 2 == 0 && address ? [address] : [];
+      return queryClient.getQueryData(["likes", listId]) ?? [];
+      // return Number(listId) % 2 == 0 && address ? [address] : [];
     },
     { enabled: Boolean(listId) }
   );
@@ -67,28 +69,30 @@ export function useLikes(listId: string) {
 
 export function useLikeList(listId: string) {
   const queryClient = useQueryClient();
+  const { address } = useAccount();
 
   return useMutation(
-    async (state: boolean) => {
+    async () => {
       // Call API
       // axios.post(`/likes/${listId}/like`).then(r => r.data)
-      window.alert("toggle like");
     },
     {
       // Optimistically update state
-      onMutate: (state: boolean) => {
+      onMutate: () => {
         // This will update the cached data for this list with the new state
-        queryClient.setQueryData(["likes", listId], state);
-        // This might be possible also
-        queryClient.setQueryData(
-          ["likes", listId],
-          (prev: boolean | undefined) => !prev
-        );
-        return { listId, state };
+        queryClient.setQueryData(["likes", listId], (prev: Address[] = []) => {
+          const next = prev.includes(address!)
+            ? prev.filter((a) => a !== address)
+            : prev.concat(address!);
+
+          console.log({ next });
+          return next;
+        });
+        return { listId };
       },
       onError: (err, state, prev) => {
         // Revert if request fails
-        queryClient.setQueryData(["likes", prev?.listId], prev?.state);
+        // queryClient.setQueryData(["likes", prev?.listId], prev?.state);
       },
       // Refetch all likes so it's included in the counts everywhere.
       onSettled: () => queryClient.invalidateQueries({ queryKey: ["likes"] }),

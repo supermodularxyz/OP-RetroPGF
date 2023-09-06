@@ -43,6 +43,7 @@ export default function BallotPage() {
   }) {
     save.mutate(arrayToBallot(allocations));
   }
+
   return (
     <Layout sidebar="right">
       {isLoading ? null : (

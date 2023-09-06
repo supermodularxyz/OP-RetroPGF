@@ -49,7 +49,7 @@ export const ListGridItem = ({ list }: { list: List }) => {
             <CardTitle>{list.displayName}</CardTitle>
             <AvatarWithName name={list.creatorName} />
           </div>
-          <LikesNumber listId={list.id} />
+          <LikeCount listId={list.id} />
         </div>
 
         <ProjectsLogosCard projects={list.projects} />
@@ -77,7 +77,7 @@ export const ListListItem = ({
           <div className="flex items-center gap-2">
             <CardTitle>{list.displayName}</CardTitle>
             <Divider orientation={"vertical"} />
-            <LikesNumber listId={list.id} />
+            <LikeCount listId={list.id} />
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
@@ -94,39 +94,20 @@ export const ListListItem = ({
   );
 };
 
-export const LikesNumber = ({
-  listId,
-  variant = "ghost",
-}: {
-  listId: string;
-  variant?: "ghost" | "outline";
-}) => {
+export const LikeCount = ({ listId = "" }) => {
   const { address } = useAccount();
-  const like = useLikeList(listId);
   const { data: likes } = useLikes(listId);
   const isLiked = () => !!(address && likes?.includes(address));
 
-  function handleLike() {
-    like.mutate(!isLiked());
-  }
-
   return (
-    <Button
-      variant={variant}
-      className="text-gray-600"
-      onClick={(e) => {
-        e.stopPropagation();
-        handleLike();
-        
-      }}
-    >
+    <div className="flex">
       <span className="text-xs">{likes?.length ?? 0}</span>
       {isLiked() ? (
         <Liked className="ml-2 h-4 w-4 text-primary-600" />
       ) : (
         <Like className="ml-2 h-4 w-4" />
       )}
-    </Button>
+    </div>
   );
 };
 
