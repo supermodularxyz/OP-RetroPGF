@@ -1,4 +1,4 @@
-import { type ComponentPropsWithRef, forwardRef } from "react";
+import { type ComponentPropsWithRef } from "react";
 import { Input, InputAddon, InputWrapper } from "./ui/Form";
 import { NumericFormat } from "react-number-format";
 import { useFormContext, Controller } from "react-hook-form";
@@ -6,22 +6,25 @@ import { useFormContext, Controller } from "react-hook-form";
 export const AllocationInput = ({
   name,
   onBlur,
-  disabled,
   ...props
-}: { disabled?: boolean } & ComponentPropsWithRef<typeof Input>) => {
+}: {
+  disabled?: boolean;
+  error?: boolean;
+} & ComponentPropsWithRef<"input">) => {
   const form = useFormContext();
 
   return (
     <InputWrapper className="min-w-[160px]">
       <Controller
         control={form.control}
-        name={name}
+        name={name!}
         render={({ field: { ref, ...field } }) => (
           <NumericFormat
             customInput={Input}
+            error={props.error}
             {...field}
-            disabled={disabled}
-            defaultValue={props.defaultValue}
+            disabled={props.disabled}
+            defaultValue={props.defaultValue as string}
             onChange={(v) =>
               // Parse decimal string to number to adhere to AllocationSchema
               field.onChange(parseFloat(v.target.value.replace(/,/g, "")))
@@ -31,7 +34,7 @@ export const AllocationInput = ({
           />
         )}
       />
-      <InputAddon disabled={disabled}>OP</InputAddon>
+      <InputAddon disabled={props.disabled}>OP</InputAddon>
     </InputWrapper>
   );
 };

@@ -87,7 +87,7 @@ const ProjectAllocation = ({
   onRemove: () => void;
 }) => {
   const form = useFormContext();
-  const formAmount = form.watch("amount");
+  const formAmount = form.watch("amount") as string;
   const amount = formAmount
     ? parseFloat(String(formAmount).replace(/,/g, ""))
     : 0;
