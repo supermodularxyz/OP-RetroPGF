@@ -119,7 +119,7 @@ export const ListDetails = ({ list }: { list: List }) => {
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
               <AllocationList
-                allocations={list.projects.map((p) => ({
+                allocations={list?.projects.slice(0, 5).map((p) => ({
                   ...p,
                   amount: 20_000,
                 }))}

@@ -1,7 +1,18 @@
+import { type z } from "zod";
 import { Button, IconButton } from "~/components/ui/Button";
-import { AddBallot, Adjustment, ArrowRotateLeft } from "~/components/icons";
+import {
+  AddBallot,
+  Adjustment,
+  ArrowRotateLeft,
+  CircleCheck,
+} from "~/components/icons";
 import { Dialog } from "./ui/Dialog";
-import { useState } from "react";
+import {
+  useState,
+  createElement,
+  type FunctionComponent,
+  type ComponentPropsWithoutRef,
+} from "react";
 import { Form } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
 import { useAccount } from "wagmi";
@@ -12,16 +23,36 @@ import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
 import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
 import { OP_TO_ALLOCATE } from "./BallotOverview";
-import { type z } from "zod";
+
 import { useAddToBallot } from "~/hooks/useBallot";
+import { Spinner } from "./ui/Spinner";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
+
+const FeedbackDialog = ({
+  icon,
+  variant,
+  children,
+}: ComponentPropsWithoutRef<"div"> & {
+  variant: "success" | "info";
+  icon: FunctionComponent<{ className: string }>;
+}) => {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <Banner variant={variant}>
+        {createElement(icon, { className: "w-8 h-8" })}
+      </Banner>
+      {children}
+    </div>
+  );
+};
 
 export const ListEditDistribution = ({ list }: { list: List }) => {
   const { address } = useAccount();
   const [isOpen, setOpen] = useState(false);
   const add = useAddToBallot();
 
+  // TODO: list will have a listContent array with project id and amount
   const allocations = list.projects
     .slice(0, 5)
     .map((l) => ({ ...l, amount: 20_000 }));
@@ -31,10 +62,6 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
   }: {
     allocations: FormAllocations;
   }) {
-    console.log("Add to ballot", allocations);
-
-    // TODO: how do we get the project details here?
-    // Or perhaps better to fetch that in another way. Challenge is to make sorting work.
     add.mutate(allocations);
   }
   return (
@@ -54,9 +81,13 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
         title={`Edit distribution`}
       >
         {add.isSuccess ? (
-          <div>List added to ballot</div>
+          <FeedbackDialog variant="info" icon={Spinner}>
+            <div className="font-semibold">List added to ballot</div>
+          </FeedbackDialog>
         ) : add.isLoading ? (
-          <div>Adding list to ballot</div>
+          <FeedbackDialog variant="info" icon={CircleCheck}>
+            <div className="font-semibold">Adding list to ballot</div>
+          </FeedbackDialog>
         ) : (
           <Form
             schema={AllocationsSchema}
@@ -100,11 +131,8 @@ const TotalOPBanner = () => {
   const allocations = (form.watch("allocations") ?? []) as FormAllocations;
 
   const current = sumBallot(allocations);
-  console.log("allocations", allocations, current);
 
   const exceeds = current + sum - OP_TO_ALLOCATE;
-
-  console.log({ exceeds });
 
   const isExceeding = exceeds > 0;
   return (
