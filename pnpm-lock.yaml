@@ -41,9 +41,6 @@ dependencies:
   react:
     specifier: 18.2.0
     version: 18.2.0
-  react-canvas-confetti:
-    specifier: ^1.4.0
-    version: 1.4.0(react@18.2.0)
   react-confetti-explosion:
     specifier: ^2.1.2
     version: 2.1.2(react-dom@18.2.0)(react@18.2.0)
@@ -4834,10 +4831,6 @@ packages:
       '@types/node': 18.17.14
     dev: true
 
-  /@types/canvas-confetti@1.6.0:
-    resolution: {integrity: sha512-Yq6rIccwcco0TLD5SMUrIM7Fk7Fe/C0jmNRxJJCLtAF6gebDkPuUjK5EHedxecm69Pi/aA+It39Ux4OHmFhjRw==}
-    dev: false
-
   /@types/connect@3.4.36:
     resolution: {integrity: sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==}
     dependencies:
@@ -6769,10 +6762,6 @@ packages:
 
   /caniuse-lite@1.0.30001527:
     resolution: {integrity: sha512-YkJi7RwPgWtXVSgK4lG9AHH57nSzvvOp9MesgXmw4Q7n0C3H04L0foHqfxcmSAm5AcWb8dW9AYj2tR7/5GnddQ==}
-
-  /canvas-confetti@1.6.0:
-    resolution: {integrity: sha512-ej+w/m8Jzpv9Z7W7uJZer14Ke8P2ogsjg4ZMGIuq4iqUOqY2Jq8BNW42iGmNfRwREaaEfFIczLuZZiEVSYNHAA==}
-    dev: false
 
   /case-sensitive-paths-webpack-plugin@2.4.0:
     resolution: {integrity: sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==}
@@ -11420,16 +11409,6 @@ packages:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
     dev: true
-
-  /react-canvas-confetti@1.4.0(react@18.2.0):
-    resolution: {integrity: sha512-ByBdSsNGUxlcJuOqSgbZw1VWNNO3b7njTmnuM1Y36mvwdCkCRs8rLkRAjn6MQK96LgWcfDVhr6ZT5olm2w8Zwg==}
-    peerDependencies:
-      react: '*'
-    dependencies:
-      '@types/canvas-confetti': 1.6.0
-      canvas-confetti: 1.6.0
-      react: 18.2.0
-    dev: false
 
   /react-colorful@5.6.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==}
