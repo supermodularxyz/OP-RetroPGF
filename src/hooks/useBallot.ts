@@ -68,7 +68,7 @@ export const ballotToArray = (ballot: Ballot = {}) =>
 export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
   allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
 
-export const sumBallot = (allocations: Allocation[]) =>
+export const sumBallot = (allocations: Allocation[] = []) =>
   allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
 
 export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;

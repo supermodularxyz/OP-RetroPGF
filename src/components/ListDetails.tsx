@@ -26,11 +26,11 @@ export const ListDetails = ({ list }: { list: List }) => {
   const [isLiked, setLiked] = useState(false);
   const { address } = useAccount();
 
-  const allocations = list?.projects.slice(0, 5).map((p) => ({
+  const listProjects = list?.projects.slice(0, 5).map((p) => ({
     ...p,
     amount: 20_000,
   }));
-  const allocatedOP = sumBallot(allocations);
+  const allocatedOP = sumBallot(listProjects);
   return (
     <>
       {!list ? (
@@ -112,7 +112,7 @@ export const ListDetails = ({ list }: { list: List }) => {
                 <p className="font-bold">{allocatedOP} OP allocated</p>
               </div>
               <div className="mt-2 flex flex-col items-center gap-4 sm:mt-0 sm:flex-row">
-                <ListEditDistribution list={list} />
+                <ListEditDistribution list={list} listProjects={listProjects} />
                 <IconButton
                   variant="primary"
                   icon={AddBallot}
@@ -124,7 +124,7 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationList allocations={allocations} />
+              <AllocationList allocations={listProjects} />
             </div>
           </Card>
         </div>

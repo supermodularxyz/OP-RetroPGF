@@ -8,14 +8,13 @@ import { Avatar } from "./ui/Avatar";
 import { Table, Tbody, Tr, Td } from "./ui/Table";
 import { IconButton } from "./ui/Button";
 import { Trash } from "./icons";
-import { type Project, sortAndFilter, useProject } from "~/hooks/useProjects";
+import { sortAndFilter, useProject } from "~/hooks/useProjects";
 import { type Filter } from "~/hooks/useFilter";
-import { type List } from "~/hooks/useLists";
 import { formatNumber } from "~/utils/formatNumber";
 import { AllocationInput } from "./AllocationInput";
 import { useBallotProjectData } from "~/hooks/useBallot";
 
-type Allocation = Project & { amount: number };
+type Allocation = { id: string; amount: number };
 
 const AllocationListWrapper = createComponent(
   "div",
@@ -49,7 +48,7 @@ export function AllocationForm({
   filter,
   onSave,
 }: {
-  list?: List[];
+  list?: Allocation[];
   header?: ReactNode;
   filter: Partial<Filter>;
   onSave?: (v: { allocations: Allocation[] }) => void;
@@ -82,22 +81,22 @@ export function AllocationForm({
 
             // TODO: Get allocated amount from list
             // Depends on https://github.com/supermodularxyz/OP-RetroPGF/issues/37
-            // const listAllocation = list?.find((l) => l.listContent.find((p) => p.id === project.id));
-            const listAllocation = 100;
+            const listAllocation =
+              list?.find((p) => p.id === project.id)?.amount ?? 0;
 
             return (
               <Tr key={project.key}>
                 <Td className={"w-full"}>
                   <ProjectAvatarWithName id={project.id} />
                 </Td>
-                {list ? (
-                  <Td>
+                <Td>
+                  {listAllocation ? (
                     <AllocationInput
                       defaultValue={listAllocation}
                       disabled={true}
                     />
-                  </Td>
-                ) : null}
+                  ) : null}
+                </Td>
                 <Td>
                   <AllocationInput
                     {...form.register(`allocations.${idx}.amount`, {

@@ -224,11 +224,12 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <H3>Included in the following lists</H3>
         <Card className="space-y-4 divide-y divide-gray-200">
           {lists.slice(0, 3).map((list) => (
-            <ListListItem
-              key={list.id}
-              list={list}
-              allocation={formatCurrency(36_000, "OP", false)}
-            />
+            <Link key={list.id} href={`/lists/${list.id}`}>
+              <ListListItem
+                list={list}
+                allocation={formatCurrency(36_000, "OP", false)}
+              />
+            </Link>
           ))}
         </Card>
       </div>

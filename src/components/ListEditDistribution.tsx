@@ -5,6 +5,7 @@ import {
   Adjustment,
   ArrowRotateLeft,
   CircleCheck,
+  CircleExclamation,
 } from "~/components/icons";
 import { Dialog } from "./ui/Dialog";
 import {
@@ -48,15 +49,22 @@ const FeedbackDialog = ({
   );
 };
 
-export const ListEditDistribution = ({ list }: { list: List }) => {
+export const ListEditDistribution = ({
+  list,
+  listProjects,
+}: {
+  list: List;
+  listProjects: FormAllocations;
+}) => {
   const { address } = useAccount();
   const [isOpen, setOpen] = useState(false);
   const add = useAddToBallot();
 
-  // TODO: list will have a listContent array with project id and amount
-  const allocations = list.projects
-    .slice(0, 5)
-    .map((l) => ({ ...l, amount: 20_000 }));
+  const { data: ballot } = useBallot();
+
+  // What list projects are already in the ballot?
+  const alreadyInBallot = listProjects.filter((p) => ballot?.[p.id]);
+  console.log({ alreadyInBallot });
 
   function handleAddToBallot({
     allocations,
@@ -66,6 +74,10 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
     add.mutate(allocations);
   }
 
+  const allocations = listProjects.map((p) => ({
+    ...p,
+    amount: ballot?.[p.id]?.amount ?? p.amount,
+  }));
   const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
     <div>
@@ -80,7 +92,10 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
       </IconButton>
       <Dialog
         isOpen={isOpen}
-        onOpenChange={setOpen}
+        onOpenChange={() => {
+          setOpen(false);
+          add.reset(); // This is needed to reset add.isSuccess and show the allocations again
+        }}
         title={showDialogTitle ? `Edit distribution` : null}
       >
         {add.isSuccess ? (
@@ -100,8 +115,19 @@ export const ListEditDistribution = ({ list }: { list: List }) => {
             defaultValues={{ allocations }}
             onSubmit={handleAddToBallot}
           >
+            {alreadyInBallot.length ? (
+              <Banner
+                icon={CircleExclamation}
+                variant="warning"
+                title={`${alreadyInBallot.length} project(s) in the ${list.displayName} list already exist in your ballot.`}
+              >
+                <div className="flex gap-2">
+                  You can change your OP allocation based on the list.
+                </div>
+              </Banner>
+            ) : null}
             <ResetDistribution />
-            <AllocationForm filter={{}} />
+            <AllocationForm filter={{}} list={alreadyInBallot} />
             <TotalOPBanner />
             <div className="flex gap-2">
               <Button
@@ -140,27 +166,33 @@ const TotalOPBanner = () => {
 
   const exceeds = current + sum - OP_TO_ALLOCATE;
 
+  console.log({ exceeds });
+
   const isExceeding = exceeds > 0;
   return (
-    <Banner
-      variant={isExceeding ? "warning" : "info"}
-      className={"mb-6 flex justify-between font-semibold"}
-    >
-      <div>
-        {isExceeding ? `Total exceeds by ${formatNumber(exceeds)} OP` : "Total"}
+    <Banner className="mb-6" variant={isExceeding ? "warning" : "info"}>
+      <div className={"flex justify-between font-semibold"}>
+        <div>
+          {isExceeding
+            ? `Total exceeds by ${formatNumber(exceeds)} OP`
+            : "Total"}
+        </div>
+        <div>{formatNumber(current + sum)} OP</div>
       </div>
-      <div>{formatNumber(current + sum)} OP</div>
     </Banner>
   );
 };
 
 const ResetDistribution = () => {
   const form = useFormContext();
+
+  console.log(form.formState.isDirty);
   return (
     <IconButton
-      className="text-gray-400"
+      className={form.formState.isDirty ? "" : "text-gray-400"}
       icon={ArrowRotateLeft}
       variant="ghost"
+      type="button"
       onClick={() => form.reset()}
     >
       Reset distribution
