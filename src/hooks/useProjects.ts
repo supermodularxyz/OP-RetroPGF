@@ -127,7 +127,7 @@ export function sortAndFilter<
 }
 
 export function paginate<T>(collection: T[], page = 1) {
-  const pageSize = 6;
+  const pageSize = 12;
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
 
