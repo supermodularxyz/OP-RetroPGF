@@ -21,7 +21,7 @@ export const BallotOverview = () => {
 
   const canSubmit = router.route === "/ballot" && allocations.length;
   return (
-    <div className="w-[336px] space-y-6">
+    <div className="space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
         Your ballot
       </h3>
