@@ -27,7 +27,7 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const { id } = project ?? {};
   const inBallot = ballot?.[id];
   const allocations = ballotToArray(ballot);
-  const sum = sumBallot(allocations);
+  const sum = sumBallot(allocations.filter((p) => p.id !== project?.id));
 
   return (
     <div>
@@ -87,15 +87,15 @@ const ProjectAllocation = ({
   onRemove: () => void;
 }) => {
   const form = useFormContext();
-  const amount = Number(form.watch("amount") || 0);
-
+  const formAmount = form.watch("amount");
+  const amount = formAmount
+    ? parseFloat(String(formAmount).replace(/,/g, ""))
+    : 0;
   const isError = current + amount > OP_TO_ALLOCATE;
+
   return (
     <div>
-      <AllocationInput
-        error={isError}
-        {...form.register("amount", { valueAsNumber: true })}
-      />
+      <AllocationInput error={isError} name="amount" />
       <div className="flex justify-end gap-2 pt-2 text-sm">
         <span
           className={clsx("font-semibold", { ["text-primary-500"]: isError })}

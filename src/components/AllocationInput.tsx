@@ -1,20 +1,37 @@
 import { type ComponentPropsWithRef, forwardRef } from "react";
 import { Input, InputAddon, InputWrapper } from "./ui/Form";
+import { NumericFormat } from "react-number-format";
+import { useFormContext, Controller } from "react-hook-form";
 
-export const AllocationInput = forwardRef(function AllocationInput(
-  { ...props }: { disabled: boolean } & ComponentPropsWithRef<typeof Input>,
-  ref
-) {
+export const AllocationInput = ({
+  name,
+  onBlur,
+  disabled,
+  ...props
+}: { disabled?: boolean } & ComponentPropsWithRef<typeof Input>) => {
+  const form = useFormContext();
+
   return (
     <InputWrapper className="min-w-[160px]">
-      <Input
-        ref={ref}
-        min={0}
-        {...props}
-        type="number"
-        className="pr-16 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      <Controller
+        control={form.control}
+        name={name}
+        render={({ field: { ref, ...field } }) => (
+          <NumericFormat
+            customInput={Input}
+            {...field}
+            disabled={disabled}
+            defaultValue={props.defaultValue}
+            onChange={(v) =>
+              // Parse decimal string to number to adhere to AllocationSchema
+              field.onChange(parseFloat(v.target.value.replace(/,/g, "")))
+            }
+            onBlur={onBlur}
+            thousandSeparator=","
+          />
+        )}
       />
-      <InputAddon disabled={props.disabled}>OP</InputAddon>
+      <InputAddon disabled={disabled}>OP</InputAddon>
     </InputWrapper>
   );
-});
+};

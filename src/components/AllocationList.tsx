@@ -91,6 +91,7 @@ export function AllocationForm({
                 <Td>
                   {listAllocation ? (
                     <AllocationInput
+                      name="amount"
                       defaultValue={listAllocation}
                       disabled={true}
                     />
@@ -98,10 +99,8 @@ export function AllocationForm({
                 </Td>
                 <Td>
                   <AllocationInput
-                    {...form.register(`allocations.${idx}.amount`, {
-                      valueAsNumber: true,
-                      onBlur: () => onSave?.(form.getValues()),
-                    })}
+                    name={`allocations.${idx}.amount`}
+                    onBlur={() => onSave?.(form.getValues())}
                   />
                 </Td>
                 <Td>
