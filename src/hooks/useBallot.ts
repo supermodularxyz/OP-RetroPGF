@@ -16,9 +16,9 @@ export function useAddToBallot() {
 
 export function useRemoveFromBallot() {
   const queryClient = useQueryClient();
-  return useMutation(async (project: Allocation) =>
+  return useMutation(async (allocationId: string) =>
     queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) => {
-      const { [project.id]: removed, ..._ballot } = ballot;
+      const { [allocationId]: removed, ..._ballot } = ballot;
       return _ballot;
     })
   );

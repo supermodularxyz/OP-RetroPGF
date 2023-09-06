@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AllocationList } from "~/components/AllocationList";
+import { AllocationListSection } from "~/components/AllocationListSection";
 import { projects } from "~/data/mock";
 
 const allocations = projects
@@ -7,11 +7,11 @@ const allocations = projects
   .map((p, i) => ({ ...p, amount: 1500 + i * 257 }));
 
 const meta = {
-  title: "Components/AllocationList",
-  component: AllocationList,
+  title: "Components/AllocationListSection",
+  component: AllocationListSection,
   tags: ["autodocs"],
   parameters: {},
-} satisfies Meta<typeof AllocationList>;
+} satisfies Meta<typeof AllocationListSection>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
