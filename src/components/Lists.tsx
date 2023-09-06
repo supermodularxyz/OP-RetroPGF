@@ -68,31 +68,28 @@ export const ListListItem = ({
 }: {
   allocation?: string;
   list: List;
-}) => {
-  console.log(list);
-  return (
-    <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
-      <div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle>{list.displayName}</CardTitle>
-            <Divider orientation={"vertical"} />
-            <LikeCount listId={list.id} />
-          </div>
-          <div className="font-semibold">{allocation}</div>
+}) => (
+  <div className="cursor-pointer space-y-3 pt-6 first:pt-0">
+    <div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CardTitle>{list.displayName}</CardTitle>
+          <Divider orientation={"vertical"} />
+          <LikeCount listId={list.id} />
         </div>
-        <AvatarWithName name={list.creatorName} />
+        <div className="font-semibold">{allocation}</div>
       </div>
-      <ProjectsLogosCard projects={list.projects} />
-
-      <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-        {list.bio}
-      </p>
-
-      <ImpactCategories tags={list.impactCategory} />
+      <AvatarWithName name={list.creatorName} />
     </div>
-  );
-};
+    <ProjectsLogosCard projects={list.projects} />
+
+    <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
+      {list.bio}
+    </p>
+
+    <ImpactCategories tags={list.impactCategory} />
+  </div>
+);
 
 export const LikeCount = ({ listId = "" }) => {
   const { address } = useAccount();

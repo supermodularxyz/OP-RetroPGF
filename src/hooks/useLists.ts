@@ -81,18 +81,11 @@ export function useLikeList(listId: string) {
       onMutate: () => {
         // This will update the cached data for this list with the new state
         queryClient.setQueryData(["likes", listId], (prev: Address[] = []) => {
-          const next = prev.includes(address!)
+          return prev.includes(address!)
             ? prev.filter((a) => a !== address)
             : prev.concat(address!);
-
-          console.log({ next });
-          return next;
         });
         return { listId };
-      },
-      onError: (err, state, prev) => {
-        // Revert if request fails
-        // queryClient.setQueryData(["likes", prev?.listId], prev?.state);
       },
       // Refetch all likes so it's included in the counts everywhere.
       onSettled: () => queryClient.invalidateQueries({ queryKey: ["likes"] }),
