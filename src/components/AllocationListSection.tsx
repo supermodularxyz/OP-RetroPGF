@@ -5,14 +5,16 @@ import { formatNumber } from "~/utils/formatNumber";
 
 type Props = { allocations: Allocation[] };
 
-export const AllocationListSection: React.FC<Props> = ({ allocations }: Props) => (
+export const AllocationListSection: React.FC<Props> = ({
+  allocations,
+}: Props) => (
   <AllocationListWrapper>
     <Table>
       <Tbody>
         {allocations.map((project) => (
           <Tr key={project.id}>
             <Td className={"w-full"}>
-              <ProjectAvatarWithName project={project} subtitle="@project" />
+              <ProjectAvatarWithName id={project.id} subtitle="@project" />
             </Td>
             <Td className="whitespace-nowrap">
               {formatNumber(project.amount)} OP

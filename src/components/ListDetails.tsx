@@ -9,7 +9,6 @@ import {
   Liked,
   Document,
   AddBallot,
-  Adjustment,
   Share,
   Flag,
 } from "~/components/icons";
@@ -19,12 +18,19 @@ import { Avatar } from "./ui/Avatar";
 import { AllocationListSection } from "./AllocationListSection";
 import { CopyButton } from "./CopyButton";
 import { MoreDropdown } from "./MoreDropdown";
+import { ListEditDistribution } from "./ListEditDistribution";
+import { sumBallot } from "~/hooks/useBallot";
 
 export const ListDetails = ({ list }: { list: List }) => {
   // TODO: temporary like
   const [isLiked, setLiked] = useState(false);
-  const allocatedOP = 0;
   const { address } = useAccount();
+
+  const listProjects = list?.projects.slice(0, 5).map((p) => ({
+    ...p,
+    amount: 20_000,
+  }));
+  const allocatedOP = sumBallot(listProjects);
   return (
     <>
       {!list ? (
@@ -106,14 +112,7 @@ export const ListDetails = ({ list }: { list: List }) => {
                 <p className="font-bold">{allocatedOP} OP allocated</p>
               </div>
               <div className="mt-2 flex flex-col items-center gap-4 sm:mt-0 sm:flex-row">
-                <IconButton
-                  variant=""
-                  icon={Adjustment}
-                  className="w-full md:w-auto"
-                  disabled={!address}
-                >
-                  Edit distribution
-                </IconButton>
+                <ListEditDistribution list={list} listProjects={listProjects} />
                 <IconButton
                   variant="primary"
                   icon={AddBallot}
@@ -125,12 +124,7 @@ export const ListDetails = ({ list }: { list: List }) => {
               </div>
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationListSection
-                allocations={list.projects.map((p) => ({
-                  ...p,
-                  amount: 20_000,
-                }))}
-              />
+              <AllocationListSection allocations={listProjects} />
             </div>
           </Card>
         </div>
