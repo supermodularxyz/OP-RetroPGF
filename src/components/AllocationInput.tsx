@@ -23,6 +23,7 @@ export const AllocationInput = ({
             customInput={Input}
             error={props.error}
             {...field}
+            className="pr-16"
             disabled={props.disabled}
             defaultValue={props.defaultValue as string}
             onChange={(v) =>
