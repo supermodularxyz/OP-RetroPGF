@@ -63,17 +63,12 @@ export function useProjects(filter: Filter) {
 
   // TODO: Call EAS attestations
 
-  return useQuery(
-    ["projects", { page, sort, categories, search }],
-    () =>
-      new Promise<{ data: Project[]; pages: number }>((resolve) => {
-        // Fake server response time
-        setTimeout(
-          () =>
-            resolve(paginate(sortAndFilter(projects, filter), filter?.page)),
-          500
-        );
-      })
+  return useQuery(["projects", { page, sort, categories, search }], () =>
+    fetch("/api/projects")
+      .then((r) => r.json())
+      .then((projects) =>
+        paginate(sortAndFilter(projects as Project[], filter), filter?.page)
+      )
   );
 }
 
