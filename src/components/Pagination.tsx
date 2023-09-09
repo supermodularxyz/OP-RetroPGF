@@ -19,10 +19,15 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
     >
       Prev
     </Button>
+    {currentPage > 3 && pages > 7 ? (
+      <Button className="hidden md:block" variant="outline" size="sm">
+        ...
+      </Button>
+    ) : null}
+    {Array.from({ length: Math.min(pages, 7) }).map((_, i) => {
+      const page = i + 1 + currentPage - 3;
 
-    {Array.from({ length: pages }).map((_, i) => {
-      const page = i + 1;
-      return (
+      return page > 0 ? (
         <Button
           className="hidden md:block"
           key={page}
@@ -33,8 +38,13 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
         >
           {page}
         </Button>
-      );
+      ) : null;
     })}
+    {pages > 7 ? (
+      <Button className="hidden md:block" variant="outline" size="sm">
+        ...
+      </Button>
+    ) : null}
     <Button
       disabled={currentPage === pages}
       variant="outline"

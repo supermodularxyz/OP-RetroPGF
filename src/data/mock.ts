@@ -8,7 +8,7 @@ const categories = [
   "DEVELOPER_ECOSYSTEM",
   "END_USER_EXPERIENCE_AND_ADOPTION",
 ];
-export const projects: Project[] = Array.from({ length: 25 })
+export const projects: Project[] = Array.from({ length: 1000 })
   .fill(0)
   .map((_, id) => ({
     id: String(id),
