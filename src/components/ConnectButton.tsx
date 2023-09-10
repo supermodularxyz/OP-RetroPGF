@@ -99,7 +99,11 @@ const UserInfo = ({
   return (
     <Chip className="gap-2" {...props}>
       <div className="h-6 w-6 overflow-hidden rounded-full">
-        <Image width={24} height={24} alt={name!} src={avatar.data!} />
+        {avatar.data ? (
+          <Image width={24} height={24} alt={name!} src={avatar.data} />
+        ) : (
+          <div className="h-full bg-gray-200" />
+        )}
       </div>
       {children}
     </Chip>
