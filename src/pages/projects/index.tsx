@@ -17,7 +17,6 @@ export default function ProjectsPage() {
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("projects");
-
   return (
     <Layout sidebar="left">
       <div className="flex justify-between">
