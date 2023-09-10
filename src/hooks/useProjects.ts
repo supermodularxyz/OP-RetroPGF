@@ -54,7 +54,7 @@ export const fundingSourcesLabels = {
 };
 
 export function useAllProjects() {
-  return useQuery(["projects"], () =>
+  return useQuery(["projects", "all"], () =>
     fetch("/api/projects").then((r) => r.json())
   );
 }
@@ -68,7 +68,7 @@ export function useProjects(filter: Filter) {
 
   const queryClient = useQueryClient();
   return useQuery(["projects", { page, sort, categories, search }], () => {
-    const projects = queryClient.getQueryData(["projects"]) ?? [];
+    const projects = queryClient.getQueryData(["projects", "all"]) ?? [];
     return paginate(sortAndFilter(projects as Project[], filter), filter?.page);
   });
 }
