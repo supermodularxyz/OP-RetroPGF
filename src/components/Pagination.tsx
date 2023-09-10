@@ -25,7 +25,7 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
       </Button>
     ) : null}
     {Array.from({ length: Math.min(pages, 7) }).map((_, i) => {
-      const page = i + 1 + currentPage - 3;
+      const page = i + 1 + currentPage - 4;
 
       return page > 0 ? (
         <Button
