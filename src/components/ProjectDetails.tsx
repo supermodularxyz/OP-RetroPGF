@@ -1,6 +1,8 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import {
+  ArrowLeft,
+  ArrowRight,
   Code,
   Contribution,
   Github,
@@ -29,19 +31,64 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { MoreDropdown } from "./MoreDropdown";
 import { useCopyToClipboard } from "react-use";
 import { IconBadge } from "./ui/Badge";
-
+import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
+import { IconButton } from "./ui/Button";
+import { useEffect, useState } from "react";
+import router from "next/router";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
+  const { data: allProjects } = useAllProjects();
+  const [currentIndex, setCurrentIndex] = useState<number>();
+
+  useEffect(() => {
+    if (!allProjects) return;
+    setCurrentIndex(allProjects.map((p) => p.id).indexOf(project?.id));
+  }, [project, allProjects]);
+
+  const handlePrev = async () => {
+    if (!currentIndex || !allProjects) return;
+    const prevId = allProjects[currentIndex - 1]?.id;
+    prevId && (await router.push(`/projects/${prevId}`));
+  };
+
+  const handleNext = async () => {
+    if (currentIndex == undefined || !allProjects) return;
+    const nextId = allProjects[currentIndex + 1]?.id;
+    nextId && (await router.push(`/projects/${nextId}`));
+  };
   return (
     <>
-      <div className="mb-8 hidden justify-between md:flex">
+      <div className="mb-8 hidden items-center justify-between md:flex">
         <h1 className="text-xl font-semibold">
           {project?.displayName}&apos;s Round application
         </h1>
-        <div className="">PROJECT_NAVIGATION</div>
+        <div className="flex items-center gap-6">
+          <p className="font-neutral-500 text-sm font-semibold">
+            6 of 548 applications
+          </p>
+          <div className="flex flex-shrink-0 gap-2">
+            <IconButton
+              variant="outline"
+              onClick={handlePrev}
+              icon={ArrowLeft}
+              className="flex-shrink-0"
+              disabled={!currentIndex}
+            />
+            <IconButton
+              variant="outline"
+              onClick={handleNext}
+              icon={ArrowRight}
+              className="flex-shrink-0"
+              disabled={
+                currentIndex == undefined ||
+                currentIndex + 1 == allProjects?.length
+              }
+            />
+          </div>
+        </div>
       </div>
       <div>
         <div className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]" />
