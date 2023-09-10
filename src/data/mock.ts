@@ -16,8 +16,16 @@ export const projects: Project[] = Array.from({ length: 1000 })
     displayName: `Project ${id + 1}`,
     bio: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
     impactCategory: Array.from({
-      length: Math.floor(Math.random() * 3) + 1,
-    }).map((_, i) => categories[i]) as ImpactCategory[],
+      length: Math.floor(Math.random() * 4) + 1,
+    })
+      .map((_, i, arr) =>
+        arr.length > 1
+          ? Math.random() > 0.4
+            ? categories[i]
+            : null
+          : categories[i]
+      )
+      .filter(Boolean) as ImpactCategory[],
     websiteUrl: "https://www.example.com",
     contributionDescription: "Providing development services",
     contributionLinks: [
