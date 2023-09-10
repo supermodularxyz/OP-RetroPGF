@@ -2,6 +2,7 @@ import { initialFilter, type Filter } from "./useFilter";
 import { projects } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
 import { useQuery } from "@tanstack/react-query";
+import { shuffle } from "lodash";
 
 export type Project = {
   id: string;
@@ -54,7 +55,7 @@ export const fundingSourcesLabels = {
 };
 
 export function useAllProjects() {
-  return useQuery(["projects", "all"], () =>
+  return useQuery<Project[]>(["projects", "all"], () =>
     fetch("/api/projects").then((r) => r.json())
   );
 }
@@ -70,10 +71,7 @@ export function useProjects(filter: Filter) {
   return useQuery(
     ["projects", { page, sort, categories, search }],
     () => {
-      return paginate(
-        sortAndFilter((projects.data ?? []) as Project[], filter),
-        filter?.page
-      );
+      return paginate(sortAndFilter(projects.data ?? [], filter), filter?.page);
     },
     { enabled: !projects.isLoading }
   );
@@ -102,7 +100,7 @@ export function sortAndFilter<
 
   // Temporary sorting
   const sortFn = {
-    shuffle: (arr: T[]) => arr,
+    shuffle: (arr: T[]) => shuffle(arr),
     asc: (arr: T[]) =>
       arr.sort((a: T, b: T) => a.displayName?.localeCompare(b.displayName)),
     desc: (arr: T[]) =>
