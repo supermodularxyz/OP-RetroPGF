@@ -66,9 +66,8 @@ export function useProjects(filter: Filter) {
     search = "",
   } = filter ?? initialFilter;
 
-  const queryClient = useQueryClient();
+  const { data: projects } = useAllProjects();
   return useQuery(["projects", { page, sort, categories, search }], () => {
-    const projects = queryClient.getQueryData(["projects", "all"]) ?? [];
     return paginate(sortAndFilter(projects as Project[], filter), filter?.page);
   });
 }
