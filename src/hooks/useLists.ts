@@ -1,14 +1,9 @@
-import {
-  type Address,
-  useMutation,
-  useQuery,
-  useQueryClient,
-  useAccount,
-} from "wagmi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { sortAndFilter, type Project, paginate } from "./useProjects";
 import { allListsLikes, lists } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
+import { useAccount, type Address } from "wagmi";
 
 export type List = {
   id: string;

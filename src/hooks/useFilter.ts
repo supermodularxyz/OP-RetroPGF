@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "wagmi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type ImpactCategory } from "./useCategories";
 import { useRouter } from "next/router";
 import { useEffect } from "react";

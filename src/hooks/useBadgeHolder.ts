@@ -1,7 +1,7 @@
 import { type Address } from "viem";
 
 import { request, gql } from "graphql-request";
-import { useQuery } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
 
 const query = gql`
   query Attestations($where: AttestationWhereInput) {

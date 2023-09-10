@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "wagmi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
 
 export type Allocation = { id: string; amount: number };

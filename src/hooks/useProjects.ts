@@ -1,7 +1,7 @@
-import { useQuery, useQueryClient } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
 import { projects } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
+import { useQuery } from "@tanstack/react-query";
 
 export type Project = {
   id: string;
@@ -69,7 +69,7 @@ export function useProjects(filter: Filter) {
   const projects = useAllProjects();
   return useQuery(["projects", { page, sort, categories, search }], () => {
     return paginate(
-      sortAndFilter(projects.data as Project[], filter),
+      sortAndFilter((projects.data ?? []) as Project[], filter),
       filter?.page
     );
   });
