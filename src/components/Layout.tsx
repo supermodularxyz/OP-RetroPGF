@@ -6,10 +6,13 @@ import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
 import clsx from "clsx";
+import { useAllProjects } from "~/hooks/useProjects";
 
 export const Layout = (
   props: { sidebar?: "left" | "right" } & PropsWithChildren
 ) => {
+  useAllProjects();
+
   const { address } = useAccount();
   const [isLoaded, setLoaded] = useState(false);
 

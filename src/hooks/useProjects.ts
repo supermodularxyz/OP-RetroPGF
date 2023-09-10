@@ -1,4 +1,4 @@
-import { useQuery } from "wagmi";
+import { useQuery, useQueryClient } from "wagmi";
 import { initialFilter, type Filter } from "./useFilter";
 import { projects } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
@@ -53,6 +53,11 @@ export const fundingSourcesLabels = {
   OTHER: "Other",
 };
 
+export function useAllProjects() {
+  return useQuery(["projects"], () =>
+    fetch("/api/projects").then((r) => r.json())
+  );
+}
 export function useProjects(filter: Filter) {
   const {
     page = 1,
@@ -61,15 +66,11 @@ export function useProjects(filter: Filter) {
     search = "",
   } = filter ?? initialFilter;
 
-  // TODO: Call EAS attestations
-
-  return useQuery(["projects", { page, sort, categories, search }], () =>
-    fetch("/api/projects")
-      .then((r) => r.json())
-      .then((projects) =>
-        paginate(sortAndFilter(projects as Project[], filter), filter?.page)
-      )
-  );
+  const queryClient = useQueryClient();
+  return useQuery(["projects", { page, sort, categories, search }], () => {
+    const projects = queryClient.getQueryData(["projects"]) ?? [];
+    return paginate(sortAndFilter(projects as Project[], filter), filter?.page);
+  });
 }
 
 export function useProject(id: string) {
