@@ -55,7 +55,7 @@ export const Layout = (
 const Sidebar = ({
   side,
   ...props
-}: { side: "left" | "right" } & PropsWithChildren) => (
+}: { side?: "left" | "right" } & PropsWithChildren) => (
   <div className="">
     <div
       className={clsx("w-[336px] px-2 md:fixed md:px-4", {
