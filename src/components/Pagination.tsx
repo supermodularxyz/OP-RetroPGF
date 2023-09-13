@@ -22,7 +22,7 @@ export const Pagination = ({ currentPage, pages = 1, onNavigate }: Props) => (
 
     {Array.from({ length: Math.min(pages, 7) }).map((_, i) => {
       const page = i + 1 + (pages > 7 ? Math.floor(currentPage - 4) : 0);
-      return page > 0 ? (
+      return page > 0 && page < pages ? (
         <Button
           className="hidden md:block"
           key={page}
