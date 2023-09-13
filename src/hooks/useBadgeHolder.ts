@@ -18,12 +18,6 @@ const badgeholderSchema = process.env.NEXT_PUBLIC_BADGEHOLDER_SCHEMA!;
 const badgeholderAttester = process.env.NEXT_PUBLIC_BADGEHOLDER_ATTESTER!;
 const easScanURL = process.env.NEXT_PUBLIC_EASSCAN_URL!;
 
-/*
-TODO:
-- create a copy of schema for dev environment 
-- create attestations for test addresses
-
-*/
 export function useBadgeHolder(address: Address) {
   return useQuery(
     ["badgeholder", address],
@@ -34,7 +28,10 @@ export function useBadgeHolder(address: Address) {
           schemaId: { equals: badgeholderSchema },
           attester: { equals: badgeholderAttester },
         },
-      }).then((r) => true ?? r.attestations?.length > 0),
+      }).then(
+        (r) =>
+          process.env.NODE_ENV === "development" ?? r.attestations?.length > 0
+      ),
     { enabled: Boolean(address) }
   );
 }
