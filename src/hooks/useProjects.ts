@@ -2,7 +2,6 @@ import { initialFilter, type Filter } from "./useFilter";
 import { projects } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
 import { useQuery } from "@tanstack/react-query";
-import { shuffle } from "lodash";
 
 export type Project = {
   id: string;
@@ -100,7 +99,7 @@ export function sortAndFilter<
 
   // Temporary sorting
   const sortFn = {
-    shuffle: (arr: T[]) => shuffle(arr),
+    shuffle: (arr: T[]) => arr,
     asc: (arr: T[]) =>
       arr.sort((a: T, b: T) => a.displayName?.localeCompare(b.displayName)),
     desc: (arr: T[]) =>

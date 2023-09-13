@@ -34,31 +34,23 @@ import { IconBadge } from "./ui/Badge";
 import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { IconButton } from "./ui/Button";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import router from "next/router";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
   const { data: allProjects } = useAllProjects();
-  const [currentIndex, setCurrentIndex] = useState<number>();
 
-  useEffect(() => {
-    if (!allProjects) return;
-    setCurrentIndex(allProjects.map((p) => p.id).indexOf(project?.id));
-  }, [project, allProjects]);
+  const currentIndex = useMemo(
+    () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
+    [project, allProjects]
+  );
 
-  const handlePrev = async () => {
-    if (!currentIndex || !allProjects) return;
-    const prevId = allProjects[currentIndex - 1]?.id;
-    prevId && (await router.push(`/projects/${prevId}`));
-  };
-
-  const handleNext = async () => {
-    if (currentIndex == undefined || !allProjects) return;
-    const nextId = allProjects[currentIndex + 1]?.id;
-    nextId && (await router.push(`/projects/${nextId}`));
-  };
+  async function handleNavigate(dir: number) {
+    const id = allProjects?.[currentIndex + dir]?.id;
+    if (id) await router.push(`/projects/${id}`);
+  }
   return (
     <>
       <div className="mb-8 hidden items-center justify-between md:flex">
@@ -67,25 +59,22 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         </h1>
         <div className="flex items-center gap-6">
           <p className="font-neutral-500 text-sm font-semibold">
-            6 of 548 applications
+            {currentIndex + 1} of {allProjects?.length} applications
           </p>
           <div className="flex flex-shrink-0 gap-2">
             <IconButton
               variant="outline"
-              onClick={handlePrev}
+              onClick={() => handleNavigate(-1)}
               icon={ArrowLeft}
               className="flex-shrink-0"
               disabled={!currentIndex}
             />
             <IconButton
               variant="outline"
-              onClick={handleNext}
+              onClick={() => handleNavigate(+1)}
               icon={ArrowRight}
               className="flex-shrink-0"
-              disabled={
-                currentIndex == undefined ||
-                currentIndex + 1 == allProjects?.length
-              }
+              disabled={currentIndex + 1 === allProjects?.length}
             />
           </div>
         </div>
