@@ -75,7 +75,7 @@ export function AllocationForm({
       <Table>
         {header}
         <Tbody>
-          {sortedFields.map((project, i) => {
+          {sortedFields.map((project) => {
             const idx = indexes.get(project.key)!;
 
             // TODO: Get allocated amount from list
