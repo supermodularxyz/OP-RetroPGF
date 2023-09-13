@@ -50,7 +50,7 @@ export const Header = () => {
 
   return (
     <header className="relative z-10 bg-white shadow-md">
-      <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2  md:px-8">
+      <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2">
         <div className="mr-4 flex items-center lg:mr-16">
           <IconButton
             icon={isOpen ? X : Menu}

@@ -34,7 +34,7 @@ export const Layout = (
 
       <main className="text-gray-900">
         <Header />
-        <div className="container mx-auto  pt-12 md:flex">
+        <div className="mx-auto pt-12  2xl:container md:flex">
           {props.sidebar === "left" ? sidebar : null}
           <div
             className={clsx("min-w-0 flex-1 px-4 pb-24", {
