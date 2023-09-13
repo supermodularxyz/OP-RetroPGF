@@ -1,12 +1,7 @@
-import { useQuery } from "wagmi";
-import { type Filter } from "./useFilter";
-import { useMemo } from "react";
-
-export type ImpactCategory =
-  | "OP_STACK"
-  | "COLLECTIVE_GOVERNANCE"
-  | "DEVELOPER_ECOSYSTEM"
-  | "END_USER_EXPERIENCE_AND_ADOPTION";
+import { initialFilter, type Filter } from "./useFilter";
+import { projects } from "~/data/mock";
+import { type ImpactCategory } from "./useCategories";
+import { useQuery } from "@tanstack/react-query";
 
 export type Project = {
   id: string;
@@ -49,102 +44,96 @@ export type Project = {
   certifiedNotBarredFromParticipating: boolean;
 };
 
-export const impactCategoryLabels: { [key in ImpactCategory]: string } = {
-  COLLECTIVE_GOVERNANCE: "Collective Governance",
-  OP_STACK: "OP Stack",
-  DEVELOPER_ECOSYSTEM: "Developer Ecosystem",
-  END_USER_EXPERIENCE_AND_ADOPTION: "End user UX",
+export const fundingSourcesLabels = {
+  RETROPGF_1: "RetroPGF 1",
+  RETROPGF_2: "RetroPGF 2",
+  GOVERNANCE_FUND: "Governance Fund",
+  PARTNER_FUND: "Partner Fund",
+  REVENUE: "Revenue",
+  OTHER: "Other",
 };
 
-export const projects: Project[] = Array.from({ length: 25 })
-  .fill(0)
-  .map((_, id) => ({
-    id: String(id),
-    applicantType: "PROJECT",
-    displayName: `Project ${id + 1}`,
-    bio: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-    impactCategory: Array.from({
-      length: Math.floor(Math.random() * 2) + 1,
-    }).map((_, i) => Object.keys(impactCategoryLabels)[i]) as ImpactCategory[],
-    websiteUrl: "https://www.example.com",
-    contributionDescription: "Providing development services",
-    contributionLinks: [
-      {
-        type: "GITHUB_REPO",
-        url: "https://github.com/example/repo",
-        description: "Github Repo",
-      },
-    ],
-    impactDescription: "Making positive changes in open source ecosystem.",
-    impactMetrics: [
-      {
-        description: "Contributions to OP Stack",
-        number: 500,
-        url: "http://example.com/metrics1",
-      },
-    ],
-    fundingSources: [
-      {
-        type: "GOVERNANCE_FUND",
-        currency: "OP",
-        amount: 10000,
-        description: "Seed fund",
-      },
-    ],
-    payoutAddress: "0x123",
-    understoodKYCRequirements: true,
-    understoodFundClaimPeriod: true,
-    certifiedNotDesignatedOrSanctionedOrBlocked: true,
-    certifiedNotSponsoredByPoliticalFigureOrGovernmentEntity: true,
-    certifiedNotBarredFromParticipating: true,
-  }));
-
+export function useAllProjects() {
+  return useQuery<Project[]>(["projects", "all"], () =>
+    fetch("/api/projects").then((r) => r.json())
+  );
+}
 export function useProjects(filter: Filter) {
-  const { page = 1, sort = "shuffle", categories } = filter ?? {};
-  const pageSize = 6;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
+  const {
+    page = 1,
+    sort = "shuffle",
+    categories = [],
+    search = "",
+  } = filter ?? initialFilter;
 
-  // TODO: Call EAS attestations
-
-  // Temporary sorting
-  const sortFn = {
-    shuffle: (arr: Project[]) => arr,
-    asc: (arr: Project[]) =>
-      arr.sort((a, b) => a.displayName.localeCompare(b.displayName)),
-    desc: (arr: Project[]) =>
-      arr.sort((a, b) => b.displayName.localeCompare(a.displayName)),
-  }[sort];
-
+  const projects = useAllProjects();
   return useQuery(
-    ["projects", { page, sort, categories }],
-    () =>
-      new Promise<{ data: Project[]; pages: number }>((resolve) => {
-        const data = sortFn(projects).filter((project) =>
-          categories.length
-            ? categories.every((c) => project.impactCategory.includes(c))
-            : project
-        );
-
-        const pages = Math.ceil(data.length / pageSize);
-        return resolve({ data: data.slice(start, end), pages });
-      })
+    ["projects", { page, sort, categories, search }],
+    () => {
+      return paginate(sortAndFilter(projects.data ?? [], filter), filter?.page);
+    },
+    { enabled: !projects.isLoading }
   );
 }
 
-export function useCategories() {
-  return useMemo(() => {
-    // Set each category to 0 - { OP_STACK: 0, COLLECTIVE_GOVERNANCE: 0, ...}
-    const initialState = Object.keys(impactCategoryLabels).reduce(
-      (a, x) => ({ ...a, [x]: 0 }),
-      {}
+export function useProject(id: string) {
+  return useQuery(
+    ["projects", id],
+    async () => projects.find((p) => p.id === id),
+    { enabled: Boolean(id) }
+  );
+}
+
+export function sortAndFilter<
+  T extends {
+    displayName: string;
+    impactCategory: ImpactCategory[];
+    amount?: number;
+  }
+>(collection: T[], filter: Filter) {
+  const {
+    sort = "shuffle",
+    categories = [],
+    search = "",
+  } = filter ?? initialFilter;
+
+  // Temporary sorting
+  const sortFn = {
+    shuffle: (arr: T[]) => arr,
+    asc: (arr: T[]) =>
+      arr.sort((a: T, b: T) => a.displayName?.localeCompare(b.displayName)),
+    desc: (arr: T[]) =>
+      arr.sort((a: T, b: T) => b.displayName?.localeCompare(a.displayName)),
+    ascOP: (arr: T[]) =>
+      arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? 1 : -1)),
+    descOP: (arr: T[]) =>
+      arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? -1 : 1)),
+    // TODO: sort by likes
+    liked: (arr: T[]) => arr,
+  }[sort];
+
+  return sortFn([...collection])
+    .filter((item) =>
+      categories.length
+        ? categories.every((c) => item.impactCategory.includes(c))
+        : item
+    )
+    .filter((p) =>
+      p.displayName
+        ? p.displayName?.toLowerCase().includes(search.toLowerCase())
+        : true
     );
-    return projects.reduce((acc, x) => {
-      const next = { ...acc };
-      x.impactCategory.forEach((category) => {
-        next[category] += 1;
-      });
-      return next;
-    }, initialState as { [key in ImpactCategory]: number });
-  }, [projects]);
+}
+
+export function paginate<T>(collection: T[], page = 1) {
+  const pageSize = 12;
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+
+  const pages = Math.ceil(collection.length / pageSize);
+
+  return {
+    data: collection.slice(start, end),
+    pages,
+  };
 }

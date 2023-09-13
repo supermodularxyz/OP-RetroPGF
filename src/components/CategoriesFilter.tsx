@@ -1,40 +1,46 @@
 import Link from "next/link";
+import { type PropsWithChildren } from "react";
 import { Tag } from "~/components/ui/Tag";
-import { type Filter } from "~/hooks/useFilter";
 import {
   type ImpactCategory,
   impactCategoryLabels,
   useCategories,
-} from "~/hooks/useProjects";
+} from "~/hooks/useCategories";
+import { type Filter } from "~/hooks/useFilter";
 
-export const ProjectsCategoriesFilter = ({
+export const CategoriesFilter = ({
   selected = [],
   onSelect,
+  type,
+  children,
 }: {
   selected?: Filter["categories"];
   onSelect: (categories: Filter["categories"]) => void;
-}) => {
-  const count = useCategories();
+  type: "projects" | "lists";
+} & PropsWithChildren) => {
+  const categoriesCount = useCategories(type);
   return (
-    <div className="flex gap-2 overflow-x-auto py-4 md:py-8">
+    <div className="my-2 flex gap-2 overflow-x-auto py-1">
+      {children}
       {Object.entries(impactCategoryLabels).map(([key, label]) => {
         const category = key as ImpactCategory;
+        const count = categoriesCount[category];
         return (
           <Tag
-            as={Link}
+            as={count ? Link : undefined}
+            disabled={!count}
             selected={selected.includes(category)}
             href={onSelect(
               selected.includes(category)
                 ? selected.filter((c) => c !== key)
                 : selected.concat(category)
             )}
-            className="cursor-pointer hover:bg-gray-300"
             size="lg"
             key={key}
           >
             {label}
             <div className="rounded-lg bg-white px-2 py-1 text-xs font-bold">
-              {count[category]}
+              {count}
             </div>
           </Tag>
         );

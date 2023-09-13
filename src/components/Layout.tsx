@@ -5,9 +5,14 @@ import { useAccount } from "wagmi";
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
-import { EligibilityDialog } from "./EligibilityDialog";
+import clsx from "clsx";
+import { useAllProjects } from "~/hooks/useProjects";
 
-export const Layout = (props: PropsWithChildren) => {
+export const Layout = (
+  props: { sidebar?: "left" | "right" } & PropsWithChildren
+) => {
+  useAllProjects();
+
   const { address } = useAccount();
   const [isLoaded, setLoaded] = useState(false);
 
@@ -16,6 +21,11 @@ export const Layout = (props: PropsWithChildren) => {
   }, []);
   if (!isLoaded) return null;
 
+  const sidebar = (
+    <Sidebar side={props.sidebar}>
+      {address ? <BallotOverview /> : <SunnyBanner />}
+    </Sidebar>
+  );
   return (
     <>
       <Head>
@@ -24,20 +34,34 @@ export const Layout = (props: PropsWithChildren) => {
 
       <main className="text-gray-900">
         <Header />
-        <div className="container mx-auto max-w-screen-2xl gap-8 pt-12 md:flex">
-          <Sidebar>
-            <SunnyBanner />
-          </Sidebar>
-          {/* <Sidebar>{address ? <BallotOverview /> : <SunnyBanner />}</Sidebar> */}
-
-          <div className="flex-1 px-4 pb-24">{props.children}</div>
+        <div className="container mx-auto  pt-12 md:flex">
+          {props.sidebar === "left" ? sidebar : null}
+          <div
+            className={clsx("min-w-0 flex-1 px-4 pb-24", {
+              ["mx-auto max-w-5xl"]: !props.sidebar,
+              ["md:ml-8 md:pl-80"]: props.sidebar === "left",
+              ["md:mr-8"]: props.sidebar === "right",
+            })}
+          >
+            {props.children}
+          </div>
+          {props.sidebar === "right" ? sidebar : null}
         </div>
-        <EligibilityDialog />
       </main>
     </>
   );
 };
 
-const Sidebar = (props: PropsWithChildren) => (
-  <div className="px-2 md:px-8" {...props} />
+const Sidebar = ({
+  side,
+  ...props
+}: { side?: "left" | "right" } & PropsWithChildren) => (
+  <div className="">
+    <div
+      className={clsx("w-[336px] px-2 md:px-4", {
+        ["md:fixed"]: side === "left",
+      })}
+      {...props}
+    />
+  </div>
 );

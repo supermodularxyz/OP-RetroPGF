@@ -1,47 +1,100 @@
+import { type z } from "zod";
+import { tv } from "tailwind-variants";
 import {
-  cloneElement,
-  type ReactElement,
-  type ComponentPropsWithoutRef,
+  type ComponentPropsWithRef,
   type PropsWithChildren,
+  forwardRef,
+  ComponentPropsWithoutRef,
+  cloneElement,
+  ReactElement,
 } from "react";
 import {
-  type SubmitHandler,
-  type UseFormProps,
-  type Resolver,
   FormProvider,
   useForm,
   useFormContext,
+  type UseFormProps,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { tv } from "tailwind-variants";
-import clsx from "clsx";
-import { type z } from "zod";
 
 import { createComponent } from ".";
+import { Search } from "../icons";
+import clsx from "clsx";
 
-const inputBase =
-  "border bg-white text-gray-900 rounded focus:ring-secondary-500 focus:border-secondary-500 block w-full p-2 disabled:opacity-50";
-const input = tv({
-  base: inputBase,
+const inputBase = [
+  "flex",
+
+  "w-full",
+  "rounded-xl",
+  "border",
+  "border-gray-300",
+  "bg-background",
+  "px-3",
+  "py-2",
+  "text-gray-900",
+  "ring-offset-background",
+  "file:border-0",
+  "placeholder:text-muted",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-ring",
+  "focus-visible:ring-offset-2",
+  "disabled:cursor-not-allowed",
+  "disabled:bg-gray-200",
+  "disabled:opacity-50",
+];
+export const Input = createComponent(
+  "input",
+  tv({
+    base: [...inputBase, "h-12"],
+    variants: {
+      error: {
+        true: "ring-primary-500",
+      },
+    },
+  })
+);
+export const InputWrapper = createComponent(
+  "div",
+  tv({
+    base: "flex w-full relative",
+    variants: {},
+  })
+);
+export const InputAddon = createComponent(
+  "div",
+  tv({
+    base: "absolute right-0 text-gray-900 inline-flex items-center justify-center h-full border-gray-300 border-l px-4 font-semibold",
+    variants: {
+      disabled: {
+        true: "text-gray-500",
+      },
+    },
+  })
+);
+
+export const InputIcon = createComponent(
+  "div",
+  tv({
+    base: "absolute text-gray-600 left-0 inline-flex items-center justify-center h-full px-4",
+  })
+);
+
+export const SearchInput = forwardRef(function SearchInput(
+  { ...props }: ComponentPropsWithRef<typeof Input>,
+  ref
+) {
+  return (
+    <InputWrapper className="">
+      <InputIcon>
+        <Search />
+      </InputIcon>
+      <Input ref={ref} {...props} className="pl-10" />
+    </InputWrapper>
+  );
 });
 
-const textarea = tv({
-  base: inputBase,
-});
-
-const label = tv({
-  base: "pb-1 block",
-});
-
-const select = tv({
-  base: inputBase,
-  // base: "text-gray-900 w-full bg-white text-sm rounded focus:ring-secondary-500 focus:border-secondary-500 block p-2",
-});
-
-export const Input = createComponent("input", input);
-export const Textarea = createComponent("textarea", textarea);
-export const Label = createComponent("label", label);
-export const Select = createComponent("select", select);
+export const Label = createComponent("label", tv({ base: "pb-1 block" }));
+export const Textarea = createComponent("textarea", tv({ base: inputBase }));
 
 export const FormControl = ({
   name,
@@ -52,7 +105,7 @@ export const FormControl = ({
   className,
 }: {
   name: string;
-  label?: string;
+  label: string;
   required?: boolean;
   hint?: string;
 } & ComponentPropsWithoutRef<"fieldset">) => {
@@ -63,18 +116,12 @@ export const FormControl = ({
 
   const error = errors[name];
   return (
-    <fieldset className={clsx("mb-2 w-full", className)}>
-      {label ? (
-        <Label htmlFor={name}>
-          {label}
-          {required ? <span className="text-red-300">*</span> : ""}
-        </Label>
-      ) : null}
-      {cloneElement(children as ReactElement, {
-        id: name,
-        required,
-        ...register(name),
-      })}
+    <fieldset className={clsx("mb-4", className)}>
+      <Label htmlFor={name}>
+        {label}
+        {required ? <span className="text-red-300">*</span> : ""}
+      </Label>
+      {cloneElement(children as ReactElement, { id: name, ...register(name) })}
       {hint ? <div className="pt-1 text-xs text-gray-500">{hint}</div> : null}
       {error ? (
         <div className="pt-1 text-xs text-red-500">
@@ -88,8 +135,7 @@ export const FormControl = ({
 export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];
   schema: S;
-  onSubmit: SubmitHandler<z.TypeOf<S>>;
-  // onSubmit: (values: z.infer<S>) => Promise<unknown>;
+  onSubmit: (values: z.infer<S>) => void;
 }
 
 export function Form<S extends z.Schema>({
@@ -102,11 +148,15 @@ export function Form<S extends z.Schema>({
   const form = useForm({
     defaultValues,
     resolver: zodResolver(schema),
+
+    mode: "onBlur",
   });
   // Pass the form methods to a FormProvider. This lets us access the form from components without passing props.
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
+      <form onSubmit={form.handleSubmit((values) => onSubmit(values))}>
+        {children}
+      </form>
     </FormProvider>
   );
 }

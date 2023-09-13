@@ -1,18 +1,21 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Button } from "./ui/Button";
+import { IconButton } from "./ui/Button";
 import { sortLabels, type Filter } from "~/hooks/useFilter";
+import { Check, Sort } from "./icons";
 
 type Props = {
   value: Filter["sort"];
-  onChange: (value: string) => void;
+  onChange: (value: Filter["sort"]) => void;
+  options: Filter["sort"][];
 };
-export const SortBy = ({ value, onChange }: Props) => {
+
+export const SortByDropdown = ({ value, onChange, options = [] }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <Button variant="outline" aria-label="Sort by">
-          [S] Sort by: {value && sortLabels[value]}
-        </Button>
+        <IconButton icon={Sort} variant="outline" aria-label="Sort by">
+          Sort by: {value && sortLabels[value]}
+        </IconButton>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
@@ -23,10 +26,13 @@ export const SortBy = ({ value, onChange }: Props) => {
           <DropdownMenu.Label className="p-2 text-xs font-semibold uppercase text-gray-700">
             Sort By
           </DropdownMenu.Label>
-          <DropdownMenu.RadioGroup value={value} onValueChange={onChange}>
-            <RadioItem value="shuffle" label={sortLabels.shuffle} />
-            <RadioItem value="asc" label={sortLabels.asc} />
-            <RadioItem value="desc" label={sortLabels.desc} />
+          <DropdownMenu.RadioGroup
+            value={value}
+            onValueChange={(v) => onChange(v as Filter["sort"])}
+          >
+            {options.map((value) => (
+              <RadioItem key={value} value={value} label={sortLabels[value!]} />
+            ))}
           </DropdownMenu.RadioGroup>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
@@ -40,7 +46,7 @@ const RadioItem = ({ value = "", label = "" }) => (
     value={value}
   >
     <DropdownMenu.ItemIndicator className="absolute left-4">
-      [C]
+      <Check className="h-4 w-4" />
     </DropdownMenu.ItemIndicator>
     {label}
   </DropdownMenu.RadioItem>

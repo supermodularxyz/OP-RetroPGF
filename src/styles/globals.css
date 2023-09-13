@@ -5,3 +5,12 @@
 * {
   /* outline: 1px solid rgba(0, 0, 200, 0.05); */
 }
+
+.no-scrollbar ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: 0;
+}
