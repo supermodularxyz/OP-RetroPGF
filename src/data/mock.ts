@@ -101,7 +101,12 @@ export const lists: List[] = Array.from({ length: 25 })
               enim ad minim veniam, quis nostrud exercitation ullamco laboris
               nisi ut aliquip ex ea commodo consequasssd.`,
     impactEvaluationLink: "http://example.com/metrics1",
-    projects,
+    projects: projects
+      .slice(0, Math.floor(Math.random() * 10) + 5)
+      .map((p) => ({
+        id: p.id,
+        amount: Math.floor(Math.random() * 100_000) + 100_000,
+      })),
   }));
 
 export const allListsLikes: Record<string, string[]> = lists.reduce(

@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
-import { sortAndFilter, type Project, paginate } from "./useProjects";
+import { sortAndFilter, paginate } from "./useProjects";
 import { allListsLikes, lists } from "~/data/mock";
-import { type ImpactCategory } from "./useCategories";
 import { useAccount, type Address } from "wagmi";
+import { type Allocation } from "./useBallot";
+import { ImpactCategory } from "./useCategories";
 
 export type List = {
   id: string;
@@ -14,9 +15,14 @@ export type List = {
   impactCategory: ImpactCategory[];
   impactEvaluation: string;
   impactEvaluationLink: string;
-  projects: Project[];
+  projects: Allocation[];
 };
 
+export function useAllLists() {
+  return useQuery<List[]>(["lists", "all"], () =>
+    fetch("/api/lists").then((r) => r.json())
+  );
+}
 export function useLists(filter: Filter) {
   const {
     page = 1,
@@ -26,17 +32,9 @@ export function useLists(filter: Filter) {
   } = filter ?? initialFilter;
 
   // TODO: Call EAS attestations
-
-  return useQuery(
-    ["lists", { page, sort, categories, search }],
-    () =>
-      new Promise<{ data: List[]; pages: number }>((resolve) => {
-        // Fake server response time
-        setTimeout(
-          () => resolve(paginate(sortAndFilter(lists, filter), filter?.page)),
-          500
-        );
-      })
+  const { data: lists } = useAllLists();
+  return useQuery(["lists", { page, sort, categories, search }], () =>
+    paginate(sortAndFilter(lists, filter), filter?.page)
   );
 }
 

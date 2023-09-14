@@ -90,7 +90,7 @@ export function sortAndFilter<
     impactCategory: ImpactCategory[];
     amount?: number;
   }
->(collection: T[], filter: Filter) {
+>(collection: T[] = [], filter: Filter) {
   const {
     sort = "shuffle",
     categories = [],
