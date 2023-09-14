@@ -72,7 +72,7 @@ export function useUpdateFilterFromRouter(type: FilterType) {
     if (!router.asPath.includes("?")) {
       void router.replace(`${router.asPath}?${toURL(filter!)}`);
     }
-  }, [filter, router]);
+  }, []);
 
   // Update filter when router query changes
   useEffect(() => {

@@ -28,6 +28,7 @@ export const CategoriesFilter = ({
         return (
           <Tag
             as={count ? Link : undefined}
+            scroll={false}
             disabled={!count}
             selected={selected.includes(category)}
             href={onSelect(

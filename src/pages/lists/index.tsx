@@ -47,6 +47,7 @@ export default function ListsPage() {
           <Tag
             size="lg"
             as={Link}
+            scroll={false}
             href={`/lists?${toURL(query, { categories: [] })}`}
           >
             All
