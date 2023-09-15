@@ -40,6 +40,7 @@ const CreateListForm = () => {
       schema={CreateList}
       onSubmit={(values) => {
         console.log(values);
+        alert("call create list api");
       }}
     >
       <div className="mb-4 text-2xl font-semibold">Create a new list</div>
