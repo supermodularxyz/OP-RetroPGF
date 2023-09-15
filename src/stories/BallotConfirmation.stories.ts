@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { BallotConfirmation } from "~/components/BallotConfirmation";
-import { projects } from "~/data/mock";
+
+import projects from "~/data/projects.json";
 
 const meta = {
   title: "Components/BallotConfirmation",

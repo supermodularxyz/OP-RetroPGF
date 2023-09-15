@@ -42,7 +42,6 @@ export default function ListsPage() {
         <CategoriesFilter
           selected={filter?.categories}
           onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
-          type="lists"
         >
           <Tag
             size="lg"
