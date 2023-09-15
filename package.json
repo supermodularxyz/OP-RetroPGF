@@ -8,7 +8,9 @@
     "lint": "next lint",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "ingest": "npx ts-node -O '{\"module\": \"commonjs\"}' scripts/ingest.ts",
+    "generate-mock": "npx ts-node -O '{\"module\": \"commonjs\"}' scripts/generateMock.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
@@ -20,8 +22,10 @@
     "@tanstack/query-sync-storage-persister": "^4.35.0",
     "@tanstack/react-query": "^4.35.0",
     "@tanstack/react-query-persist-client": "^4.35.0",
+    "axios": "^1.5.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
+    "got": "^13.0.0",
     "graphql": "^16.8.0",
     "graphql-request": "^6.1.0",
     "next": "^13.4.19",
@@ -55,6 +59,7 @@
     "@typescript-eslint/eslint-plugin": "6.0.0",
     "@typescript-eslint/parser": "6.0.0",
     "autoprefixer": "^10.4.15",
+    "dotenv": "^16.3.1",
     "eslint": "^8.48.0",
     "eslint-config-next": "^13.4.19",
     "eslint-plugin-storybook": "^0.6.13",

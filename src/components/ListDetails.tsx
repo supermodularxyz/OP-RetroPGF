@@ -18,15 +18,13 @@ import { MoreDropdown } from "./MoreDropdown";
 import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
+import { formatNumber } from "~/utils/formatNumber";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const { address } = useAccount();
   const like = useLikeList(list?.id);
 
-  const listProjects = list?.projects.slice(0, 5).map((p) => ({
-    ...p,
-    amount: 20_000,
-  }));
+  const listProjects = list?.projects ?? [];
   const allocatedOP = sumBallot(listProjects);
   return (
     <>
@@ -102,7 +100,9 @@ export const ListDetails = ({ list }: { list: List }) => {
                   {list.projects?.length || 0} projects{" "}
                 </p>
                 <span>·</span>
-                <p className="font-bold">{allocatedOP} OP allocated</p>
+                <p className="font-bold">
+                  {formatNumber(allocatedOP)} OP allocated
+                </p>
               </div>
               <div className="mt-2 flex flex-col items-center gap-4 sm:mt-0 sm:flex-row">
                 <ListEditDistribution list={list} listProjects={listProjects} />

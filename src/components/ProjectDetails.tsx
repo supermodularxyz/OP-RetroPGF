@@ -1,6 +1,8 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import {
+  ArrowLeft,
+  ArrowRight,
   Code,
   Contribution,
   Github,
@@ -8,7 +10,11 @@ import {
   Link as LinkIcon,
   Twitter,
 } from "~/components/icons";
-import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
+import {
+  type Project,
+  fundingSourcesLabels,
+  useListsForProject,
+} from "~/hooks/useProjects";
 import Link from "next/link";
 import { FaCheckToSlot } from "react-icons/fa6";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
@@ -20,7 +26,6 @@ import {
   impactCategoryLabels,
 } from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
-import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
@@ -29,19 +34,56 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { MoreDropdown } from "./MoreDropdown";
 import { useCopyToClipboard } from "react-use";
 import { IconBadge } from "./ui/Badge";
-
+import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
+import { IconButton } from "./ui/Button";
+import { useMemo } from "react";
+import router from "next/router";
+import { List } from "~/hooks/useLists";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
+  const { data: allProjects } = useAllProjects();
+  const { data: lists } = useListsForProject(project?.id);
+
+  const currentIndex = useMemo(
+    () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
+    [project, allProjects]
+  );
+
+  async function handleNavigate(dir: number) {
+    const id = allProjects?.[currentIndex + dir]?.id;
+    if (id) await router.push(`/projects/${id}`);
+  }
+
   return (
     <>
-      <div className="mb-8 hidden justify-between md:flex">
+      <div className="mb-8 hidden items-center justify-between md:flex">
         <h1 className="text-xl font-semibold">
           {project?.displayName}&apos;s Round application
         </h1>
-        <div className="">PROJECT_NAVIGATION</div>
+        <div className="flex items-center gap-6">
+          <p className="font-neutral-500 text-sm font-semibold">
+            {currentIndex + 1} of {allProjects?.length} applications
+          </p>
+          <div className="flex flex-shrink-0 gap-2">
+            <IconButton
+              variant="outline"
+              onClick={() => handleNavigate(-1)}
+              icon={ArrowLeft}
+              className="flex-shrink-0"
+              disabled={!currentIndex}
+            />
+            <IconButton
+              variant="outline"
+              onClick={() => handleNavigate(+1)}
+              icon={ArrowRight}
+              className="flex-shrink-0"
+              disabled={currentIndex + 1 === allProjects?.length}
+            />
+          </div>
+        </div>
       </div>
       <div>
         <div className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]" />
@@ -114,7 +156,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <FaCheckToSlot /> 56 ballots
         </Tag>
         <Tag>
-          <LayoutList /> 18 voting lists
+          <LayoutList /> {lists?.length} voting lists
         </Tag>
         <Tag>
           <Contribution />
@@ -132,7 +174,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           Categories of impact
         </h6>
         <div className="flex flex-wrap gap-1">
-          {project?.impactCategory.map((category) => (
+          {project?.impactCategory?.map((category) => (
             <HoverTagCard
               key={category}
               tag={impactCategoryLabels[category]}
@@ -149,7 +191,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <p>{project?.contributionDescription}</p>
 
         <div className="grid gap-2">
-          {project?.contributionLinks.map((link) => {
+          {project?.contributionLinks?.map((link) => {
             const Icon = {
               GITHUB_REPO: LinkIcon,
               CONTRACT_ADDRESS: Code,
@@ -182,7 +224,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <H3>Impact</H3>
         <p>{project?.impactDescription}</p>
         <div className="grid gap-2 md:grid-cols-3">
-          {project?.impactMetrics.map((metric, i) => (
+          {project?.impactMetrics?.map((metric, i) => (
             <ImpactCard
               as={metric.url ? Link : "div"}
               href={metric.url ?? "#"}
@@ -204,7 +246,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <H3>Past funding</H3>
 
         <div className="flex flex-col gap-4 divide-y divide-gray-200">
-          {project?.fundingSources.map((fund, i) => (
+          {project?.fundingSources?.map((fund, i) => (
             <div className="flex pt-6" key={i}>
               <div className="flex-1 justify-between md:flex">
                 <div className="md:flex">
@@ -223,12 +265,16 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       </Card>
       <div className="mt-12 space-y-4">
         <H3>Included in the following lists</H3>
-        <Card className="space-y-4 divide-y divide-gray-200">
-          {lists.slice(0, 3).map((list) => (
+        <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
+          {lists?.map((list) => (
             <Link key={list.id} href={`/lists/${list.id}`}>
               <ListListItem
                 list={list}
-                allocation={formatCurrency(36_000, "OP", false)}
+                allocation={formatCurrency(
+                  sumListAllocation(list),
+                  "OP",
+                  false
+                )}
               />
             </Link>
           ))}
@@ -237,6 +283,10 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     </>
   );
 };
+
+function sumListAllocation(list: List) {
+  return list.projects.reduce((acc, x) => acc + x.amount, 0);
+}
 
 const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
 const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));

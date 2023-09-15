@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { AllocationList } from "~/components/AllocationList";
-import { projects } from "~/data/mock";
+
+import projects from "~/data/projects.json";
 
 const allocations = projects
   .slice(0, 5)

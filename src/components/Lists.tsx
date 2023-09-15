@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import Link from "next/link";
 import { useAccount } from "wagmi";
+import { Allocation } from "~/hooks/useBallot";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -115,7 +116,7 @@ export const AvatarWithName = ({ name }: { name: string }) => (
   </div>
 );
 
-export const ProjectsLogosCard = ({ projects }: { projects: Project[] }) => (
+export const ProjectsLogosCard = ({ projects }: { projects: Allocation[] }) => (
   <div className="flex items-center gap-3">
     <div className="ml-1 flex">
       {projects?.slice(0, 4).map((project) => (

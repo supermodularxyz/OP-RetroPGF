@@ -31,7 +31,6 @@ export default function ProjectsPage() {
         <CategoriesFilter
           selected={filter?.categories}
           onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
-          type="projects"
         />
       </div>
 
