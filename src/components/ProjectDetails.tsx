@@ -51,6 +51,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     const id = allProjects?.[currentIndex + dir]?.id;
     if (id) await router.push(`/projects/${id}`);
   }
+
   return (
     <>
       <div className="mb-8 hidden items-center justify-between md:flex">

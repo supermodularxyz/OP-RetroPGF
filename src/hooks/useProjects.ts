@@ -77,10 +77,11 @@ export function useProjects(filter: Filter) {
 }
 
 export function useProject(id: string) {
+  const projects = useAllProjects();
   return useQuery(
     ["projects", id],
-    async () => projects.find((p) => p.id === id),
-    { enabled: Boolean(id) }
+    async () => projects.data?.find((p) => p.id === id),
+    { enabled: Boolean(id) && !projects.isLoading }
   );
 }
 
