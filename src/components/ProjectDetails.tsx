@@ -10,7 +10,11 @@ import {
   Link as LinkIcon,
   Twitter,
 } from "~/components/icons";
-import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
+import {
+  type Project,
+  fundingSourcesLabels,
+  useListsForProject,
+} from "~/hooks/useProjects";
 import Link from "next/link";
 import { FaCheckToSlot } from "react-icons/fa6";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
@@ -22,7 +26,6 @@ import {
   impactCategoryLabels,
 } from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
-import { lists } from "~/data/mock";
 import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
@@ -36,11 +39,13 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { IconButton } from "./ui/Button";
 import { useMemo } from "react";
 import router from "next/router";
+import { List } from "~/hooks/useLists";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
   const { data: allProjects } = useAllProjects();
+  const { data: lists } = useListsForProject(project?.id);
 
   const currentIndex = useMemo(
     () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
@@ -151,7 +156,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <FaCheckToSlot /> 56 ballots
         </Tag>
         <Tag>
-          <LayoutList /> 18 voting lists
+          <LayoutList /> {lists?.length} voting lists
         </Tag>
         <Tag>
           <Contribution />
@@ -260,12 +265,16 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       </Card>
       <div className="mt-12 space-y-4">
         <H3>Included in the following lists</H3>
-        <Card className="space-y-4 divide-y divide-gray-200">
-          {lists.slice(0, 3).map((list) => (
+        <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
+          {lists?.map((list) => (
             <Link key={list.id} href={`/lists/${list.id}`}>
               <ListListItem
                 list={list}
-                allocation={formatCurrency(36_000, "OP", false)}
+                allocation={formatCurrency(
+                  sumListAllocation(list),
+                  "OP",
+                  false
+                )}
               />
             </Link>
           ))}
@@ -274,6 +283,10 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     </>
   );
 };
+
+function sumListAllocation(list: List) {
+  return list.projects.reduce((acc, x) => acc + x.amount, 0);
+}
 
 const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
 const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));

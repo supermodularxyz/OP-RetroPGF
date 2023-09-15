@@ -1,6 +1,7 @@
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
 import { useQuery } from "@tanstack/react-query";
+import { lists } from "~/data/mock";
 
 export type Project = {
   id: string;
@@ -81,6 +82,14 @@ export function useProject(id: string) {
     ["projects", id],
     async () => projects.data?.find((p) => p.id === id),
     { enabled: Boolean(id) && !projects.isLoading }
+  );
+}
+
+export function useListsForProject(id: string) {
+  return useQuery(
+    ["projects", id, "lists"],
+    () => lists.filter((list) => list.projects.find((p) => p.id === id)),
+    { enabled: Boolean(id) }
   );
 }
 
