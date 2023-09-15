@@ -174,7 +174,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           Categories of impact
         </h6>
         <div className="flex flex-wrap gap-1">
-          {project?.impactCategory.map((category) => (
+          {project?.impactCategory?.map((category) => (
             <HoverTagCard
               key={category}
               tag={impactCategoryLabels[category]}
