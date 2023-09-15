@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Projects } from "~/components/Projects";
-import { projects } from "~/data/mock";
+import { type Project } from "~/hooks/useProjects";
 import { initialFilter } from "~/hooks/useFilter";
+
+import projects from "~/data/projects.json";
 
 const meta = {
   title: "Components/Projects",
@@ -18,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     filter: initialFilter,
-    projects: projects.slice(0, 6),
+    projects: projects.slice(0, 6) as Project[],
   },
 };
 

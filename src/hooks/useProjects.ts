@@ -1,5 +1,4 @@
 import { initialFilter, type Filter } from "./useFilter";
-import { projects } from "~/data/mock";
 import { type ImpactCategory } from "./useCategories";
 import { useQuery } from "@tanstack/react-query";
 
@@ -116,7 +115,7 @@ export function sortAndFilter<
   return sortFn([...collection])
     .filter((item) =>
       categories.length
-        ? categories.every((c) => item.impactCategory.includes(c))
+        ? categories.every((c) => item.impactCategory?.includes(c))
         : item
     )
     .filter((p) =>

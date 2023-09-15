@@ -11,14 +11,12 @@ import { type Filter } from "~/hooks/useFilter";
 export const CategoriesFilter = ({
   selected = [],
   onSelect,
-  type,
   children,
 }: {
   selected?: Filter["categories"];
   onSelect: (categories: Filter["categories"]) => void;
-  type: "projects" | "lists";
 } & PropsWithChildren) => {
-  const categoriesCount = useCategories(type);
+  const categoriesCount = useCategories();
   return (
     <div className="my-2 flex gap-2 overflow-x-auto py-1">
       {children}

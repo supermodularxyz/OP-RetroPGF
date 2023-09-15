@@ -9,7 +9,8 @@
     "start": "next start",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "ingest": "npx ts-node -O '{\"module\": \"commonjs\"}' scripts/ingest.ts"
+    "ingest": "npx ts-node -O '{\"module\": \"commonjs\"}' scripts/ingest.ts",
+    "generate-mock": "npx ts-node -O '{\"module\": \"commonjs\"}' scripts/generateMock.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",

@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AllocationForm } from "~/components/AllocationList";
 import { Form } from "~/components/ui/Form";
 import { Th, Thead, Tr } from "~/components/ui/Table";
-import { lists, projects } from "~/data/mock";
+import { lists } from "~/data/mock";
 import { AllocationsSchema } from "~/schemas/allocation";
+
+import projects from "~/data/projects.json";
 
 const allocations = projects
   .slice(0, 5)

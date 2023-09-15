@@ -17,6 +17,5 @@ export const Default: Story = {
   args: {
     selected: [],
     onSelect: () => "",
-    type: "projects",
   },
 };

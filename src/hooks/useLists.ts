@@ -4,7 +4,7 @@ import { sortAndFilter, paginate } from "./useProjects";
 import { allListsLikes, lists } from "~/data/mock";
 import { useAccount, type Address } from "wagmi";
 import { type Allocation } from "./useBallot";
-import { ImpactCategory } from "./useCategories";
+import { type ImpactCategory } from "./useCategories";
 
 export type List = {
   id: string;
