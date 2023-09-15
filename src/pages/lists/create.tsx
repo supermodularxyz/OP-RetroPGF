@@ -32,7 +32,7 @@ const CreateList = z.object({
 });
 
 const CreateListForm = () => {
-  function handleSaveDraft(data) {
+  function handleSaveDraft(data: unknown) {
     console.log("save draft", data);
   }
   return (
