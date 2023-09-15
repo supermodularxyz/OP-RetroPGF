@@ -191,7 +191,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <p>{project?.contributionDescription}</p>
 
         <div className="grid gap-2">
-          {project?.contributionLinks.map((link) => {
+          {project?.contributionLinks?.map((link) => {
             const Icon = {
               GITHUB_REPO: LinkIcon,
               CONTRACT_ADDRESS: Code,
@@ -224,7 +224,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <H3>Impact</H3>
         <p>{project?.impactDescription}</p>
         <div className="grid gap-2 md:grid-cols-3">
-          {project?.impactMetrics.map((metric, i) => (
+          {project?.impactMetrics?.map((metric, i) => (
             <ImpactCard
               as={metric.url ? Link : "div"}
               href={metric.url ?? "#"}
@@ -246,7 +246,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <H3>Past funding</H3>
 
         <div className="flex flex-col gap-4 divide-y divide-gray-200">
-          {project?.fundingSources.map((fund, i) => (
+          {project?.fundingSources?.map((fund, i) => (
             <div className="flex pt-6" key={i}>
               <div className="flex-1 justify-between md:flex">
                 <div className="md:flex">
