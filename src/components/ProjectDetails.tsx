@@ -59,7 +59,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 
   return (
     <>
-      <div className="mb-8 hidden items-center justify-between md:flex">
+      <div className="sticky left-0 top-0 py-4 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white md:flex">
         <h1 className="text-xl font-semibold">
           {project?.displayName}&apos;s Round application
         </h1>
