@@ -30,7 +30,9 @@ export default function ProjectsPage() {
       <div className="no-scrollbar">
         <CategoriesFilter
           selected={filter?.categories}
-          onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
+          onSelect={(categories) =>
+            `/projects?${toURL(query, { categories, page: 1 })}`
+          }
         />
       </div>
 

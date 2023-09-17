@@ -41,7 +41,9 @@ export default function ListsPage() {
       <div className="no-scrollbar">
         <CategoriesFilter
           selected={filter?.categories}
-          onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
+          onSelect={(categories) =>
+            `/lists?${toURL(query, { categories, page: 1 })}`
+          }
         >
           <Tag
             size="lg"
