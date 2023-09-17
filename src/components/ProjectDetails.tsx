@@ -94,25 +94,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               <h3 className="mb-2 text-2xl font-bold">
                 {project?.displayName}
               </h3>
-              <div className="flex items-center gap-2">
-                <IconBadge
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  icon={Github}
-                  as={Link}
-                  target="_blank"
-                  href={`https://www.github.com/`}
-                >
-                  GitHub
-                </IconBadge>
-                <IconBadge
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  icon={Twitter}
-                  as={Link}
-                  target="_blank"
-                  href={`https://www.twitter.com/`}
-                >
-                  Twitter
-                </IconBadge>
+              <div>
                 <IconBadge
                   icon={LinkIcon}
                   as={Link}
@@ -153,13 +135,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       <p className="">{project?.bio}</p>
       <div className="my-8 flex flex-wrap gap-2">
         <Tag>
-          <FaCheckToSlot /> 56 ballots
+          <FaCheckToSlot className="text-gray-500" /> 56 ballots
         </Tag>
         <Tag>
-          <LayoutList /> {lists?.length} voting lists
+          <LayoutList className="text-gray-500" /> {lists?.length} voting lists
         </Tag>
         <Tag>
-          <Contribution />
+          <Contribution className="text-gray-500" />
           Round 2 contributor
         </Tag>
       </div>
