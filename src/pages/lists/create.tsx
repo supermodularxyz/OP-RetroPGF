@@ -18,7 +18,7 @@ const CreateList = z.object({
     .array(
       z.object({
         id: z.string(),
-        amount: z.number(),
+        amount: z.number().min(1),
       })
     )
     .min(1)
@@ -57,6 +57,7 @@ const CreateListForm = () => {
         <AllocationFormWithSearch onSave={handleSaveDraft} />
         <TotalOP />
       </div>
+
       <div className="flex justify-end">
         <Button variant="primary">Create list</Button>
       </div>

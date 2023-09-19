@@ -61,7 +61,6 @@ export function AllocationForm({
     control: form.control,
   });
 
-  console.log(fields);
   const mapProjectData = useBallotProjectData();
 
   // Map each id to the index so we can sort and filter
@@ -141,6 +140,8 @@ export function AllocationFormWithSearch({
     control: form.control,
   });
 
+  const { errors } = form.formState;
+
   return (
     <AllocationListWrapper>
       <SearchProjects onSelect={(id) => append({ id, amount: 0 })} />
@@ -148,10 +149,14 @@ export function AllocationFormWithSearch({
         <Tbody>
           {fields.length ? (
             fields.map((project, i) => {
+              const error = errors.allocations?.[i]?.amount?.message;
               return (
                 <Tr key={project.key}>
                   <Td className={"w-full"}>
                     <ProjectAvatarWithName id={project.id} />
+                    {error ? (
+                      <div className="text-xs text-error-600">{error}</div>
+                    ) : null}
                   </Td>
 
                   <Td>
