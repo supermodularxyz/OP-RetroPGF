@@ -30,7 +30,8 @@ export function useBadgeHolder(address: Address) {
         },
       }).then(
         (r) =>
-          process.env.NODE_ENV === "development" ?? r.attestations?.length > 0
+          process.env.NEXT_PUBLIC_SKIP_BADGEHOLDER_CHECK ??
+          r.attestations?.length > 0
       ),
     { enabled: Boolean(address) }
   );
