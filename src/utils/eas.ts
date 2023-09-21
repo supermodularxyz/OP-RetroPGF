@@ -4,7 +4,7 @@ import { type SignerOrProvider } from "@ethereum-attestation-service/eas-sdk/dis
 import { type ListAttestation } from "~/hooks/useCreateList";
 
 const EASContractAddress = process.env.NEXT_PUBLIC_EAS_CONTRACT_ADDRESS!;
-const schemaUID = process.env.NEXT_PUBLIC_LIST_SCHEMA!;
+const schemaUID = process.env.NEXT_PUBLIC_LISTS_SCHEMA!;
 
 export async function createAttestation(
   { owner, ...list }: ListAttestation,
