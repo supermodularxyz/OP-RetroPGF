@@ -1,10 +1,11 @@
-import axios from "axios";
 import { type Address } from "viem";
 import { useMutation } from "@tanstack/react-query";
-import { createAttestation } from "~/utils/eas";
 import { type WalletClient, useWalletClient } from "wagmi";
 import { useMemo } from "react";
 import { providers } from "ethers";
+import { type SignerOrProvider } from "@ethereum-attestation-service/eas-sdk/dist/transaction";
+
+import { createAttestation } from "~/utils/eas";
 
 export type ListAttestation = {
   listName: string;
@@ -16,7 +17,7 @@ export type ListAttestation = {
 export function useCreateList() {
   const signer = useEthersSigner();
   return useMutation(async (list: ListAttestation) =>
-    createAttestation(list, signer)
+    createAttestation(list, signer as unknown as SignerOrProvider)
   );
 }
 

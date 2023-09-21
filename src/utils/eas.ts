@@ -14,7 +14,7 @@ export async function createAttestation(
   const eas = new EAS(EASContractAddress);
 
   console.log("Connecting signer to EAS...");
-  eas.connect(signer as unknown as SignerOrProvider);
+  eas.connect(signer);
 
   console.log("Encoding data with schema...");
   const data = encodeData(list);

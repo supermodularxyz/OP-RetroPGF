@@ -181,14 +181,21 @@ export function AllocationFormWithSearch({
               );
             })
           ) : (
-            <div className="flex flex-1 items-center justify-center py-4">
-              <div className=" max-w-[360px] space-y-4">
-                <h3 className="text-center text-lg font-bold">List is empty</h3>
-                <p className="text-center text-sm text-gray-700">
-                  Search projects to add them to the list.
-                </p>
-              </div>
-            </div>
+            <Tr>
+              <Td
+                colSpan={3}
+                className="flex flex-1 items-center justify-center py-4"
+              >
+                <div className=" max-w-[360px] space-y-4">
+                  <h3 className="text-center text-lg font-bold">
+                    List is empty
+                  </h3>
+                  <p className="text-center text-sm text-gray-700">
+                    Search projects to add them to the list.
+                  </p>
+                </div>
+              </Td>
+            </Tr>
           )}
         </Tbody>
       </Table>
