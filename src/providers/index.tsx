@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, optimism } from "wagmi/chains";
+import { optimism, optimismGoerli } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 const { chains, publicClient } = configureChains(
-  [mainnet, optimism],
+  [optimism, optimismGoerli],
   [
     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID! }),
     publicProvider(),

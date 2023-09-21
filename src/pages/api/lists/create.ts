@@ -1,28 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { CreateList } from "~/schemas/list";
+import { type ListAttestation } from "~/hooks/useCreateList";
+import { createAttestation } from "~/utils/eas";
 
 interface ApiRequest extends NextApiRequest {
-  body: CreateList;
+  body: ListAttestation;
 }
-export default function handler(req: ApiRequest, res: NextApiResponse) {
+export default async function handler(req: ApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const list = parseList(req.body);
-    // Verify user can create list
-    // Upload metadata
-    // Create Attestation
-    // Regenerate lists data
-    res.send(list);
+    try {
+      // Verify user can create list
+
+      // Create Attestation
+      const attestation = await createAttestation(req.body);
+      console.log("New attestation UID:", attestation);
+      // Regenerate lists data
+
+      res.send({ attestation });
+    } catch (error) {
+      console.log(error, error.statusCode);
+      res.status(error.status ?? 500).send({ error });
+    }
   } else {
     res.status(405);
   }
-}
-
-function parseList({ allocations, ...list }: CreateList) {
-  return {
-    ...list,
-    listContent: allocations.map(({ id, amount }) => ({
-      RPGF3_Application_UID: id,
-      OPAmount: amount,
-    })),
-  };
 }

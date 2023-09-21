@@ -9,10 +9,14 @@ import { OP_TO_ALLOCATE } from "~/components/BallotOverview";
 import { sumBallot } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { useCreateList } from "~/hooks/useCreateList";
-import { CreateListSchema } from "~/schemas/list";
+import { type CreateList, CreateListSchema } from "~/schemas/list";
+import { useUploadMetadata } from "~/hooks/useMetadata";
+import { useAccount } from "wagmi";
 
 const CreateListForm = () => {
   const create = useCreateList();
+  const upload = useUploadMetadata();
+  const { address } = useAccount();
   function handleSaveDraft(data: unknown) {
     console.log("save draft", data);
   }
@@ -21,7 +25,18 @@ const CreateListForm = () => {
       schema={CreateListSchema}
       onSubmit={(values) => {
         console.log(values);
-        create.mutate(values);
+
+        const { listName, ...list } = parseList(values);
+        upload.mutate(list, {
+          onSuccess: (listMetadataPtr) => {
+            create.mutate({
+              listName,
+              listMetadataPtrType: 1,
+              listMetadataPtr,
+              owner: address!,
+            });
+          },
+        });
       }}
     >
       <div className="mb-4 text-2xl font-semibold">Create a new list</div>
@@ -43,7 +58,12 @@ const CreateListForm = () => {
       </div>
 
       <div className="flex justify-end">
-        <Button variant="primary">Create list</Button>
+        <Button
+          disabled={create.isLoading || upload.isLoading}
+          variant="primary"
+        >
+          Create list
+        </Button>
       </div>
     </Form>
   );
@@ -81,4 +101,14 @@ export default function CreateListPage() {
       <CreateListForm />
     </Layout>
   );
+}
+
+function parseList({ allocations, ...list }: CreateList) {
+  return {
+    ...list,
+    listContent: allocations.map(({ id, amount }) => ({
+      RPGF3_Application_UID: id,
+      OPAmount: amount,
+    })),
+  };
 }
