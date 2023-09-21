@@ -20,22 +20,22 @@ const CreateListForm = () => {
   function handleSaveDraft(data: unknown) {
     console.log("save draft", data);
   }
+
+  const error = create.error || upload.error;
   return (
     <Form
       schema={CreateListSchema}
-      onSubmit={(values) => {
+      onSubmit={async (values) => {
         console.log(values);
 
         const { listName, ...list } = parseList(values);
-        upload.mutate(list, {
-          onSuccess: (listMetadataPtr) => {
-            create.mutate({
-              listName,
-              listMetadataPtrType: 1,
-              listMetadataPtr,
-              owner: address!,
-            });
-          },
+        const listMetadataPtr = upload.data ?? (await upload.mutateAsync(list));
+
+        create.mutate({
+          listName,
+          listMetadataPtrType: 1,
+          listMetadataPtr,
+          owner: address!,
         });
       }}
     >
@@ -57,7 +57,7 @@ const CreateListForm = () => {
         <TotalOP />
       </div>
 
-      <div className="flex justify-end">
+      <div className="mb-4 flex justify-end">
         <Button
           disabled={create.isLoading || upload.isLoading}
           variant="primary"
@@ -65,6 +65,11 @@ const CreateListForm = () => {
           Create list
         </Button>
       </div>
+      {error ? (
+        <Banner variant="warning" className="overflow-x-scroll whitespace-pre">
+          {JSON.stringify(error, null, 2)}
+        </Banner>
+      ) : null}
     </Form>
   );
 };
