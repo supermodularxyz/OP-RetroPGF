@@ -27,6 +27,8 @@ export default function ListsPage() {
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
 
+  console.log("lists", lists);
+
   return (
     <Layout sidebar="left">
       <div className="flex justify-between">

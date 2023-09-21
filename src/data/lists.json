@@ -1,0 +1,20 @@
+[
+  {
+    "id": "0xf7fb350ac314188e4d33fd535a9f55aca75ca8d3aa3fdadef38a5776fdce023f",
+    "listName": "test list",
+    "owner": "0x277D95C4646827Ea5996E998B31704C0964F79b1",
+    "listDescription": "xzojcsg vsda gio",
+    "impactEvaluationLink": "https://asd.com",
+    "impactEvaluationDescription": "fhd ifo sdhis dhfhfsdiohj ",
+    "listContent": [
+      {
+        "RPGF3_Application_UID": "0x6d270d549f66f17aab489fac01e2902cc4a30b7485fffe1a5866742aee9500ad",
+        "OPAmount": 10000
+      },
+      {
+        "RPGF3_Application_UID": "0x7e6887782230eac28dffc9fa7de8ec975d53fa5732b2e9a76a7490d2f6ba34e2",
+        "OPAmount": 15000
+      }
+    ]
+  }
+]
