@@ -8,9 +8,9 @@ import { type ImpactCategory } from "./useCategories";
 
 export type List = {
   id: string;
+  listName: string;
   displayName: string;
-  creatorName: string;
-  creatorAvatarUrl: string;
+  owner: string;
   bio: string;
   impactCategory: ImpactCategory[];
   impactEvaluation: string;
@@ -32,9 +32,11 @@ export function useLists(filter: Filter) {
   } = filter ?? initialFilter;
 
   // TODO: Call EAS attestations
-  const { data: lists } = useAllLists();
-  return useQuery(["lists", { page, sort, categories, search }], () =>
-    paginate(sortAndFilter(lists, filter), filter?.page)
+  const { data: lists, isLoading } = useAllLists();
+  return useQuery(
+    ["lists", { page, sort, categories, search }],
+    () => paginate(sortAndFilter(lists, filter), filter?.page),
+    { enabled: !isLoading }
   );
 }
 

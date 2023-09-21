@@ -1,9 +1,13 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from ".";
-import { type ComponentPropsWithoutRef } from "react";
+import { type ComponentPropsWithRef, createElement } from "react";
+
+const Image = ({ src, className }: ComponentPropsWithRef<"img">) => {
+  return createElement(src ? "img" : "div", { src, className });
+};
 
 export const Avatar = createComponent(
-  "div",
+  Image,
   tv({
     base: "bg-gray-200 border border-gray-200",
     variants: {
@@ -24,7 +28,7 @@ export const Avatar = createComponent(
 );
 
 const AvatarBorder = createComponent(
-  "div",
+  Image,
   tv({
     base: "inline-flex border border-gray-200 bg-white",
     variants: {
@@ -40,7 +44,7 @@ const AvatarBorder = createComponent(
 );
 
 export const AvatarWithBorder = (
-  props: ComponentPropsWithoutRef<typeof Avatar>
+  props: ComponentPropsWithRef<typeof Avatar>
 ) => (
   <AvatarBorder {...props}>
     <div className="h-full w-full rounded bg-gray-200" />
