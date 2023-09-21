@@ -8,6 +8,7 @@ import { type ImpactCategory } from "./useCategories";
 
 export type List = {
   id: string;
+  listName: string;
   displayName: string;
   owner: string;
   bio: string;
