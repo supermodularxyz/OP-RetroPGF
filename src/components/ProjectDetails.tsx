@@ -1,4 +1,11 @@
+import { useMemo } from "react";
+import router from "next/router";
 import { tv } from "tailwind-variants";
+import Link from "next/link";
+import { FaCheckToSlot } from "react-icons/fa6";
+import * as HoverCard from "@radix-ui/react-hover-card";
+import { useCopyToClipboard } from "react-use";
+
 import { createComponent } from "~/components/ui";
 import {
   ArrowLeft,
@@ -15,8 +22,6 @@ import {
   fundingSourcesLabels,
   useListsForProject,
 } from "~/hooks/useProjects";
-import Link from "next/link";
-import { FaCheckToSlot } from "react-icons/fa6";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
@@ -30,22 +35,22 @@ import { suffixNumber } from "~/utils/suffixNumber";
 import { formatCurrency } from "~/utils/formatCurrency";
 import { Avatar } from "~/components/ui/Avatar";
 
-import * as HoverCard from "@radix-ui/react-hover-card";
 import { MoreDropdown } from "./MoreDropdown";
-import { useCopyToClipboard } from "react-use";
 import { IconBadge } from "./ui/Badge";
 import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { IconButton } from "./ui/Button";
-import { useMemo } from "react";
-import router from "next/router";
-import { List } from "~/hooks/useLists";
+import { type List } from "~/hooks/useLists";
+import { useProfile } from "~/hooks/useProfiles";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
   const { data: allProjects } = useAllProjects();
   const { data: lists } = useListsForProject(project?.id);
+  const { data: profile } = useProfile(project?.owner);
+
+  console.log("profile", profile);
 
   const currentIndex = useMemo(
     () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
@@ -59,7 +64,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 
   return (
     <>
-      <div className="sticky left-0 top-0 py-4 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white md:flex">
+      <div className="sticky left-0 top-0 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex">
         <h1 className="text-xl font-semibold">
           {project?.displayName}&apos;s Round application
         </h1>
@@ -86,9 +91,19 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         </div>
       </div>
       <div>
-        <div className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]" />
+        <picture>
+          <img
+            alt={profile?.name}
+            src={profile?.bannerImageUrl}
+            className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]"
+          />
+        </picture>
         <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
-          <Avatar size="lg" />
+          <Avatar
+            size="lg"
+            alt={profile?.name}
+            src={profile?.profileImageUrl}
+          />
           <div className="flex-1 items-center justify-between md:flex">
             <div>
               <h3 className="mb-2 text-2xl font-bold">

@@ -19,10 +19,12 @@ import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
+import { useProfile } from "~/hooks/useProfiles";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const { address } = useAccount();
   const like = useLikeList(list?.id);
+  const { data: profile } = useProfile(list?.owner);
 
   const listProjects = list?.projects ?? [];
   const allocatedOP = sumBallot(listProjects);
@@ -38,11 +40,8 @@ export const ListDetails = ({ list }: { list: List }) => {
               <div className="flex items-center gap-1">
                 <Avatar size="xs" rounded="full" />
                 <div className="flex items-center">
-                  <div className="text-sm font-semibold">
-                    {list.creatorName}
-                  </div>
-                  {/* TODO: should probably be address here  */}
-                  <CopyButton value={list.creatorName} />
+                  <div className="text-sm font-semibold">{profile?.name}</div>
+                  <CopyButton value={list.owner} />
                 </div>
               </div>
             </div>
