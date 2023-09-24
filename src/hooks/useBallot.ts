@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
+import axios from "axios";
+import { useSignMessage } from "wagmi";
 
 export type Allocation = { id: string; amount: number };
 type Ballot = Record<string, Allocation>;
@@ -37,6 +39,25 @@ export function useSaveBallot() {
   return useMutation(async (ballot: Ballot) =>
     queryClient.setQueryData(["ballot"], ballot)
   );
+}
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
+
+export function useSubmitBallot({
+  onSuccess,
+}: {
+  onSuccess: () => Promise<void>;
+}) {
+  const { data: ballot } = useBallot();
+  const sign = useSignMessage();
+
+  return useMutation(() => {
+    const message = "sign_ballot_message";
+    return sign.signMessageAsync({ message }).then((signature) => {
+      console.log(signature);
+      return axios.post(backendUrl, ballot).then(onSuccess);
+    });
+  });
 }
 
 /*

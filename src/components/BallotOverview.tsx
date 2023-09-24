@@ -1,17 +1,23 @@
+import { type PropsWithChildren, type ReactNode, useState } from "react";
+import clsx from "clsx";
 import { tv } from "tailwind-variants";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 import { createComponent } from "./ui";
+import { Banner } from "./ui/Banner";
 import { Button } from "./ui/Button";
 import { Divider } from "./ui/Divider";
 import { Progress } from "./ui/Progress";
 import { ExternalLink } from "./ui/Link";
-import { type PropsWithChildren, type ReactNode, useState } from "react";
-import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
-import Link from "next/link";
+import {
+  ballotToArray,
+  sumBallot,
+  useBallot,
+  useSubmitBallot,
+} from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
-import { useRouter } from "next/router";
 import { Dialog } from "./ui/Dialog";
-import { useSignMessage } from "wagmi";
-import clsx from "clsx";
 
 export const OP_TO_ALLOCATE = 30_000_000;
 export const BallotOverview = () => {
@@ -87,17 +93,11 @@ const SubmitBallotButton = () => {
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
 
-  const sign = useSignMessage({
+  const submit = useSubmitBallot({
     onSuccess: async () => {
-      alert("TODO: call backend API");
       await router.push("/ballot/confirmation");
     },
   });
-
-  function handleSign() {
-    const message = "ballot_message";
-    sign.signMessage({ message });
-  }
 
   const messages = {
     signing: {
@@ -110,27 +110,31 @@ const SubmitBallotButton = () => {
       instructions:
         "Once you submit your ballot, you won’t be able to change it. If you are ready, go ahead and submit!",
     },
+    error: {
+      title: "Error subitting ballot",
+      instructions: (
+        <Banner variant="warning" title={(submit.error as Error)?.message}>
+          There was an error submitting the ballot.
+        </Banner>
+      ),
+    },
   };
 
   const { title, instructions } =
-    messages[sign.isLoading ? "signing" : "submitting"];
+    messages[
+      submit.isLoading ? "signing" : submit.error ? "error" : "submitting"
+    ];
 
   return (
     <>
-      <Button
-        variant="primary"
-        onClick={async () => {
-          console.log("TODO: Submit ballot dialog");
-          setOpen(true);
-        }}
-      >
+      <Button variant="primary" onClick={async () => setOpen(true)}>
         Submit ballot
       </Button>
       <Dialog size="sm" isOpen={isOpen} onOpenChange={setOpen} title={title}>
         <p className="pb-8">{instructions}</p>
         <div
           className={clsx("flex gap-2", {
-            ["hidden"]: sign.isLoading,
+            ["hidden"]: submit.isLoading,
           })}
         >
           <Button
@@ -140,7 +144,11 @@ const SubmitBallotButton = () => {
           >
             Back
           </Button>
-          <Button className="flex-1" variant="primary" onClick={handleSign}>
+          <Button
+            className="flex-1"
+            variant="primary"
+            onClick={() => submit.mutate()}
+          >
             Submit ballot
           </Button>
         </div>
