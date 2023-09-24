@@ -1,21 +1,25 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import type { ReactNode, PropsWithChildren, ComponentProps } from "react";
 import { Button } from "./Button";
+import { createComponent } from ".";
+import { tv } from "tailwind-variants";
 
 export const Dialog = ({
   title,
+  size,
   isOpen,
   children,
   onOpenChange,
 }: {
   title?: string | ReactNode;
   isOpen?: boolean;
+  size?: "sm" | "md";
   onOpenChange?: ComponentProps<typeof RadixDialog.Root>["onOpenChange"];
 } & PropsWithChildren) => (
   <RadixDialog.Root open={isOpen} onOpenChange={onOpenChange}>
     <RadixDialog.Portal>
       <RadixDialog.Overlay className="fixed left-0 top-0 h-full w-full bg-black/70" />
-      <RadixDialog.Content className="fixed bottom-0 rounded-t-2xl bg-white px-7 py-6 sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:w-[456px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl md:w-[800px]">
+      <Content size={size}>
         <RadixDialog.Title className="mb-6 text-2xl font-bold">
           {title}
         </RadixDialog.Title>
@@ -25,7 +29,23 @@ export const Dialog = ({
             &times;
           </Button>
         </RadixDialog.Close>
-      </RadixDialog.Content>
+      </Content>
     </RadixDialog.Portal>
   </RadixDialog.Root>
+);
+
+const Content = createComponent(
+  RadixDialog.Content,
+  tv({
+    base: "fixed bottom-0 rounded-t-2xl bg-white px-7 py-6 sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl",
+    variants: {
+      size: {
+        sm: "sm:w-[456px] md:w-[456px]",
+        md: "sm:w-[456px] md:w-[800px]",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  })
 );
