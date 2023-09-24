@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
 import axios from "axios";
-import { useSignMessage } from "wagmi";
+import { useAccount, useSignMessage } from "wagmi";
 
 export type Allocation = { id: string; amount: number };
 type Ballot = Record<string, Allocation>;
@@ -50,13 +50,22 @@ export function useSubmitBallot({
 }) {
   const { data: ballot } = useBallot();
   const sign = useSignMessage();
+  const { address } = useAccount();
 
   return useMutation(() => {
     const message = "sign_ballot_message";
-    return sign.signMessageAsync({ message }).then((signature) => {
-      console.log(signature);
-      return axios.post(backendUrl, ballot).then(onSuccess);
-    });
+    return sign.signMessageAsync({ message }).then((signature) =>
+      axios
+        .post(backendUrl, {
+          address,
+          signature,
+          votes: ballotToArray(ballot).map((p) => ({
+            projectId: p.id,
+            amount: p.amount,
+          })),
+        })
+        .then(onSuccess)
+    );
   });
 }
 
