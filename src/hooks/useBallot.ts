@@ -56,7 +56,7 @@ export function useSubmitBallot({
     const message = "sign_ballot_message";
     return sign.signMessageAsync({ message }).then((signature) =>
       axios
-        .post(backendUrl, {
+        .post(`${backendUrl}/api/ballot/submit`, {
           address,
           signature,
           votes: ballotToArray(ballot).map((p) => ({
