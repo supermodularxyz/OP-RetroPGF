@@ -4,11 +4,14 @@ import { Button } from "./ui/Button";
 import { Divider } from "./ui/Divider";
 import { Progress } from "./ui/Progress";
 import { ExternalLink } from "./ui/Link";
-import type { PropsWithChildren, ReactNode } from "react";
+import { type PropsWithChildren, type ReactNode, useState } from "react";
 import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
 import Link from "next/link";
 import { formatNumber } from "~/utils/formatNumber";
 import { useRouter } from "next/router";
+import { Dialog } from "./ui/Dialog";
+import { useSignMessage } from "wagmi";
+import clsx from "clsx";
 
 export const OP_TO_ALLOCATE = 30_000_000;
 export const BallotOverview = () => {
@@ -20,6 +23,7 @@ export const BallotOverview = () => {
   const sum = sumBallot(allocations);
 
   const canSubmit = router.route === "/ballot" && allocations.length;
+
   return (
     <div className="space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
@@ -52,15 +56,7 @@ export const BallotOverview = () => {
         </div>
       </BallotSection>
       {canSubmit ? (
-        <Button
-          variant="primary"
-          onClick={async () => {
-            console.log("TODO: Submit ballot dialog");
-            await router.push("/ballot/confirmation");
-          }}
-        >
-          Submit ballot
-        </Button>
+        <SubmitBallotButton />
       ) : allocations.length ? (
         <Button variant="outline" as={Link} href={"/ballot"}>
           View ballot
@@ -84,6 +80,72 @@ export const BallotOverview = () => {
         </ExternalLink>
       </div>
     </div>
+  );
+};
+
+const SubmitBallotButton = () => {
+  const router = useRouter();
+  const [isOpen, setOpen] = useState(false);
+
+  const sign = useSignMessage({
+    onSuccess: async () => {
+      alert("TODO: call backend API");
+      await router.push("/ballot/confirmation");
+    },
+  });
+
+  function handleSign() {
+    const message = "ballot_message";
+    sign.signMessage({ message });
+  }
+
+  const messages = {
+    signing: {
+      title: "Sign ballot",
+      instructions:
+        "Confirm the transactions in your wallet to submit your  ballot.",
+    },
+    submitting: {
+      title: "Submit ballot",
+      instructions:
+        "Once you submit your ballot, you won’t be able to change it. If you are ready, go ahead and submit!",
+    },
+  };
+
+  const { title, instructions } =
+    messages[sign.isLoading ? "signing" : "submitting"];
+
+  return (
+    <>
+      <Button
+        variant="primary"
+        onClick={async () => {
+          console.log("TODO: Submit ballot dialog");
+          setOpen(true);
+        }}
+      >
+        Submit ballot
+      </Button>
+      <Dialog size="sm" isOpen={isOpen} onOpenChange={setOpen} title={title}>
+        <p className="pb-8">{instructions}</p>
+        <div
+          className={clsx("flex gap-2", {
+            ["hidden"]: sign.isLoading,
+          })}
+        >
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => setOpen(false)}
+          >
+            Back
+          </Button>
+          <Button className="flex-1" variant="primary" onClick={handleSign}>
+            Submit ballot
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 };
 
