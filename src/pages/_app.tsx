@@ -10,13 +10,17 @@ import { Providers } from "~/providers";
 import "@rainbow-me/rainbowkit/styles.css";
 import "~/styles/globals.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+    },
+  },
+});
 
 const persister = createSyncStoragePersister({
   storage: typeof window !== "undefined" ? window.localStorage : null,
 });
-
-persistQueryClientSave({ queryClient, persister }).catch(console.log);
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
