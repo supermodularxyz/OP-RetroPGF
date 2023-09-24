@@ -69,6 +69,15 @@ export function useSubmitBallot({
   });
 }
 
+export function useSubmittedBallot() {
+  const { address } = useAccount();
+  return useQuery(
+    ["submitted-ballot"],
+    () => axios.get(`${backendUrl}/api/ballot/${address}`),
+    { enabled: Boolean(address) }
+  );
+}
+
 /*
 Ballot only include id and amount.
 To be able to search for projects we need to have the project displayName.
