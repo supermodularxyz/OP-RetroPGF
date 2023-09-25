@@ -1,10 +1,8 @@
 import { type PropsWithChildren, type ReactNode, useState } from "react";
 import clsx from "clsx";
-import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { createComponent } from "./ui";
 import { Banner } from "./ui/Banner";
 import { Button } from "./ui/Button";
 import { Divider } from "./ui/Divider";
@@ -18,6 +16,7 @@ import {
 } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
+import { VotingEndsIn } from "./VotingEndsIn";
 
 export const OP_TO_ALLOCATE = 30_000_000;
 export const BallotOverview = () => {
@@ -36,10 +35,7 @@ export const BallotOverview = () => {
         Your ballot
       </h3>
       <BallotSection title="Voting ends in:">
-        <div>
-          <TimeSlice>3d</TimeSlice>:<TimeSlice>12h</TimeSlice>:
-          <TimeSlice>30m</TimeSlice>:<TimeSlice>24s</TimeSlice>
-        </div>
+        <VotingEndsIn />
       </BallotSection>
       <BallotSection title="Projects added:">
         <div>
@@ -168,5 +164,3 @@ const BallotSection = ({
     </div>
   </div>
 );
-
-const TimeSlice = createComponent("span", tv({ base: "text-gray-900" }));
