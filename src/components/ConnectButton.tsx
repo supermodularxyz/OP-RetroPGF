@@ -8,16 +8,14 @@ import { createBreakpoint } from "react-use";
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
-import { countBallot, useBallot } from "~/hooks/useBallot";
+import { countBallot, useBallot, useSubmittedBallot } from "~/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 export const ConnectButton = () => {
   const breakpoint = useBreakpoint();
-
   const isMobile = breakpoint === "S";
 
-  const ballotSize = countBallot(useBallot().data);
   return (
     <RainbowConnectButton.Custom>
       {({
@@ -59,31 +57,49 @@ export const ConnectButton = () => {
               }
 
               return (
-                <div className="flex gap-2">
-                  <Chip className="gap-2" as={Link} href={"/ballot"}>
-                    {isMobile ? (
-                      <AddBallot className="h-4 w-4" />
-                    ) : (
-                      `View Ballot`
-                    )}
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs ">
-                      {ballotSize}
-                    </div>
-                  </Chip>
-                  <UserInfo
-                    onClick={openAccountModal}
-                    address={account.address as Address}
-                  >
-                    {isMobile ? null : account.displayName}
-                  </UserInfo>
-                  <EligibilityDialog />
-                </div>
+                <ConnectedDetails
+                  account={account}
+                  openAccountModal={openAccountModal}
+                  isMobile={isMobile}
+                />
               );
             })()}
           </div>
         );
       }}
     </RainbowConnectButton.Custom>
+  );
+};
+
+const ConnectedDetails = ({
+  openAccountModal,
+  account,
+  isMobile,
+}: {
+  account: { address: string; displayName: string };
+  openAccountModal: () => void;
+  isMobile: boolean;
+}) => {
+  const ballotSize = countBallot(useBallot().data);
+
+  const { data: submitted } = useSubmittedBallot();
+
+  // TODO: Need to merge Auth PR first
+  console.log({ submitted });
+
+  return (
+    <div className="flex gap-2">
+      <Chip className="gap-2" as={Link} href={"/ballot"}>
+        {isMobile ? <AddBallot className="h-4 w-4" /> : `View Ballot`}
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs ">
+          {ballotSize}
+        </div>
+      </Chip>
+      <UserInfo onClick={openAccountModal} address={account.address as Address}>
+        {isMobile ? null : account.displayName}
+      </UserInfo>
+      <EligibilityDialog />
+    </div>
   );
 };
 
