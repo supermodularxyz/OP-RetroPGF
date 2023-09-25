@@ -8,7 +8,7 @@ const VOTING_END_DATE =
   process.env.NEXT_PUBLIC_VOTING_END_DATE ??
   new Date(Date.now() + 1000 * 60 * 60 * 24 * 15).toISOString();
 
-function useVotingTimeLeft() {
+export function useVotingTimeLeft() {
   const [state, setState] = useState<[number, number, number, number]>([
     0, 0, 0, 0,
   ]);
