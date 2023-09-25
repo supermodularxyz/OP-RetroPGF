@@ -1,16 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { sortAndFilter, paginate } from "./useProjects";
-import { allListsLikes, lists } from "~/data/mock";
+import { allListsLikes } from "~/data/mock";
 import { useAccount, type Address } from "wagmi";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
 
 export type List = {
   id: string;
+  listName: string;
   displayName: string;
-  creatorName: string;
-  creatorAvatarUrl: string;
+  owner: string;
   bio: string;
   impactCategory: ImpactCategory[];
   impactEvaluation: string;
@@ -32,15 +32,18 @@ export function useLists(filter: Filter) {
   } = filter ?? initialFilter;
 
   // TODO: Call EAS attestations
-  const { data: lists } = useAllLists();
-  return useQuery(["lists", { page, sort, categories, search }], () =>
-    paginate(sortAndFilter(lists, filter), filter?.page)
+  const { data: lists, isLoading } = useAllLists();
+  return useQuery(
+    ["lists", { page, sort, categories, search }],
+    () => paginate(sortAndFilter(lists, filter), filter?.page),
+    { enabled: !isLoading }
   );
 }
 
 export function useList(id: string) {
-  return useQuery(["lists", id], async () => lists.find((p) => p.id === id), {
-    enabled: Boolean(id),
+  const { data: lists, isLoading } = useAllLists();
+  return useQuery(["lists", id], async () => lists?.find((p) => p.id === id), {
+    enabled: Boolean(id && !isLoading),
   });
 }
 

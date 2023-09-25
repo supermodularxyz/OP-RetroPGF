@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
+import axios from "axios";
+import { useAccount, useSignMessage } from "wagmi";
 
 export type Allocation = { id: string; amount: number };
 type Ballot = Record<string, Allocation>;
@@ -34,8 +36,48 @@ export function useBallot() {
 
 export function useSaveBallot() {
   const queryClient = useQueryClient();
-  return useMutation(async (ballot: Ballot) =>
-    queryClient.setQueryData(["ballot"], ballot)
+  const { address } = useAccount();
+
+  return useMutation(async (ballot: Ballot) => {
+    queryClient.setQueryData(["ballot"], ballot);
+    return axios.post(`${backendUrl}/api/ballot/save`, {
+      address,
+      votes: mapBallotForBackend(ballot),
+    });
+  });
+}
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
+
+export function useSubmitBallot({
+  onSuccess,
+}: {
+  onSuccess: () => Promise<void>;
+}) {
+  const { data: ballot } = useBallot();
+  const sign = useSignMessage();
+  const { address } = useAccount();
+
+  return useMutation(() => {
+    const message = "sign_ballot_message";
+    return sign.signMessageAsync({ message }).then((signature) =>
+      axios
+        .post(`${backendUrl}/api/ballot/submit`, {
+          address,
+          signature,
+          votes: mapBallotForBackend(ballot),
+        })
+        .then(onSuccess)
+    );
+  });
+}
+
+export function useSubmittedBallot() {
+  const { address } = useAccount();
+  return useQuery(
+    ["submitted-ballot"],
+    () => axios.get(`${backendUrl}/api/ballot/${address}`),
+    { enabled: Boolean(address) }
   );
 }
 
@@ -69,6 +111,13 @@ export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
   allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
 
 export const sumBallot = (allocations: Allocation[] = []) =>
-  allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
+  allocations.reduce((sum, x) => sum + (!isNaN(x?.amount) ? x.amount : 0), 0);
 
 export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
+
+function mapBallotForBackend(ballot?: Ballot) {
+  return ballotToArray(ballot).map((p) => ({
+    projectId: p.id,
+    amount: p.amount,
+  }));
+}

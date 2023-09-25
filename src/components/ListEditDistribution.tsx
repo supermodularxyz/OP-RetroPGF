@@ -91,6 +91,7 @@ export const ListEditDistribution = ({
         Edit distribution
       </IconButton>
       <Dialog
+        size={add.isSuccess ? "sm" : "md"}
         isOpen={isOpen}
         onOpenChange={() => {
           setOpen(false);
@@ -127,7 +128,9 @@ export const ListEditDistribution = ({
               </Banner>
             ) : null}
             <ResetDistribution />
-            <AllocationForm filter={{}} list={alreadyInBallot} />
+            <div className="max-h-[480px] overflow-y-scroll">
+              <AllocationForm filter={{}} list={alreadyInBallot} />
+            </div>
             <TotalOPBanner />
             <div className="flex gap-2">
               <Button
@@ -165,8 +168,6 @@ const TotalOPBanner = () => {
   const current = sumBallot(allocations);
 
   const exceeds = current + sum - OP_TO_ALLOCATE;
-
-  console.log({ exceeds });
 
   const isExceeding = exceeds > 0;
   return (
