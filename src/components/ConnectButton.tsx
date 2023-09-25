@@ -28,43 +28,29 @@ export const ConnectButton = () => {
       }) => {
         const connected = mounted && account && chain;
 
+        if (!connected) {
+          return (
+            <Button
+              data-testid="connect-wallet"
+              onClick={openConnectModal}
+              className="rounded-full"
+              variant="primary"
+            >
+              {isMobile ? "Connect" : "Connect wallet"}
+            </Button>
+          );
+        }
+
+        if (chain.unsupported) {
+          return <Chip onClick={openChainModal}>Wrong network</Chip>;
+        }
+
         return (
-          <div
-            {...(!mounted && {
-              "aria-hidden": true,
-              style: {
-                opacity: 0,
-                pointerEvents: "none",
-                userSelect: "none",
-              },
-            })}
-          >
-            {(() => {
-              if (!connected) {
-                return (
-                  <Button
-                    onClick={openConnectModal}
-                    className="rounded-full"
-                    variant="primary"
-                  >
-                    {isMobile ? "Connect" : "Connect wallet"}
-                  </Button>
-                );
-              }
-
-              if (chain.unsupported) {
-                return <Chip onClick={openChainModal}>Wrong network</Chip>;
-              }
-
-              return (
-                <ConnectedDetails
-                  account={account}
-                  openAccountModal={openAccountModal}
-                  isMobile={isMobile}
-                />
-              );
-            })()}
-          </div>
+          <ConnectedDetails
+            account={account}
+            openAccountModal={openAccountModal}
+            isMobile={isMobile}
+          />
         );
       }}
     </RainbowConnectButton.Custom>
