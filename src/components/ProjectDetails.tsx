@@ -182,28 +182,27 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               OTHER: link.url,
             }[link.type];
             return (
-              <div
-                key={link.url}
-                className="space-y-6 rounded-3xl border border-gray-200 p-6"
-              >
-                <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
-                  <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
-                  <div>
-                    <div className="mb-2 font-semibold text-gray-700">
-                      {link.description}
+              <Link key={link.url} href={linkUrl} target="_blank">
+                <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
+                  <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
+                    <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
+                    <div>
+                      <div className="mb-2 font-semibold text-gray-700">
+                        {link.description}
+                      </div>
+                      <div
+                        className="flex items-center gap-1 text-gray-700 hover:underline "
+                      >
+                        <LinkIcon />
+                        <span className="text-sm font-semibold ">
+                          {link.url}
+                        </span>
+                      </div>
                     </div>
-                    <Link
-                      href={linkUrl}
-                      target="_blank"
-                      className="flex items-center gap-1 text-gray-700 hover:underline "
-                    >
-                      <LinkIcon />
-                      <span className="text-sm font-semibold ">{link.url}</span>
-                    </Link>
                   </div>
+                  <p>{link.description}</p>
                 </div>
-                <p>{link.description}</p>
-              </div>
+              </Link>
             );
           })}
         </div>
