@@ -4,13 +4,10 @@ import { ListCreatedConfirmation } from "~/components/ListCreatedConfirmation";
 
 export default function ListCreatedPage() {
   const router = useRouter();
-  const { website = "NOT_SET", redirectTo = "#" } = router.query;
+  const { redirectTo = "#" } = router.query;
   return (
     <Layout>
-      <ListCreatedConfirmation
-        website={website as string}
-        websiteUrl={redirectTo as string}
-      />
+      <ListCreatedConfirmation websiteUrl={redirectTo as string} />
     </Layout>
   );
 }
