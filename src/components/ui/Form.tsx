@@ -3,10 +3,10 @@ import { tv } from "tailwind-variants";
 import {
   type ComponentPropsWithRef,
   type PropsWithChildren,
-  type ComponentPropsWithoutRef,
-  type ReactElement,
   forwardRef,
+  ComponentPropsWithoutRef,
   cloneElement,
+  ReactElement,
 } from "react";
 import {
   FormProvider,
@@ -18,32 +18,34 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createComponent } from ".";
 import { Search } from "../icons";
+import clsx from "clsx";
 
+const inputBase = [
+  "flex",
+
+  "w-full",
+  "rounded-xl",
+  "border",
+  "border-gray-300",
+  "bg-background",
+  "px-3",
+  "py-2",
+  "text-gray-900",
+  "ring-offset-background",
+  "file:border-0",
+  "placeholder:text-muted",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-ring",
+  "focus-visible:ring-offset-2",
+  "disabled:cursor-not-allowed",
+  "disabled:bg-gray-200",
+  "disabled:opacity-50",
+];
 export const Input = createComponent(
   "input",
   tv({
-    base: [
-      "flex",
-      "h-12",
-      "w-full",
-      "rounded-xl",
-      "border",
-      "border-gray-300",
-      "bg-background",
-      "px-3",
-      "py-2",
-      "text-gray-900",
-      "ring-offset-background",
-      "file:border-0",
-      "placeholder:text-muted",
-      "focus-visible:outline-none",
-      "focus-visible:ring-2",
-      "focus-visible:ring-ring",
-      "focus-visible:ring-offset-2",
-      "disabled:cursor-not-allowed",
-      "disabled:bg-gray-200",
-      "disabled:opacity-50",
-    ],
+    base: [...inputBase, "h-12"],
     variants: {
       error: {
         true: "ring-primary-500",
@@ -90,6 +92,45 @@ export const SearchInput = forwardRef(function SearchInput(
     </InputWrapper>
   );
 });
+
+export const Label = createComponent("label", tv({ base: "pb-1 block" }));
+export const Textarea = createComponent("textarea", tv({ base: inputBase }));
+
+export const FormControl = ({
+  name,
+  label,
+  hint,
+  required,
+  children,
+  className,
+}: {
+  name: string;
+  label: string;
+  required?: boolean;
+  hint?: string;
+} & ComponentPropsWithoutRef<"fieldset">) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
+  const error = errors[name];
+  return (
+    <fieldset className={clsx("mb-4", className)}>
+      <Label htmlFor={name}>
+        {label}
+        {required ? <span className="text-red-300">*</span> : ""}
+      </Label>
+      {cloneElement(children as ReactElement, { id: name, ...register(name) })}
+      {hint ? <div className="pt-1 text-xs text-gray-500">{hint}</div> : null}
+      {error ? (
+        <div className="pt-1 text-xs text-red-500">
+          {error.message as string}
+        </div>
+      ) : null}
+    </fieldset>
+  );
+};
 
 export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];

@@ -13,6 +13,7 @@
     "generate-mock": "npx ts-node -O '{\"module\": \"commonjs\"}' scripts/generateMock.ts"
   },
   "dependencies": {
+    "@ethereum-attestation-service/eas-sdk": "1.2.0-beta.0",
     "@hookform/resolvers": "^3.3.1",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
@@ -25,6 +26,7 @@
     "axios": "^1.5.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
+    "ethers": "5.7.2",
     "got": "^13.0.0",
     "graphql": "^16.8.0",
     "graphql-request": "^6.1.0",
@@ -39,6 +41,7 @@
     "tailwind-variants": "^0.1.14",
     "viem": "^1.10.3",
     "wagmi": "^1.4.1",
+    "web3.storage": "^4.5.5",
     "zod": "^3.22.2"
   },
   "devDependencies": {

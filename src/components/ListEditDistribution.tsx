@@ -169,8 +169,6 @@ const TotalOPBanner = () => {
 
   const exceeds = current + sum - OP_TO_ALLOCATE;
 
-  console.log({ exceeds });
-
   const isExceeding = exceeds > 0;
   return (
     <Banner className="mb-6" variant={isExceeding ? "warning" : "info"}>

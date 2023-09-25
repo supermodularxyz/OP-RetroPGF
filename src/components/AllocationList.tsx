@@ -13,6 +13,7 @@ import { AllocationInput } from "./AllocationInput";
 import { type Allocation } from "~/hooks/useBallot";
 import { useBallotProjectData } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
+import { SearchProjects } from "./CreateList/SearchProjects";
 
 const AllocationListWrapper = createComponent(
   "div",
@@ -59,6 +60,7 @@ export function AllocationForm({
     keyName: "key",
     control: form.control,
   });
+
   const mapProjectData = useBallotProjectData();
 
   // Map each id to the index so we can sort and filter
@@ -118,6 +120,83 @@ export function AllocationForm({
               </Tr>
             );
           })}
+        </Tbody>
+      </Table>
+      <button type="submit" className="hidden" />
+    </AllocationListWrapper>
+  );
+}
+
+export function AllocationFormWithSearch({
+  onSave,
+}: {
+  onSave?: (v: { allocations: Allocation[] }) => void;
+}) {
+  const form = useFormContext<{ allocations: Allocation[] }>();
+
+  const { fields, append, remove } = useFieldArray({
+    name: "allocations",
+    keyName: "key",
+    control: form.control,
+  });
+
+  const { errors } = form.formState;
+
+  return (
+    <AllocationListWrapper>
+      <SearchProjects onSelect={(id) => append({ id, amount: 0 })} />
+      <Table>
+        <Tbody>
+          {fields.length ? (
+            fields.map((project, i) => {
+              const error = errors.allocations?.[i]?.amount?.message;
+              return (
+                <Tr key={project.key}>
+                  <Td className={"w-full"}>
+                    <ProjectAvatarWithName id={project.id} />
+                    {error ? (
+                      <div className="text-xs text-error-600">{error}</div>
+                    ) : null}
+                  </Td>
+
+                  <Td>
+                    <AllocationInput
+                      name={`allocations.${i}.amount`}
+                      onBlur={() => onSave?.(form.getValues())}
+                    />
+                  </Td>
+                  <Td>
+                    <IconButton
+                      tabIndex={-1}
+                      type="button"
+                      variant="outline"
+                      icon={Trash}
+                      onClick={() => {
+                        remove(i);
+                        onSave?.(form.getValues());
+                      }}
+                    />
+                  </Td>
+                </Tr>
+              );
+            })
+          ) : (
+            <Tr>
+              <Td
+                colSpan={3}
+                className="flex flex-1 items-center justify-center py-4"
+              >
+                <div className=" max-w-[360px] space-y-4">
+                  <h3 className="text-center text-lg font-bold">
+                    List is empty
+                  </h3>
+                  <p className="text-center text-sm text-gray-700">
+                    Search projects to add them to the list.
+                  </p>
+                </div>
+              </Td>
+            </Tr>
+          )}
         </Tbody>
       </Table>
       <button type="submit" className="hidden" />
