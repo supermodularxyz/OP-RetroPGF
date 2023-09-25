@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHarmonicIntervalFn } from "react-use";
+import { createGlobalState, useHarmonicIntervalFn } from "react-use";
 import { calculateTimeLeft } from "~/utils/time";
 import { createComponent } from "./ui";
 import { tv } from "tailwind-variants";
@@ -8,10 +8,11 @@ const VOTING_END_DATE =
   process.env.NEXT_PUBLIC_VOTING_END_DATE ??
   new Date(Date.now() + 1000 * 60 * 60 * 24 * 15).toISOString();
 
+const useEndDate = createGlobalState<[number, number, number, number]>([
+  0, 0, 0, 0,
+]);
 export function useVotingTimeLeft() {
-  const [state, setState] = useState<[number, number, number, number]>([
-    0, 0, 0, 0,
-  ]);
+  const [state, setState] = useEndDate();
 
   useHarmonicIntervalFn(
     () => setState(calculateTimeLeft(new Date(VOTING_END_DATE))),
