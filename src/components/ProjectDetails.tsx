@@ -109,25 +109,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               <h3 className="mb-2 text-2xl font-bold">
                 {project?.displayName}
               </h3>
-              <div className="flex items-center gap-2">
-                <IconBadge
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  icon={Github}
-                  as={Link}
-                  target="_blank"
-                  href={`https://www.github.com/`}
-                >
-                  GitHub
-                </IconBadge>
-                <IconBadge
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                  icon={Twitter}
-                  as={Link}
-                  target="_blank"
-                  href={`https://www.twitter.com/`}
-                >
-                  Twitter
-                </IconBadge>
+              <div>
                 <IconBadge
                   icon={LinkIcon}
                   as={Link}
@@ -168,13 +150,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       <p className="">{project?.bio}</p>
       <div className="my-8 flex flex-wrap gap-2">
         <Tag>
-          <FaCheckToSlot /> 56 ballots
+          <FaCheckToSlot className="text-gray-500" /> 56 ballots
         </Tag>
         <Tag>
-          <LayoutList /> {lists?.length} voting lists
+          <LayoutList className="text-gray-500" /> {lists?.length} voting lists
         </Tag>
         <Tag>
-          <Contribution />
+          <Contribution className="text-gray-500" />
           Round 2 contributor
         </Tag>
       </div>
@@ -184,7 +166,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <H3>Impact statement for RetroPGF 3</H3>
         </div>
         <p className="">{project?.impactDescription}</p>
-
         <h6 className="mb-1 text-sm font-semibold text-gray-500">
           Categories of impact
         </h6>
@@ -200,11 +181,8 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           ))}
         </div>
         <DividerIcon icon={Contribution} className="my-4" />
-
         <H3>Contributions</H3>
-
         <p>{project?.contributionDescription}</p>
-
         <div className="grid gap-2">
           {project?.contributionLinks?.map((link) => {
             const Icon = {
@@ -219,23 +197,31 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               OTHER: link.url,
             }[link.type];
             return (
-              <ImpactCard key={link.url} className="space-y-2">
-                <H4>{link.description}</H4>
-                <p>{link.description}</p>
-                <Link
-                  href={linkUrl}
-                  target="_blank"
-                  className="flex items-center gap-1 text-gray-700 hover:underline "
-                >
-                  <Icon className="h-4 w-4" />
-                  {link.url}
-                </Link>
-              </ImpactCard>
+              <Link key={link.url} href={linkUrl} target="_blank">
+                <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
+                  <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
+                    <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
+                    <div>
+                      <div className="mb-2 font-semibold text-gray-700">
+                        {link.description}
+                      </div>
+                      <div
+                        className="flex items-center gap-1 text-gray-700 hover:underline "
+                      >
+                        <LinkIcon />
+                        <span className="text-sm font-semibold ">
+                          {link.url}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p>{link.description}</p>
+                </div>
+              </Link>
             );
           })}
         </div>
         <DividerIcon icon={Contribution} className="my-4" />
-
         <H3>Impact</H3>
         <p>{project?.impactDescription}</p>
         <div className="grid gap-2 md:grid-cols-3">
@@ -257,8 +243,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           ))}
         </div>
         <DividerIcon icon={Contribution} className="my-4" />
-
-        <H3>Past funding</H3>
+        <H3>Past grants and funding</H3>
 
         <div className="flex flex-col gap-4 divide-y divide-gray-200">
           {project?.fundingSources?.map((fund, i) => (
