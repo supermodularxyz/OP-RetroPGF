@@ -1,18 +1,21 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import clsx from "clsx";
 import { Command } from "cmdk";
 
 import { useProjects } from "~/hooks/useProjects";
 import { type Filter, useFilter } from "~/hooks/useFilter";
 import { SearchInput } from "../ui/Form";
+import { useClickAway } from "react-use";
 
 type Props = {
   onSelect: (path: string) => void;
 };
 
 export const SearchProjects = ({ onSelect }: Props) => {
+  const searchRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  useClickAway(searchRef, () => setOpen(false));
 
   // Search does not use pagination, categories and always sorts A to Z
   const filter = {
@@ -27,11 +30,17 @@ export const SearchProjects = ({ onSelect }: Props) => {
 
   return (
     <div className="flex-1">
-      <Command className="flex-1 md:relative" shouldFilter={false} loop>
+      <Command
+        ref={searchRef}
+        className="flex-1 md:relative"
+        shouldFilter={false}
+        loop
+      >
         <SearchInput
           as={Command.Input}
           value={search}
           onFocus={() => setOpen(true)}
+          onKeyDown={() => setOpen(true)}
           onValueChange={setSearch}
           placeholder="Search projects..."
         />
