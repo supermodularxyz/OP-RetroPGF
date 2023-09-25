@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import router from "next/router";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
@@ -41,8 +40,6 @@ import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { IconButton } from "./ui/Button";
 import { useMemo, useRef } from "react";
-import router from "next/router";
-import { List } from "~/hooks/useLists";
 import { useIntersection } from "react-use";
 import clsx from "clsx";
 import { type List } from "~/hooks/useLists";
