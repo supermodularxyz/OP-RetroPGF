@@ -12,11 +12,14 @@ import { useCreateList } from "~/hooks/useCreateList";
 import { type CreateList, CreateListSchema } from "~/schemas/list";
 import { useUploadMetadata } from "~/hooks/useMetadata";
 import { useAccount } from "wagmi";
+import { useRouter } from "next/router";
+import { toURL } from "~/hooks/useFilter";
 
-const CreateListForm = () => {
+const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const create = useCreateList();
   const upload = useUploadMetadata();
   const { address } = useAccount();
+
   function handleSaveDraft(data: unknown) {
     console.log("save draft", data);
   }
@@ -31,12 +34,15 @@ const CreateListForm = () => {
         const { listName, ...list } = parseList(values);
         const listMetadataPtr = upload.data ?? (await upload.mutateAsync(list));
 
-        create.mutate({
-          listName,
-          listMetadataPtrType: 1,
-          listMetadataPtr,
-          owner: address!,
-        });
+        create.mutate(
+          {
+            listName,
+            listMetadataPtrType: 1,
+            listMetadataPtr,
+            owner: address!,
+          },
+          { onSuccess }
+        );
       }}
     >
       <div className="mb-4 text-2xl font-semibold">Create a new list</div>
@@ -85,7 +91,6 @@ const TotalOP = () => {
 
   const exceeds = current - OP_TO_ALLOCATE;
   const isExceeding = exceeds > 0;
-  console.log(form.formState.errors);
   return (
     <Banner className="mb-6" variant={isExceeding ? "warning" : "info"}>
       <div className={"flex justify-between font-semibold"}>
@@ -101,9 +106,12 @@ const TotalOP = () => {
 };
 
 export default function CreateListPage() {
+  const router = useRouter();
   return (
     <Layout>
-      <CreateListForm />
+      <CreateListForm
+        onSuccess={() => router.push(`/lists/created?${toURL(router.query)}`)}
+      />
     </Layout>
   );
 }
