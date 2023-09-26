@@ -15,10 +15,14 @@ export function useVerify() {
   return useMutation(
     ({ message, signature }: { message: string; signature: string }) =>
       axios
-        .post<{ success: boolean }>(`${backendUrl}/api/auth/verify`, {
-          message,
-          signature,
-        })
+        .post<{ success: boolean }>(
+          `${backendUrl}/api/auth/verify`,
+          {
+            message,
+            signature,
+          },
+          { withCredentials: true }
+        )
         .then((r) => r.data)
   );
 }
