@@ -36,7 +36,6 @@ export const useCategories = () => {
       {}
     );
     return (projects as Project[]).reduce((acc, x) => {
-      console.log(x, x.impactCategory);
       x.impactCategory?.forEach((category) => (acc[category] += 1));
       return acc;
     }, initialState as { [key in ImpactCategory]: number });
