@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import router from "next/router";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
@@ -40,6 +39,9 @@ import { IconBadge } from "./ui/Badge";
 import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { IconButton } from "./ui/Button";
+import { useMemo, useRef } from "react";
+import { useIntersection } from "react-use";
+import clsx from "clsx";
 import { type List } from "~/hooks/useLists";
 import { useProfile } from "~/hooks/useProfiles";
 
@@ -57,6 +59,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     [project, allProjects]
   );
 
+  const intersectionRef = useRef(null);
+  const intersection = useIntersection(intersectionRef, {
+    root: null,
+    rootMargin: "0px",
+    threshold: 0,
+  });
+
   async function handleNavigate(dir: number) {
     const id = allProjects?.[currentIndex + dir]?.id;
     if (id) await router.push(`/projects/${id}`);
@@ -64,14 +73,28 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 
   return (
     <>
-      <div className="sticky left-0 top-0 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex">
-        <h1 className="text-xl font-semibold">
-          {project?.displayName}&apos;s Round application
-        </h1>
+      <div
+        className={clsx(
+          "sticky left-0 top-0 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex",
+          {
+            ["flex-row-reverse"]: !intersection?.isIntersecting,
+          }
+        )}
+      >
+        {!intersection?.isIntersecting ? (
+          <ProjectAddToBallot project={project} />
+        ) : (
+          <h1 className="text-xl font-semibold">
+            {project?.displayName}&apos;s Round application
+          </h1>
+        )}
+
         <div className="flex items-center gap-6">
-          <p className="font-neutral-500 text-sm font-semibold">
-            {currentIndex + 1} of {allProjects?.length} applications
-          </p>
+          {intersection?.isIntersecting && (
+            <p className="font-neutral-500 text-sm font-semibold">
+              {currentIndex + 1} of {allProjects?.length} applications
+            </p>
+          )}
           <div className="flex flex-shrink-0 gap-2">
             <IconButton
               variant="outline"
@@ -90,7 +113,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           </div>
         </div>
       </div>
-      <div>
+      <div ref={intersectionRef}>
         <picture>
           <img
             alt={profile?.name}
@@ -147,138 +170,139 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         </div>
       </div>
       <Divider className="my-8" />
-      <p className="">{project?.bio}</p>
-      <div className="my-8 flex flex-wrap gap-2">
-        <Tag>
-          <FaCheckToSlot className="text-gray-500" /> 56 ballots
-        </Tag>
-        <Tag>
-          <LayoutList className="text-gray-500" /> {lists?.length} voting lists
-        </Tag>
-        <Tag>
-          <Contribution className="text-gray-500" />
-          Round 2 contributor
-        </Tag>
-      </div>
-      <Card>
-        <div className="flex items-center gap-4">
-          <SunnyMini className="text-primary-600" />
-          <H3>Impact statement for RetroPGF 3</H3>
+      <div>
+        <p className="">{project?.bio}</p>
+        <div className="my-8 flex flex-wrap gap-2">
+          <Tag>
+            <FaCheckToSlot className="text-gray-500" /> 56 ballots
+          </Tag>
+          <Tag>
+            <LayoutList className="text-gray-500" /> {lists?.length} voting
+            lists
+          </Tag>
+          <Tag>
+            <Contribution className="text-gray-500" />
+            Round 2 contributor
+          </Tag>
         </div>
-        <p className="">{project?.impactDescription}</p>
-        <h6 className="mb-1 text-sm font-semibold text-gray-500">
-          Categories of impact
-        </h6>
-        <div className="flex flex-wrap gap-1">
-          {project?.impactCategory?.map((category) => (
-            <HoverTagCard
-              key={category}
-              tag={impactCategoryLabels[category]}
-              description={impactCategoryDescriptions[category]}
-              includedProjectsNumber={1}
-              totalProjectsNumber={150}
-            />
-          ))}
-        </div>
-        <DividerIcon icon={Contribution} className="my-4" />
-        <H3>Contributions</H3>
-        <p>{project?.contributionDescription}</p>
-        <div className="grid gap-2">
-          {project?.contributionLinks?.map((link) => {
-            const Icon = {
-              GITHUB_REPO: LinkIcon,
-              CONTRACT_ADDRESS: Code,
-              OTHER: "div",
-            }[link.type];
+        <Card>
+          <div className="flex items-center gap-4">
+            <SunnyMini className="text-primary-600" />
+            <H3>Impact statement for RetroPGF 3</H3>
+          </div>
+          <p className="">{project?.impactDescription}</p>
+          <h6 className="mb-1 text-sm font-semibold text-gray-500">
+            Categories of impact
+          </h6>
+          <div className="flex flex-wrap gap-1">
+            {project?.impactCategory?.map((category) => (
+              <HoverTagCard
+                key={category}
+                tag={impactCategoryLabels[category]}
+                description={impactCategoryDescriptions[category]}
+                includedProjectsNumber={1}
+                totalProjectsNumber={150}
+              />
+            ))}
+          </div>
+          <DividerIcon icon={Contribution} className="my-4" />
+          <H3>Contributions</H3>
+          <p>{project?.contributionDescription}</p>
+          <div className="grid gap-2">
+            {project?.contributionLinks?.map((link) => {
+              const Icon = {
+                GITHUB_REPO: LinkIcon,
+                CONTRACT_ADDRESS: Code,
+                OTHER: "div",
+              }[link.type];
 
-            const linkUrl = {
-              GITHUB_REPO: link.url,
-              CONTRACT_ADDRESS: `https://optimistic.etherscan.io/address/${link.url}`,
-              OTHER: link.url,
-            }[link.type];
-            return (
-              <Link key={link.url} href={linkUrl} target="_blank">
-                <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
-                  <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
-                    <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
-                    <div>
-                      <div className="mb-2 font-semibold text-gray-700">
-                        {link.description}
-                      </div>
-                      <div
-                        className="flex items-center gap-1 text-gray-700 hover:underline "
-                      >
-                        <LinkIcon />
-                        <span className="text-sm font-semibold ">
-                          {link.url}
-                        </span>
+              const linkUrl = {
+                GITHUB_REPO: link.url,
+                CONTRACT_ADDRESS: `https://optimistic.etherscan.io/address/${link.url}`,
+                OTHER: link.url,
+              }[link.type];
+              return (
+                <Link key={link.url} href={linkUrl} target="_blank">
+                  <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
+                    <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
+                      <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
+                      <div>
+                        <div className="mb-2 font-semibold text-gray-700">
+                          {link.description}
+                        </div>
+                        <div className="flex items-center gap-1 text-gray-700 hover:underline ">
+                          <LinkIcon />
+                          <span className="text-sm font-semibold ">
+                            {link.url}
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <p>{link.description}</p>
                   </div>
-                  <p>{link.description}</p>
+                </Link>
+              );
+            })}
+          </div>
+          <DividerIcon icon={Contribution} className="my-4" />
+          <H3>Impact</H3>
+          <p>{project?.impactDescription}</p>
+          <div className="grid gap-2 md:grid-cols-3">
+            {project?.impactMetrics?.map((metric, i) => (
+              <ImpactCard
+                as={metric.url ? Link : "div"}
+                href={metric.url ?? "#"}
+                target={metric.url ? "_blank" : ""}
+                key={i}
+              >
+                <div className="flex justify-between">
+                  <H4 className="font-mono">{suffixNumber(metric.number)}</H4>
+                  {metric.url ? (
+                    <LuArrowUpRight className="text-gray-500" />
+                  ) : null}
                 </div>
-              </Link>
-            );
-          })}
-        </div>
-        <DividerIcon icon={Contribution} className="my-4" />
-        <H3>Impact</H3>
-        <p>{project?.impactDescription}</p>
-        <div className="grid gap-2 md:grid-cols-3">
-          {project?.impactMetrics?.map((metric, i) => (
-            <ImpactCard
-              as={metric.url ? Link : "div"}
-              href={metric.url ?? "#"}
-              target={metric.url ? "_blank" : ""}
-              key={i}
-            >
-              <div className="flex justify-between">
-                <H4 className="font-mono">{suffixNumber(metric.number)}</H4>
-                {metric.url ? (
-                  <LuArrowUpRight className="text-gray-500" />
-                ) : null}
-              </div>
-              <p className="text-gray-700">{metric.description}</p>
-            </ImpactCard>
-          ))}
-        </div>
-        <DividerIcon icon={Contribution} className="my-4" />
-        <H3>Past grants and funding</H3>
+                <p className="text-gray-700">{metric.description}</p>
+              </ImpactCard>
+            ))}
+          </div>
+          <DividerIcon icon={Contribution} className="my-4" />
+          <H3>Past grants and funding</H3>
 
-        <div className="flex flex-col gap-4 divide-y divide-gray-200">
-          {project?.fundingSources?.map((fund, i) => (
-            <div className="flex pt-6" key={i}>
-              <div className="flex-1 justify-between md:flex">
-                <div className="md:flex">
-                  <div className="text-lg md:w-64">
-                    {fundingSourcesLabels[fund.type]}
+          <div className="flex flex-col gap-4 divide-y divide-gray-200">
+            {project?.fundingSources?.map((fund, i) => (
+              <div className="flex pt-6" key={i}>
+                <div className="flex-1 justify-between md:flex">
+                  <div className="md:flex">
+                    <div className="text-lg md:w-64">
+                      {fundingSourcesLabels[fund.type]}
+                    </div>
+                    <div className="">{fund.description}</div>
                   </div>
-                  <div className="">{fund.description}</div>
+                  <H4 className="font-mono">
+                    {formatCurrency(fund.amount, fund.currency)}
+                  </H4>
                 </div>
-                <H4 className="font-mono">
-                  {formatCurrency(fund.amount, fund.currency)}
-                </H4>
               </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-      <div className="mt-12 space-y-4">
-        <H3>Included in the following lists</H3>
-        <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
-          {lists?.map((list) => (
-            <Link key={list.id} href={`/lists/${list.id}`}>
-              <ListListItem
-                list={list}
-                allocation={formatCurrency(
-                  sumListAllocation(list),
-                  "OP",
-                  false
-                )}
-              />
-            </Link>
-          ))}
+            ))}
+          </div>
         </Card>
+        <div className="mt-12 space-y-4">
+          <H3>Included in the following lists</H3>
+          <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
+            {lists?.map((list) => (
+              <Link key={list.id} href={`/lists/${list.id}`}>
+                <ListListItem
+                  list={list}
+                  allocation={formatCurrency(
+                    sumListAllocation(list),
+                    "OP",
+                    false
+                  )}
+                />
+              </Link>
+            ))}
+          </Card>
+        </div>
       </div>
     </>
   );
