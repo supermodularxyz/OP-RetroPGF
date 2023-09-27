@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const AllocationSchema = z.object({
-  id: z.string(),
+  projectId: z.string(),
   amount: z.number(),
 });
 

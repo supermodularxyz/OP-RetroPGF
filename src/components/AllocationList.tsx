@@ -28,9 +28,12 @@ export const AllocationList = ({
     <Table>
       <Tbody>
         {allocations.map((project) => (
-          <Tr key={project.id}>
+          <Tr key={project.projectId}>
             <Td className={"w-full"}>
-              <ProjectAvatarWithName id={project.id} subtitle="@project" />
+              <ProjectAvatarWithName
+                id={project.projectId}
+                subtitle="@project"
+              />
             </Td>
             <Td className="whitespace-nowrap">
               {formatNumber(project.amount)} OP
@@ -51,12 +54,12 @@ export function AllocationForm({
   list?: Allocation[];
   header?: ReactNode;
   filter: Partial<Filter>;
-  onSave?: (v: { allocations: Allocation[] }) => void;
+  onSave?: (v: { votes: Allocation[] }) => void;
 }) {
-  const form = useFormContext<{ allocations: Allocation[] }>();
+  const form = useFormContext<{ votes: Allocation[] }>();
 
   const { fields, remove } = useFieldArray({
-    name: "allocations",
+    name: "votes",
     keyName: "key",
     control: form.control,
   });
@@ -83,12 +86,12 @@ export function AllocationForm({
             // TODO: Get allocated amount from list
             // Depends on https://github.com/supermodularxyz/OP-RetroPGF/issues/37
             const listAllocation =
-              list?.find((p) => p.id === project.id)?.amount ?? 0;
+              list?.find((p) => p.projectId === project.projectId)?.amount ?? 0;
 
             return (
               <Tr key={project.key}>
                 <Td className={"w-full"}>
-                  <ProjectAvatarWithName id={project.id} />
+                  <ProjectAvatarWithName id={project.projectId} />
                 </Td>
                 <Td>
                   {listAllocation ? (
@@ -101,7 +104,7 @@ export function AllocationForm({
                 </Td>
                 <Td>
                   <AllocationInput
-                    name={`allocations.${idx}.amount`}
+                    name={`votes.${idx}.amount`}
                     onBlur={() => onSave?.(form.getValues())}
                   />
                 </Td>
@@ -144,7 +147,9 @@ export function AllocationFormWithSearch({
 
   return (
     <AllocationListWrapper>
-      <SearchProjects onSelect={(id) => append({ id, amount: 0 })} />
+      <SearchProjects
+        onSelect={(projectId) => append({ projectId, amount: 0 })}
+      />
       <Table>
         <Tbody>
           {fields.length ? (
@@ -153,7 +158,7 @@ export function AllocationFormWithSearch({
               return (
                 <Tr key={project.key}>
                   <Td className={"w-full"}>
-                    <ProjectAvatarWithName id={project.id} />
+                    <ProjectAvatarWithName id={project.projectId} />
                     {error ? (
                       <div className="text-xs text-error-600">{error}</div>
                     ) : null}

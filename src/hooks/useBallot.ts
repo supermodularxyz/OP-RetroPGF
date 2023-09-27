@@ -2,18 +2,38 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
 import axios from "axios";
 import { useAccount, useSignMessage } from "wagmi";
+import { trpc } from "~/utils/trpc";
 
-export type Allocation = { id: string; amount: number };
+export type Allocation = { projectId: string; amount: number };
 type Ballot = Record<string, Allocation>;
 
 export function useAddToBallot() {
   const queryClient = useQueryClient();
+
+  const { data: ballot } = useBallot();
+  const save = useSaveBallot();
+  return useMutation((vote) => {
+    console.log("ballot", ballot, vote);
+    const merged = {
+      ...ballot,
+      votes: ballot?.votes.concat(vote),
+    };
+    return save.mutateAsync(merged);
+  });
   // Accept array of projects because this way we can easily add lists to ballots
-  return useMutation(async (projects: Allocation[]) =>
-    queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) =>
-      projects.reduce((acc, x) => ({ ...acc, [x.id]: x }), ballot)
-    )
-  );
+  // return useMutation(
+  //   async (projects: Allocation[]) => {
+  //     console.log("add to ballot", projects);
+  //     queryClient.setQueryData(["ballot"], async (ballot: Ballot = {}) => {
+  //       return {
+  //         votes: projects,
+  //       };
+  //     });
+  //   }
+  //   // queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) =>
+  //   //   projects.reduce((acc, x) => ({ ...acc, [x.projectId]: x }), ballot)
+  //   // )
+  // );
 }
 
 export function useRemoveFromBallot() {
@@ -27,24 +47,11 @@ export function useRemoveFromBallot() {
 }
 
 export function useBallot() {
-  const queryClient = useQueryClient();
-  return useQuery(
-    ["ballot"],
-    async () => queryClient.getQueryData<Ballot>(["ballot"]) ?? {}
-  );
+  return trpc.ballot.get.useQuery(undefined);
 }
 
 export function useSaveBallot() {
-  const queryClient = useQueryClient();
-  const { address } = useAccount();
-
-  return useMutation(async (ballot: Ballot) => {
-    queryClient.setQueryData(["ballot"], ballot);
-    return axios.post(`${backendUrl}/api/ballot/save`, {
-      address,
-      votes: mapBallotForBackend(ballot),
-    });
-  });
+  return trpc.ballot.save.useMutation();
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
@@ -73,12 +80,7 @@ export function useSubmitBallot({
 }
 
 export function useSubmittedBallot() {
-  const { address } = useAccount();
-  return useQuery(
-    ["submitted-ballot"],
-    () => axios.get(`${backendUrl}/api/ballot/${address}`),
-    { enabled: Boolean(address) }
-  );
+  return trpc.ballot.get.useQuery();
 }
 
 /*
@@ -93,31 +95,32 @@ export function useBallotProjectData() {
   const queryClient = useQueryClient();
 
   return (
-    allocations: { id: string; amount: number }[]
+    allocations: { projectId: string; amount: number }[]
   ): (Project & { key: string })[] =>
     allocations.map((p) => ({
-      ...queryClient.getQueryData(["projects", p.id])!,
+      ...queryClient.getQueryData(["projects", p.projectId])!,
       ...p,
     }));
 }
 
 export const ballotToArray = (ballot: Ballot = {}) =>
-  Object.keys(ballot).map((id) => ({
+  Object.keys(ballot ?? {}).map((id) => ({
     id,
     ...ballot[id],
   })) as Allocation[];
 
 export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
-  allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
+  allocations.reduce((acc, x) => ({ ...acc, [x.projectId]: x }), {});
 
 export const sumBallot = (allocations: Allocation[] = []) =>
-  allocations.reduce((sum, x) => sum + (!isNaN(x?.amount) ? x.amount : 0), 0);
+  allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
 
-export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
+export const countBallot = (ballot: Ballot = {}) => 0;
+// export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
 
 function mapBallotForBackend(ballot?: Ballot) {
   return ballotToArray(ballot).map((p) => ({
-    projectId: p.id,
+    projectId: p.projectId,
     amount: p.amount,
   }));
 }

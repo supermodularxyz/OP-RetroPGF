@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { type z } from "zod";
+import { z } from "zod";
 import { AllocationForm } from "~/components/AllocationList";
 import { Layout } from "~/components/Layout";
 import { SortByDropdown } from "~/components/SortByDropdown";
@@ -15,7 +15,7 @@ import {
   useSaveBallot,
 } from "~/hooks/useBallot";
 import { type Filter } from "~/hooks/useFilter";
-import { AllocationsSchema } from "~/schemas/allocation";
+import { Ballot } from "~/schemas/allocation";
 import { formatNumber } from "~/utils/formatNumber";
 
 const options = [
@@ -26,30 +26,33 @@ const options = [
   "descOP",
 ] as Filter["sort"][];
 
+const BallotSchema = z.object({
+  id: z.string().nullish(),
+  user: z.string().nullish(),
+  submitted: z.boolean(),
+  votes: z.array(z.object({ projectId: z.string(), amount: z.number() })),
+});
 export default function BallotPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(options[4]);
 
   const save = useSaveBallot();
   const { data: ballot, isLoading } = useBallot();
-  const allocations = ballotToArray(ballot);
+  // const allocations = ballotToArray(ballot);
 
   const filter = { search, sort };
 
-  function handleSaveBallot({
-    allocations,
-  }: {
-    allocations: z.infer<typeof AllocationsSchema>["allocations"];
-  }) {
-    save.mutate(arrayToBallot(allocations));
+  function handleSaveBallot(ballot: z.infer<typeof BallotSchema>) {
+    save.mutate(ballot);
+    // save.mutate(arrayToBallot(allocations));
   }
 
   return (
     <Layout sidebar="right">
       {isLoading ? null : (
         <Form
-          schema={AllocationsSchema}
-          defaultValues={{ allocations }}
+          schema={BallotSchema}
+          defaultValues={ballot}
           onSubmit={handleSaveBallot}
         >
           <h1 className="mb-2 text-2xl font-bold">Review your ballot</h1>
@@ -72,7 +75,7 @@ export default function BallotPage() {
                 />
               </div>
               <div className="relative flex min-h-[360px] flex-col">
-                {allocations.length ? (
+                {ballot?.votes?.length ? (
                   <AllocationForm filter={filter} onSave={handleSaveBallot} />
                 ) : (
                   <EmptyBallot />
@@ -116,7 +119,7 @@ const TotalOP = () => {
   const form = useFormContext();
 
   const allocations = (form.watch("allocations") ?? []) as z.infer<
-    typeof AllocationsSchema
+    typeof Ballot
   >["allocations"];
 
   const sum = sumBallot(allocations);

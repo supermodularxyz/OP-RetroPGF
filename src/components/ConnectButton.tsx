@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { type ComponentPropsWithRef } from "react";
-import { type Address, useEnsAvatar, useEnsName } from "wagmi";
+import {
+  type Address,
+  useEnsAvatar,
+  useEnsName,
+  useSignMessage,
+  useAccount,
+  useNetwork,
+} from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { createBreakpoint } from "react-use";
 
@@ -10,6 +17,8 @@ import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
 import { countBallot, useBallot, useSubmittedBallot } from "~/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
+import { getCsrfToken, signIn, useSession } from "next-auth/react";
+import { SiweMessage } from "siwe";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 export const ConnectButton = () => {
@@ -80,12 +89,41 @@ const ConnectedDetails = ({
   openAccountModal: () => void;
   isMobile: boolean;
 }) => {
+  const { signMessageAsync } = useSignMessage();
+  const { data: session, status } = useSession();
+  const { chain } = useNetwork();
+  const { address } = useAccount();
+  console.log({ session, status });
   const ballotSize = countBallot(useBallot().data);
 
   const { data: submitted } = useSubmittedBallot();
 
   // TODO: Need to merge Auth PR first
   console.log({ submitted });
+
+  async function handleLogin() {
+    const message = new SiweMessage({
+      domain: window.location.host,
+      address: address,
+      statement: "Sign in with Ethereum to the app.",
+      uri: window.location.origin,
+      version: "1",
+      chainId: chain?.id,
+      nonce: await getCsrfToken(),
+    });
+    const signature = await signMessageAsync({
+      message: message.prepareMessage(),
+    });
+    signIn("credentials", {
+      message: JSON.stringify(message),
+      redirect: false,
+      signature,
+      callbackUrl: "/",
+    });
+  }
+  if (!session) {
+    return <Chip onClick={handleLogin}>Sign message</Chip>;
+  }
 
   return (
     <div className="flex gap-2">

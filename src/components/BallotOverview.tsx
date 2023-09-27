@@ -24,6 +24,7 @@ export const BallotOverview = () => {
 
   const { data: ballot } = useBallot();
 
+  return <div>...</div>;
   const allocations = ballotToArray(ballot);
   const sum = sumBallot(allocations);
 

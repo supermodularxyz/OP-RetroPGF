@@ -1,11 +1,13 @@
 import { type PropsWithChildren } from "react";
 import { Inter } from "next/font/google";
-
+import { SessionProvider } from "next-auth/react";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { optimism, optimismGoerli } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+import { RainbowKitSiweNextAuthProvider } from "@rainbow-me/rainbowkit-siwe-next-auth";
+import type { Session } from "next-auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,17 +34,24 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 
-export const Providers = ({ children }: PropsWithChildren) => {
+export const Providers = ({
+  children,
+  session,
+}: { session: Session } & PropsWithChildren) => {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <style jsx global>{`
-          :root {
-            --font-inter: ${inter.style.fontFamily};
-          }
-        `}</style>
-        <main className={`${inter.variable} font-sans`}>{children}</main>
-      </RainbowKitProvider>
+      <SessionProvider refetchInterval={0} session={session}>
+        <RainbowKitSiweNextAuthProvider>
+          <RainbowKitProvider chains={chains}>
+            <style jsx global>{`
+              :root {
+                --font-inter: ${inter.style.fontFamily};
+              }
+            `}</style>
+            <main className={`${inter.variable} font-sans`}>{children}</main>
+          </RainbowKitProvider>
+        </RainbowKitSiweNextAuthProvider>
+      </SessionProvider>
     </WagmiConfig>
   );
 };

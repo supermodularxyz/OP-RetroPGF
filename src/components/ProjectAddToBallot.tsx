@@ -26,6 +26,8 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
 
   const { id } = project ?? {};
   const inBallot = ballot?.[id];
+
+  console.log("ballot", ballot);
   const allocations = ballotToArray(ballot);
   const sum = sumBallot(allocations.filter((p) => p.id !== project?.id));
 
@@ -59,7 +61,8 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
           defaultValues={{ amount: inBallot?.amount }}
           schema={z.object({ amount: z.number().max(OP_TO_ALLOCATE - sum) })}
           onSubmit={({ amount }) => {
-            add.mutate([{ ...project, amount }]);
+            console.log("add", amount, project);
+            add.mutate([{ projectId: project.id, amount }]);
             setOpen(false);
           }}
         >

@@ -5,6 +5,7 @@ import { useAllLists } from "./useLists";
 
 export type Project = {
   id: string;
+  projectId: string;
   applicantType: "PROJECT" | "INDIVIDUAL";
   displayName: string;
   owner: string;

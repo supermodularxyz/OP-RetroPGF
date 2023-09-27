@@ -2,7 +2,9 @@
 const config = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: true,
+    project: "tsconfig.json",
+    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
+    sourceType: "module", // Allows for the use of imports
   },
   plugins: ["@typescript-eslint"],
   extends: [
@@ -10,23 +12,39 @@ const config = {
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:storybook/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
   ],
   rules: {
-    // These opinionated rules are enabled in stylistic-type-checked above.
-    // Feel free to reconfigure them to your own preference.
-    "@typescript-eslint/array-type": "off",
+    // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/require-await": "off",
-    "@typescript-eslint/no-misused-promises": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
 
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
-      {
-        prefer: "type-imports",
-        fixStyle: "inline-type-imports",
-      },
-    ],
-    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    // Consider removing these rule disables for more type safety in your app ✨
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/require-await": "off",
+  },
+  // "overrides": [
+  //   {
+  //     "files": [],
+  //     "rules": {
+  //       "@typescript-eslint/no-unused-vars": "off"
+  //     }
+  //   }
+  // ],
+  settings: {
+    react: {
+      version: "detect",
+    },
   },
 };
 
