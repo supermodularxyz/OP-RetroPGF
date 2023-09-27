@@ -28,12 +28,9 @@ export const AllocationList = ({
     <Table>
       <Tbody>
         {allocations.map((project) => (
-          <Tr key={project.projectId}>
+          <Tr key={project.id}>
             <Td className={"w-full"}>
-              <ProjectAvatarWithName
-                id={project.projectId}
-                subtitle="@project"
-              />
+              <ProjectAvatarWithName id={project.id} subtitle="@project" />
             </Td>
             <Td className="whitespace-nowrap">
               {formatNumber(project.amount)} OP
@@ -54,18 +51,17 @@ export function AllocationForm({
   list?: Allocation[];
   header?: ReactNode;
   filter: Partial<Filter>;
-  onSave?: (v: { votes: Allocation[] }) => void;
+  onSave?: (v: { allocations: Allocation[] }) => void;
 }) {
-  const form = useFormContext<{ votes: Allocation[] }>();
+  const form = useFormContext<{ allocations: Allocation[] }>();
 
   const { fields, remove } = useFieldArray({
-    name: "votes",
+    name: "allocations",
     keyName: "key",
     control: form.control,
   });
 
   const mapProjectData = useBallotProjectData();
-
   // Map each id to the index so we can sort and filter
   const indexes = new Map(fields.map(({ key }, index) => [key, index]));
 
@@ -104,7 +100,7 @@ export function AllocationForm({
                 </Td>
                 <Td>
                   <AllocationInput
-                    name={`votes.${idx}.amount`}
+                    name={`allocations.${idx}.amount`}
                     onBlur={() => onSave?.(form.getValues())}
                   />
                 </Td>

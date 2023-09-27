@@ -24,9 +24,9 @@ export const BallotOverview = () => {
 
   const { data: ballot } = useBallot();
 
-  return <div>...</div>;
-  const allocations = ballotToArray(ballot);
-  const sum = sumBallot(allocations);
+  const allocations = ballot?.votes ?? [];
+  // const allocations = ballotToArray(ballot);
+  const sum = sumBallot(ballot?.votes);
 
   const [, , , seconds] = useVotingTimeLeft();
   const canSubmit = router.route === "/ballot" && allocations.length;

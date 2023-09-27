@@ -1,21 +1,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 import { AllocationForm } from "~/components/AllocationList";
 import { Layout } from "~/components/Layout";
 import { SortByDropdown } from "~/components/SortByDropdown";
 import { Button } from "~/components/ui/Button";
 import { Form, SearchInput } from "~/components/ui/Form";
-import { arrayToBallot } from "~/hooks/useBallot";
-import {
-  ballotToArray,
-  sumBallot,
-  useBallot,
-  useSaveBallot,
-} from "~/hooks/useBallot";
+import { sumBallot, useBallot, useSaveBallot } from "~/hooks/useBallot";
 import { type Filter } from "~/hooks/useFilter";
-import { Ballot } from "~/schemas/allocation";
+import { AllocationsSchema } from "~/schemas/allocation";
 import { formatNumber } from "~/utils/formatNumber";
 
 const options = [
@@ -26,33 +20,29 @@ const options = [
   "descOP",
 ] as Filter["sort"][];
 
-const BallotSchema = z.object({
-  id: z.string().nullish(),
-  user: z.string().nullish(),
-  submitted: z.boolean(),
-  votes: z.array(z.object({ projectId: z.string(), amount: z.number() })),
-});
 export default function BallotPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(options[4]);
 
   const save = useSaveBallot();
   const { data: ballot, isLoading } = useBallot();
-  // const allocations = ballotToArray(ballot);
 
   const filter = { search, sort };
 
-  function handleSaveBallot(ballot: z.infer<typeof BallotSchema>) {
-    save.mutate(ballot);
-    // save.mutate(arrayToBallot(allocations));
+  function handleSaveBallot({
+    allocations,
+  }: {
+    allocations: z.infer<typeof AllocationsSchema>["allocations"];
+  }) {
+    save.mutate({ ...ballot, votes: allocations });
   }
 
   return (
     <Layout sidebar="right">
       {isLoading ? null : (
         <Form
-          schema={BallotSchema}
-          defaultValues={ballot}
+          schema={AllocationsSchema}
+          defaultValues={{ allocations: ballot?.votes }}
           onSubmit={handleSaveBallot}
         >
           <h1 className="mb-2 text-2xl font-bold">Review your ballot</h1>
@@ -119,7 +109,7 @@ const TotalOP = () => {
   const form = useFormContext();
 
   const allocations = (form.watch("allocations") ?? []) as z.infer<
-    typeof Ballot
+    typeof AllocationsSchema
   >["allocations"];
 
   const sum = sumBallot(allocations);

@@ -1,53 +1,53 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
 import axios from "axios";
 import { useAccount, useSignMessage } from "wagmi";
 import { trpc } from "~/utils/trpc";
 
 export type Allocation = { projectId: string; amount: number };
-type Ballot = Record<string, Allocation>;
 
+export type Ballot = {
+  votes: Allocation[];
+};
+
+function toObject(arr: object[], key: string) {
+  return arr?.reduce(
+    (acc, x) => ({ ...acc, [x[key as keyof typeof acc]]: x }),
+    {}
+  );
+}
+function mergeBallot(ballot: Ballot, addedVotes: Allocation[]): Ballot {
+  return {
+    ...ballot,
+    votes: Object.values({
+      ...toObject(ballot.votes, "projectId"),
+      ...toObject(addedVotes, "projectId"),
+    }),
+  };
+}
 export function useAddToBallot() {
-  const queryClient = useQueryClient();
-
   const { data: ballot } = useBallot();
   const save = useSaveBallot();
-  return useMutation((vote) => {
-    console.log("ballot", ballot, vote);
-    const merged = {
-      ...ballot,
-      votes: ballot?.votes.concat(vote),
-    };
-    return save.mutateAsync(merged);
-  });
-  // Accept array of projects because this way we can easily add lists to ballots
-  // return useMutation(
-  //   async (projects: Allocation[]) => {
-  //     console.log("add to ballot", projects);
-  //     queryClient.setQueryData(["ballot"], async (ballot: Ballot = {}) => {
-  //       return {
-  //         votes: projects,
-  //       };
-  //     });
-  //   }
-  //   // queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) =>
-  //   //   projects.reduce((acc, x) => ({ ...acc, [x.projectId]: x }), ballot)
-  //   // )
-  // );
+  return useMutation((votes: Allocation[]) =>
+    save.mutateAsync(mergeBallot(ballot!, votes))
+  );
 }
 
 export function useRemoveFromBallot() {
-  const queryClient = useQueryClient();
-  return useMutation(async (allocationId: string) =>
-    queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) => {
-      const { [allocationId]: removed, ..._ballot } = ballot;
-      return _ballot;
+  const save = useSaveBallot();
+  const { data: ballot } = useBallot();
+  return useMutation((projectId: string) =>
+    save.mutateAsync({
+      id: ballot?.id,
+      votes: ballot?.votes.filter(
+        (v) => v.projectId !== projectId
+      ) as Allocation[],
     })
   );
 }
 
 export function useBallot() {
-  return trpc.ballot.get.useQuery(undefined);
+  return trpc.ballot.get.useQuery();
 }
 
 export function useSaveBallot() {
@@ -109,13 +109,15 @@ export const ballotToArray = (ballot: Ballot = {}) =>
     ...ballot[id],
   })) as Allocation[];
 
-export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
-  allocations.reduce((acc, x) => ({ ...acc, [x.projectId]: x }), {});
+export const arrayToBallot = (ballot: {
+  votes: { projectId: string; amount: number }[];
+}): Record<string, Allocation> =>
+  ballot.votes?.reduce((acc, x) => ({ ...acc, [x.projectId]: x }), {});
 
 export const sumBallot = (allocations: Allocation[] = []) =>
   allocations.reduce((sum, x) => sum + (x?.amount ?? 0), 0);
 
-export const countBallot = (ballot: Ballot = {}) => 0;
+export const countBallot = (ballot: Ballot) => ballot?.votes.length;
 // export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
 
 function mapBallotForBackend(ballot?: Ballot) {

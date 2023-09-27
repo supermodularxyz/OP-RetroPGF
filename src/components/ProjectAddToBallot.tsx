@@ -2,6 +2,7 @@ import { Button, IconButton } from "~/components/ui/Button";
 import { AddBallot, Check } from "~/components/icons";
 import { type Project } from "~/hooks/useProjects";
 import {
+  Ballot,
   useAddToBallot,
   useBallot,
   useRemoveFromBallot,
@@ -12,11 +13,14 @@ import { useState } from "react";
 import { AllocationInput } from "./AllocationInput";
 import { Form } from "./ui/Form";
 import { useFormContext } from "react-hook-form";
-import { ballotToArray } from "~/hooks/useBallot";
 import { sumBallot } from "~/hooks/useBallot";
 import { OP_TO_ALLOCATE } from "./BallotOverview";
 import { z } from "zod";
 import clsx from "clsx";
+
+function ballotContains(id: string, ballot: Ballot) {
+  return ballot?.votes.find((v) => v.projectId === id);
+}
 
 export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const [isOpen, setOpen] = useState(false);
@@ -25,11 +29,11 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const { data: ballot } = useBallot();
 
   const { id } = project ?? {};
-  const inBallot = ballot?.[id];
-
-  console.log("ballot", ballot);
-  const allocations = ballotToArray(ballot);
-  const sum = sumBallot(allocations.filter((p) => p.id !== project?.id));
+  const inBallot = ballotContains(id, ballot!);
+  const allocations = ballot?.votes;
+  const sum = sumBallot(
+    allocations?.filter((p) => p.projectId !== project?.id)
+  );
 
   return (
     <div>
@@ -61,7 +65,6 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
           defaultValues={{ amount: inBallot?.amount }}
           schema={z.object({ amount: z.number().max(OP_TO_ALLOCATE - sum) })}
           onSubmit={({ amount }) => {
-            console.log("add", amount, project);
             add.mutate([{ projectId: project.id, amount }]);
             setOpen(false);
           }}

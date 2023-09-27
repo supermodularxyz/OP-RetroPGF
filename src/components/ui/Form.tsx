@@ -146,7 +146,7 @@ export function Form<S extends z.Schema>({
 }: FormProps<S>) {
   // Initialize the form with defaultValues and schema for validation
   const form = useForm({
-    defaultValues,
+    values: defaultValues,
     resolver: zodResolver(schema),
 
     mode: "onBlur",
