@@ -75,7 +75,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     <>
       <div
         className={clsx(
-          "sticky left-0 top-0 z-10 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex",
+          "sticky left-0 top-0 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex",
           {
             ["flex-row-reverse"]: !intersection?.isIntersecting,
           }
