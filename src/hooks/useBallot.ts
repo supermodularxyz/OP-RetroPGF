@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
-import axios from "axios";
-import { useAccount, useSignMessage } from "wagmi";
+import { useSignMessage } from "wagmi";
 import { trpc } from "~/utils/trpc";
 
 export type Allocation = { projectId: string; amount: number };
