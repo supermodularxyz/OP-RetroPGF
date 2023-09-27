@@ -63,8 +63,9 @@ export const ListEditDistribution = ({
   const { data: ballot } = useBallot();
 
   // What list projects are already in the ballot?
-  const alreadyInBallot = listProjects.filter((p) => ballot?.[p.id]);
-  console.log({ alreadyInBallot });
+  const alreadyInBallot = listProjects.filter((p) =>
+    ballot?.votes.find((v) => v.projectId === p.id)
+  );
 
   function handleAddToBallot({
     allocations,
@@ -73,11 +74,14 @@ export const ListEditDistribution = ({
   }) {
     add.mutate(allocations);
   }
-
   const allocations = listProjects.map((p) => ({
     ...p,
-    amount: ballot?.[p.id]?.amount ?? p.amount,
+    projectId: p.id,
+    amount:
+      ballot?.votes.find((v) => v.projectId === p.projectId)?.amount ??
+      p.amount,
   }));
+
   const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
     <div>

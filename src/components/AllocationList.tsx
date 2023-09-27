@@ -82,7 +82,7 @@ export function AllocationForm({
             // TODO: Get allocated amount from list
             // Depends on https://github.com/supermodularxyz/OP-RetroPGF/issues/37
             const listAllocation =
-              list?.find((p) => p.projectId === project.projectId)?.amount ?? 0;
+              list?.find((p) => p.id === project.projectId)?.amount ?? 0;
 
             return (
               <Tr key={project.key}>

@@ -39,7 +39,10 @@ export const ballotRouter = router({
       if (existing) {
         return prisma.ballot.update({
           where: { id: existing?.id },
-          data: { votes: { deleteMany: {}, create: input.votes } },
+          data: {
+            submitted: false,
+            votes: { deleteMany: {}, create: input.votes },
+          },
         });
       }
       const ballot = await prisma.ballot.create({
