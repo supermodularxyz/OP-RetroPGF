@@ -22,7 +22,7 @@ import { AllocationsSchema } from "~/schemas/allocation";
 import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
-import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
+import { sumBallot, useBallot } from "~/hooks/useBallot";
 import { OP_TO_ALLOCATE } from "./BallotOverview";
 
 import { useAddToBallot } from "~/hooks/useBallot";
@@ -161,7 +161,7 @@ const TotalOPBanner = () => {
 
   // Load existing ballot
   const { data: ballot } = useBallot();
-  const sum = sumBallot(ballotToArray(ballot));
+  const sum = sumBallot(ballot?.votes);
 
   const allocations = (form.watch("allocations") ?? []) as FormAllocations;
 

@@ -54,8 +54,6 @@ export function useSaveBallot() {
   return trpc.ballot.save.useMutation();
 }
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
-
 export function useSubmitBallot({
   onSuccess,
 }: {
@@ -63,19 +61,13 @@ export function useSubmitBallot({
 }) {
   const { data: ballot } = useBallot();
   const sign = useSignMessage();
-  const { address } = useAccount();
+  const submit = trpc.ballot.submit.useMutation();
 
   return useMutation(() => {
     const message = "sign_ballot_message";
-    return sign.signMessageAsync({ message }).then((signature) =>
-      axios
-        .post(`${backendUrl}/api/ballot/submit`, {
-          address,
-          signature,
-          votes: mapBallotForBackend(ballot),
-        })
-        .then(onSuccess)
-    );
+    return sign
+      .signMessageAsync({ message })
+      .then((signature) => submit.mutateAsync(ballot!).then(onSuccess));
   });
 }
 
@@ -103,12 +95,6 @@ export function useBallotProjectData() {
     }));
 }
 
-export const ballotToArray = (ballot: Ballot = {}) =>
-  Object.keys(ballot ?? {}).map((id) => ({
-    id,
-    ...ballot[id],
-  })) as Allocation[];
-
 export const arrayToBallot = (ballot: {
   votes: { projectId: string; amount: number }[];
 }): Record<string, Allocation> =>
@@ -119,10 +105,3 @@ export const sumBallot = (allocations: Allocation[] = []) =>
 
 export const countBallot = (ballot: Ballot) => ballot?.votes.length;
 // export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
-
-function mapBallotForBackend(ballot?: Ballot) {
-  return ballotToArray(ballot).map((p) => ({
-    projectId: p.projectId,
-    amount: p.amount,
-  }));
-}
