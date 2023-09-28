@@ -51,7 +51,7 @@ export const ListDetails = ({ list }: { list: List }) => {
                 variant={"outline"}
                 type="button"
                 className="text-gray-600"
-                onClick={(e) => like.mutate()}
+                onClick={(e) => like.mutate(list.id)}
               >
                 <LikeCount listId={list.id} />
               </Button>
