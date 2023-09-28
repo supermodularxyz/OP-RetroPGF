@@ -5,6 +5,7 @@ import { allListsLikes } from "~/data/mock";
 import { useAccount, type Address } from "wagmi";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
+import axios from "axios";
 
 export type List = {
   id: string;
@@ -17,6 +18,8 @@ export type List = {
   impactEvaluationLink: string;
   projects: Allocation[];
 };
+
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
 export function useAllLists() {
   return useQuery<List[]>(["lists", "all"], () =>
@@ -48,17 +51,9 @@ export function useList(id: string) {
 }
 
 export function useLikes(listId: string) {
-  const queryClient = useQueryClient();
-  const { address } = useAccount();
   return useQuery<Address[]>(
     ["likes", listId],
-    () => {
-      // Call API
-      // axios.get(`/likes/${listId}`).then(r => r.data);
-      // Temp mock data (even numbers are liked)
-      return queryClient.getQueryData(["likes", listId]) ?? [];
-      // return Number(listId) % 2 == 0 && address ? [address] : [];
-    },
+    () => axios.get(`${backendUrl}/api/likes/${listId}`),
     { enabled: Boolean(listId) }
   );
 }
@@ -68,9 +63,8 @@ export function useLikeList(listId: string) {
   const { address } = useAccount();
 
   return useMutation(
-    async () => {
-      // Call API
-      // axios.post(`/likes/${listId}/like`).then(r => r.data)
+    async (listId: string) => {
+      return axios.post(`${backendUrl}/api/likes/${listId}/like`);
     },
     {
       // Optimistically update state
@@ -89,6 +83,16 @@ export function useLikeList(listId: string) {
   );
 }
 
+type AllLikesResponse = {
+  likes: {
+    listId: Address[];
+  };
+};
+
 export function useAllLikes() {
-  return useQuery(["likes"], () => allListsLikes);
+  return useQuery<AllLikesResponse>(
+    ["likes"],
+    () => axios.get(`${backendUrl}/api/likes`),
+    {}
+  );
 }
