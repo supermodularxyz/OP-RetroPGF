@@ -7,7 +7,7 @@ export const CreateListSchema = z.object({
   impactEvaluationLink: z.string().url().nullish(),
   impactEvaluationDescription: z.string(),
   allocations: z
-    .array(z.object({ id: z.string(), amount: z.number().min(1) }))
+    .array(z.object({ id: z.string(), amount: z.number().min(0) }))
     .min(1)
     .refine(
       (val) => {
