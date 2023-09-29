@@ -18,7 +18,9 @@ import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
 import { VotingEndsIn, useVotingTimeLeft } from "./VotingEndsIn";
 
-export const OP_TO_ALLOCATE = 30_000_000;
+export const MAX_ALLOCATION_TOTAL = Number(
+  process.env.NEXT_PUBLIC_MAX_ALLOCATION_TOTAL!
+);
 export const BallotOverview = () => {
   const router = useRouter();
 
@@ -55,10 +57,10 @@ export const BallotOverview = () => {
               </div>
             }
           >
-            <Progress value={sum} max={OP_TO_ALLOCATE} />
+            <Progress value={sum} max={MAX_ALLOCATION_TOTAL} />
             <div className="flex justify-between text-xs">
               <div>Total</div>
-              <div>{formatNumber(OP_TO_ALLOCATE)} OP</div>
+              <div>{formatNumber(MAX_ALLOCATION_TOTAL)} OP</div>
             </div>
           </BallotSection>
           {canSubmit ? (

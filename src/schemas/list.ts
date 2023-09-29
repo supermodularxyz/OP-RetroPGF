@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { OP_TO_ALLOCATE } from "~/components/BallotOverview";
+import { MAX_ALLOCATION_TOTAL } from "~/components/BallotOverview";
 
 export const CreateListSchema = z.object({
   listName: z.string().min(1),
@@ -12,7 +12,7 @@ export const CreateListSchema = z.object({
     .refine(
       (val) => {
         const sum = val.reduce((acc, x) => acc + x.amount, 0);
-        return sum > 0 && sum <= OP_TO_ALLOCATE;
+        return sum > 0 && sum <= MAX_ALLOCATION_TOTAL;
       },
       { message: "Total amount OP is more than maximum" }
     ),

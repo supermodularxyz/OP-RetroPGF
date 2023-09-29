@@ -8,7 +8,7 @@ import { Form, FormControl, Input, Textarea } from "~/components/ui/Form";
 import { Button } from "~/components/ui/Button";
 import { AllocationFormWithSearch } from "~/components/AllocationList";
 import { Banner } from "~/components/ui/Banner";
-import { OP_TO_ALLOCATE } from "~/components/BallotOverview";
+import { MAX_ALLOCATION_TOTAL } from "~/components/BallotOverview";
 import { sumBallot } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { useCreateList } from "~/hooks/useCreateList";
@@ -97,7 +97,7 @@ const TotalOP = () => {
 
   const current = sumBallot(allocations);
 
-  const exceeds = current - OP_TO_ALLOCATE;
+  const exceeds = current - MAX_ALLOCATION_TOTAL;
   const isExceeding = exceeds > 0;
   return (
     <Banner className="mb-6" variant={isExceeding ? "warning" : "info"}>

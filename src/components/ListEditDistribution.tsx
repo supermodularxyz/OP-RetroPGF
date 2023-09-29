@@ -23,7 +23,7 @@ import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
 import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
-import { OP_TO_ALLOCATE } from "./BallotOverview";
+import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
@@ -167,7 +167,7 @@ const TotalOPBanner = () => {
 
   const current = sumBallot(allocations);
 
-  const exceeds = current + sum - OP_TO_ALLOCATE;
+  const exceeds = current + sum - MAX_ALLOCATION_TOTAL;
 
   const isExceeding = exceeds > 0;
   return (
