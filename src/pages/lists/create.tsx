@@ -1,4 +1,7 @@
+import { tv } from "tailwind-variants";
+import { useRouter } from "next/router";
 import { useFormContext } from "react-hook-form";
+import { useAccount } from "wagmi";
 
 import { Layout } from "~/components/Layout";
 import { Form, FormControl, Input, Textarea } from "~/components/ui/Form";
@@ -11,9 +14,9 @@ import { formatNumber } from "~/utils/formatNumber";
 import { useCreateList } from "~/hooks/useCreateList";
 import { type CreateList, CreateListSchema } from "~/schemas/list";
 import { useUploadMetadata } from "~/hooks/useMetadata";
-import { useAccount } from "wagmi";
-import { useRouter } from "next/router";
 import { toURL } from "~/hooks/useFilter";
+import { createComponent } from "~/components/ui";
+import { Link } from "~/components/ui/Link";
 
 const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const create = useCreateList();
@@ -45,7 +48,6 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         );
       }}
     >
-      <div className="mb-4 text-2xl font-semibold">Create a new list</div>
       <FormControl name="listName" label="List name" required>
         <Input placeholder="Give your list a name..." />
       </FormControl>
@@ -109,6 +111,19 @@ export default function CreateListPage() {
   const router = useRouter();
   return (
     <Layout>
+      <div className="mb-4">
+        <div className="mb-2 text-2xl font-semibold">Create a new list</div>
+
+        <P>
+          Lists are a new form of flexible delegation. Create a List to share
+          your votes with other badgeholders. Be sure to reference some
+          methodology for allocating OP to each project Be sure to check out the
+          guidelines on creating a list:
+        </P>
+        <Link href={"#"} target="_blank">
+          [LINK]
+        </Link>
+      </div>
       <CreateListForm
         onSuccess={() => router.push(`/lists/created?${toURL(router.query)}`)}
       />
@@ -125,3 +140,10 @@ function parseList({ allocations, ...list }: CreateList) {
     })),
   };
 }
+
+const P = createComponent(
+  "p",
+  tv({
+    base: "pb-2 leading-relaxed",
+  })
+);
