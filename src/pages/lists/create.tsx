@@ -55,9 +55,15 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <Textarea rows={4} placeholder="What's this list about?" />
       </FormControl>
       <FormControl name="impactEvaluationDescription" label="Impact evaluation">
-        <Textarea rows={4} placeholder="What impact does it seek to have?" />
+        <Textarea
+          rows={4}
+          placeholder="How did you evaluate the impact of projects? Help other badgeholders understand your methodology."
+        />
       </FormControl>
-      <FormControl name="impactEvaluationLink" label="Impact evaluation link">
+      <FormControl
+        name="impactEvaluationLink"
+        label="Link to relevant resource"
+      >
         <Input placeholder="https://" />
       </FormControl>
       <div className="mb-4 rounded-2xl border border-neutral-300 p-6">
