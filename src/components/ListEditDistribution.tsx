@@ -64,7 +64,6 @@ export const ListEditDistribution = ({
 
   // What list projects are already in the ballot?
   const alreadyInBallot = listProjects.filter((p) => ballot?.[p.id]);
-  console.log({ alreadyInBallot });
 
   function handleAddToBallot({
     allocations,
@@ -187,7 +186,6 @@ const TotalOPBanner = () => {
 const ResetDistribution = () => {
   const form = useFormContext();
 
-  console.log(form.formState.isDirty);
   return (
     <IconButton
       className={form.formState.isDirty ? "" : "text-gray-400"}
