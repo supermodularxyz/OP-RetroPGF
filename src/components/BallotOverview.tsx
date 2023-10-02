@@ -53,7 +53,13 @@ export const BallotOverview = () => {
             title={
               <div className="flex justify-between">
                 OP allocated:
-                <div className="text-gray-900">{formatNumber(sum)} OP</div>
+                <div
+                  className={clsx("text-gray-900", {
+                    ["text-primary-500"]: sum > MAX_ALLOCATION_TOTAL,
+                  })}
+                >
+                  {formatNumber(sum)} OP
+                </div>
               </div>
             }
           >
@@ -64,7 +70,7 @@ export const BallotOverview = () => {
             </div>
           </BallotSection>
           {canSubmit ? (
-            <SubmitBallotButton />
+            <SubmitBallotButton disabled={sum > MAX_ALLOCATION_TOTAL} />
           ) : allocations.length ? (
             <Button variant="outline" as={Link} href={"/ballot"}>
               View ballot
@@ -93,7 +99,7 @@ export const BallotOverview = () => {
   );
 };
 
-const SubmitBallotButton = () => {
+const SubmitBallotButton = ({ disabled = false }) => {
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
 
@@ -131,7 +137,11 @@ const SubmitBallotButton = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={async () => setOpen(true)}>
+      <Button
+        variant="primary"
+        disabled={disabled}
+        onClick={async () => setOpen(true)}
+      >
         Submit ballot
       </Button>
       <Dialog size="sm" isOpen={isOpen} onOpenChange={setOpen} title={title}>
