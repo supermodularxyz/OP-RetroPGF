@@ -22,7 +22,12 @@ import { AllocationsSchema } from "~/schemas/allocation";
 import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
-import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
+import {
+  Allocation,
+  ballotToArray,
+  sumBallot,
+  useBallot,
+} from "~/hooks/useBallot";
 import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 
 import { useAddToBallot } from "~/hooks/useBallot";
@@ -58,12 +63,16 @@ export const ListEditDistribution = ({
 }) => {
   const { address } = useAccount();
   const [isOpen, setOpen] = useState(false);
+  const { data: ballot } = useBallot();
   const add = useAddToBallot();
 
-  const { data: ballot } = useBallot();
-
   // What list projects are already in the ballot?
-  const alreadyInBallot = listProjects.filter((p) => ballot?.[p.id]);
+  function itemsInBallot(allocations: Allocation[]) {
+    return allocations?.filter((p) => ballot?.[p.id]);
+  }
+  const [alreadyInBallot, updateInBallot] = useState(
+    itemsInBallot(listProjects)
+  );
 
   function handleAddToBallot({
     allocations,
@@ -90,13 +99,13 @@ export const ListEditDistribution = ({
         Edit distribution
       </IconButton>
       <Dialog
+        title={showDialogTitle ? `Edit distribution` : null}
         size={add.isSuccess ? "sm" : "md"}
         isOpen={isOpen}
         onOpenChange={() => {
           setOpen(false);
           add.reset(); // This is needed to reset add.isSuccess and show the allocations again
         }}
-        title={showDialogTitle ? `Edit distribution` : null}
       >
         {add.isSuccess ? (
           <FeedbackDialog variant="success" icon={CircleCheck}>
@@ -126,9 +135,17 @@ export const ListEditDistribution = ({
                 </div>
               </Banner>
             ) : null}
-            <ResetDistribution />
+            <ResetDistribution
+              onReset={() => updateInBallot(itemsInBallot(listProjects))}
+            />
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationForm filter={{}} list={alreadyInBallot} />
+              <AllocationForm
+                filter={{}}
+                list={alreadyInBallot}
+                onSave={({ allocations }) =>
+                  updateInBallot(itemsInBallot(allocations))
+                }
+              />
             </div>
             <TotalOPBanner />
             <div className="flex gap-2">
@@ -183,7 +200,7 @@ const TotalOPBanner = () => {
   );
 };
 
-const ResetDistribution = () => {
+const ResetDistribution = ({ onReset }: { onReset: () => void }) => {
   const form = useFormContext();
 
   return (
@@ -192,7 +209,10 @@ const ResetDistribution = () => {
       icon={ArrowRotateLeft}
       variant="ghost"
       type="button"
-      onClick={() => form.reset()}
+      onClick={() => {
+        form.reset();
+        onReset();
+      }}
     >
       Reset distribution
     </IconButton>
