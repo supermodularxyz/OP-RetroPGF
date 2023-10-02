@@ -131,7 +131,8 @@ export const ListEditDistribution = ({
                 title={`${alreadyInBallot.length} project(s) in the ${list.displayName} list already exist in your ballot.`}
               >
                 <div className="flex gap-2">
-                  You can change your OP allocation based on the list.
+                  You can change your OP alloaction based on the list or remove
+                  the project(s) from the list to keep your existing allocation.
                 </div>
               </Banner>
             ) : null}
