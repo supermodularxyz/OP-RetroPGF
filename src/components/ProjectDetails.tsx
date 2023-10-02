@@ -216,13 +216,8 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 OTHER: "div",
               }[link.type];
 
-              const linkUrl = {
-                GITHUB_REPO: link.url,
-                CONTRACT_ADDRESS: `https://optimistic.etherscan.io/address/${link.url}`,
-                OTHER: link.url,
-              }[link.type];
               return (
-                <Link key={link.url} href={linkUrl} target="_blank">
+                <Link key={link.url} href={link.url} target="_blank">
                   <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
                     <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
                       <div className="h-20 w-20 rounded-l-xl bg-gray-100" />

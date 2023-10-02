@@ -15,6 +15,8 @@ export default function ProjectsPage() {
   const { data: projects } = useProjects(filter!);
   const currentPage = Number(filter?.page);
 
+  console.log("projects", projects);
+
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("projects");
   return (
