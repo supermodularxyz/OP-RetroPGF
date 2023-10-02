@@ -90,13 +90,13 @@ export const ListEditDistribution = ({
   return (
     <div>
       <IconButton
-        variant="outline"
+        variant="primary"
         onClick={() => setOpen(true)}
-        icon={Adjustment}
+        icon={AddBallot}
         className="w-full md:w-auto"
         disabled={!address}
       >
-        Edit distribution
+        Add to ballot
       </IconButton>
       <Dialog
         title={showDialogTitle ? `Edit distribution` : null}
