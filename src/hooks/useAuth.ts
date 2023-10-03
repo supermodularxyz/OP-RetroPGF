@@ -28,8 +28,6 @@ export function useSession() {
   const queryClient = useQueryClient();
   const { data: token } = useAccessToken();
   const setToken = useSetAccessToken();
-  // const token = localStorage.getItem("accessToken");
-  console.log("token", token);
   return useQuery(
     ["session"],
     () =>

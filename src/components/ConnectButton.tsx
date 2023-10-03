@@ -94,18 +94,19 @@ const ConnectedDetails = ({
 
   const { data: submitted } = useSubmittedBallot();
 
-  // TODO: Need to merge Auth PR first
-  console.log({ submitted });
-
   return (
     <SignMessage>
       <div className="flex gap-2">
-        <Chip className="gap-2" as={Link} href={"/ballot"}>
-          {isMobile ? <AddBallot className="h-4 w-4" /> : `View Ballot`}
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs ">
-            {ballotSize}
-          </div>
-        </Chip>
+        {submitted.publishedAt ? (
+          <Chip>Already submitted</Chip>
+        ) : (
+          <Chip className="gap-2" as={Link} href={"/ballot"}>
+            {isMobile ? <AddBallot className="h-4 w-4" /> : `View Ballot`}
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs ">
+              {ballotSize}
+            </div>
+          </Chip>
+        )}
         <UserInfo
           onClick={openAccountModal}
           address={account.address as Address}
@@ -165,7 +166,6 @@ const SignMessage = ({ children }: PropsWithChildren) => {
     }
   }
 
-  console.log("session", session);
   if (session?.address) {
     return <>{children}</>;
   }

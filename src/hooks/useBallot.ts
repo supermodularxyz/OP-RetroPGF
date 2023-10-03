@@ -87,11 +87,16 @@ export function useSubmittedBallot() {
     () =>
       axios
         .get<{
-          submitted: { address: string; createdAt: string; updatedAt: string };
+          submitted: {
+            address: string;
+            createdAt: string;
+            updatedAt: string;
+            publishedAt: string;
+          };
         }>(`${backendUrl}/api/ballot/${address}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
-        .then((r) => r.data.submitted),
+        .then((r) => r.data.submitted ?? {}),
     { enabled: Boolean(address && token) }
   );
 }
