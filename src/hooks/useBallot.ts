@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
 import axios from "axios";
 import { useAccount, useSignMessage } from "wagmi";
+import { useAccessToken } from "./useAuth";
 
 export type Allocation = { id: string; amount: number };
 type Ballot = Record<string, Allocation>;
@@ -74,10 +75,18 @@ export function useSubmitBallot({
 
 export function useSubmittedBallot() {
   const { address } = useAccount();
+  const { data: token } = useAccessToken();
   return useQuery(
     ["submitted-ballot"],
-    () => axios.get(`${backendUrl}/api/ballot/${address}`),
-    { enabled: Boolean(address) }
+    () =>
+      axios
+        .get<{
+          submitted: { address: string; createdAt: string; updatedAt: string };
+        }>(`${backendUrl}/api/ballot/${address}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((r) => r.data.submitted),
+    { enabled: Boolean(address && token) }
   );
 }
 

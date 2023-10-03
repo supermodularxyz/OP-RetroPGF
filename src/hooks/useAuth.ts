@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
@@ -12,38 +12,49 @@ export function useNonce() {
 }
 
 export function useVerify() {
+  const setToken = useSetAccessToken();
   return useMutation(
-    ({ message, signature }: { message: string; signature: string }) =>
+    (body: { message: string; signature: string; nonce: string }) =>
       axios
-        .post<{ success: boolean }>(
-          `${backendUrl}/api/auth/verify`,
-          {
-            message,
-            signature,
-          },
-          { withCredentials: true }
-        )
-        .then((r) => r.data)
+        .post<{ accessToken: string }>(`${backendUrl}/api/auth/verify`, body)
+        .then((r) => {
+          setToken.mutate(r.data.accessToken);
+          return r.data;
+        })
   );
 }
 
 export function useSession() {
-  return useQuery(["session"], () =>
-    axios
-      .get<{ address: string }>(`${backendUrl}/api/auth/session`)
-      .then((r) => r.data)
+  const queryClient = useQueryClient();
+  const { data: token } = useAccessToken();
+  const setToken = useSetAccessToken();
+  // const token = localStorage.getItem("accessToken");
+  console.log("token", token);
+  return useQuery(
+    ["session"],
+    () =>
+      axios
+        .get<{ session: { address: string } }>(
+          `${backendUrl}/api/auth/session`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then((r) => r.data.session)
+        .catch(async (err) => {
+          setToken.mutate("");
+          await queryClient.invalidateQueries(["session"]);
+          throw err;
+        }),
+    { enabled: Boolean(token) }
   );
 }
 
-export function createMessage({ address = "", nonce = "", chainId = 10 }) {
-  return `${backendUrl} wants you to sign in with your Ethereum account:
-${address}
-
-Sign in to Agora Optimism
-
-URI: https://${backendUrl}
-Version: 1
-Chain ID: ${chainId}
-Nonce: ${nonce}
-Issued At: ${new Date().toISOString()}`;
+export function useAccessToken() {
+  return useQuery(["accessToken"], () => localStorage.getItem("accessToken"));
+}
+function useSetAccessToken() {
+  const queryClient = useQueryClient();
+  return useMutation(async (token: string) => {
+    localStorage.setItem("accessToken", token);
+    return queryClient.setQueryData(["accessToken"], token);
+  });
 }

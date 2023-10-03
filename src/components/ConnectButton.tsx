@@ -1,3 +1,4 @@
+import { SiweMessage } from "siwe";
 import Image from "next/image";
 import Link from "next/link";
 import { type PropsWithChildren, type ComponentPropsWithRef } from "react";
@@ -17,12 +18,7 @@ import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
 import { countBallot, useBallot, useSubmittedBallot } from "~/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
-import {
-  createMessage,
-  useNonce,
-  useSession,
-  useVerify,
-} from "~/hooks/useAuth";
+import { useNonce, useSession, useVerify } from "~/hooks/useAuth";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 
@@ -148,16 +144,28 @@ const UserInfo = ({
 const SignMessage = ({ children }: PropsWithChildren) => {
   const sign = useSignMessage();
   const verify = useVerify();
-  const { chain } = useNetwork();
+  const { chain: { id: chainId } = {} } = useNetwork();
   const { address } = useAccount();
   const { data: nonce } = useNonce();
   const { data: session } = useSession();
 
   async function handleSign() {
-    const message = createMessage({ nonce, address, chainId: chain?.id });
-    const signature = await sign.signMessageAsync({ message });
-    verify.mutate({ signature, message });
+    if (nonce) {
+      const message = new SiweMessage({
+        version: "1",
+        domain: window.location.host,
+        uri: window.location.origin,
+        address,
+        chainId,
+        nonce,
+        statement: "Sign in to Agora Optimism",
+      }).prepareMessage();
+      const signature = await sign.signMessageAsync({ message });
+      verify.mutate({ signature, message, nonce });
+    }
   }
+
+  console.log("session", session);
   if (session?.address) {
     return <>{children}</>;
   }
