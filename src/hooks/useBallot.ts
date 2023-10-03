@@ -37,14 +37,15 @@ export function useBallot() {
 
 export function useSaveBallot() {
   const queryClient = useQueryClient();
-  const { address } = useAccount();
+  const { data: token } = useAccessToken();
 
   return useMutation(async (ballot: Ballot) => {
     queryClient.setQueryData(["ballot"], ballot);
-    return axios.post(`${backendUrl}/api/ballot/save`, {
-      address,
-      votes: mapBallotForBackend(ballot),
-    });
+    return axios.post(
+      `${backendUrl}/api/ballot/save`,
+      { votes: mapBallotForBackend(ballot) },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
   });
 }
 
@@ -58,16 +59,21 @@ export function useSubmitBallot({
   const { data: ballot } = useBallot();
   const sign = useSignMessage();
   const { address } = useAccount();
+  const { data: token } = useAccessToken();
 
   return useMutation(() => {
     const message = "sign_ballot_message";
     return sign.signMessageAsync({ message }).then((signature) =>
       axios
-        .post(`${backendUrl}/api/ballot/submit`, {
-          address,
-          signature,
-          votes: mapBallotForBackend(ballot),
-        })
+        .post(
+          `${backendUrl}/api/ballot/submit`,
+          {
+            address,
+            signature,
+            votes: mapBallotForBackend(ballot),
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
         .then(onSuccess)
     );
   });
@@ -127,6 +133,6 @@ export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
 function mapBallotForBackend(ballot?: Ballot) {
   return ballotToArray(ballot).map((p) => ({
     projectId: p.id,
-    amount: p.amount,
+    amount: String(p.amount),
   }));
 }
