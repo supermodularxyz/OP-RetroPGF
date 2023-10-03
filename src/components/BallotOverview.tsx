@@ -1,10 +1,8 @@
 import { type PropsWithChildren, type ReactNode, useState } from "react";
 import clsx from "clsx";
-import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { createComponent } from "./ui";
 import { Banner } from "./ui/Banner";
 import { Button } from "./ui/Button";
 import { Divider } from "./ui/Divider";
@@ -18,8 +16,11 @@ import {
 } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
+import { VotingEndsIn, useVotingTimeLeft } from "./VotingEndsIn";
 
-export const OP_TO_ALLOCATE = 30_000_000;
+export const MAX_ALLOCATION_TOTAL = Number(
+  process.env.NEXT_PUBLIC_MAX_ALLOCATION_TOTAL!
+);
 export const BallotOverview = () => {
   const router = useRouter();
 
@@ -28,7 +29,9 @@ export const BallotOverview = () => {
   const allocations = ballotToArray(ballot);
   const sum = sumBallot(allocations);
 
+  const [, , , seconds] = useVotingTimeLeft();
   const canSubmit = router.route === "/ballot" && allocations.length;
+  const votingHasEnded = seconds < 0;
 
   return (
     <div className="space-y-6">
@@ -36,60 +39,67 @@ export const BallotOverview = () => {
         Your ballot
       </h3>
       <BallotSection title="Voting ends in:">
-        <div>
-          <TimeSlice>3d</TimeSlice>:<TimeSlice>12h</TimeSlice>:
-          <TimeSlice>30m</TimeSlice>:<TimeSlice>24s</TimeSlice>
-        </div>
+        <VotingEndsIn />
       </BallotSection>
-      <BallotSection title="Projects added:">
-        <div>
-          <span className="text-gray-900">{allocations.length}</span>
-          /200
-        </div>
-      </BallotSection>
-      <BallotSection
-        title={
-          <div className="flex justify-between">
-            OP allocated:
-            <div className="text-gray-900">{formatNumber(sum)} OP</div>
-          </div>
-        }
-      >
-        <Progress value={sum} max={OP_TO_ALLOCATE} />
-        <div className="flex justify-between text-xs">
-          <div>Total</div>
-          <div>{formatNumber(OP_TO_ALLOCATE)} OP</div>
-        </div>
-      </BallotSection>
-      {canSubmit ? (
-        <SubmitBallotButton />
-      ) : allocations.length ? (
-        <Button variant="outline" as={Link} href={"/ballot"}>
-          View ballot
-        </Button>
-      ) : (
-        <Button variant="primary" disabled>
-          No projects added yet
-        </Button>
-      )}
-      <Divider />
-      <p className="text-gray-700">
-        {canSubmit
-          ? `If you don't allocate all 30m OP, the remainder will be distributed in proportion to all badgeholders' votes.`
-          : `As a badgeholder you are tasked with upholding the principle of “impact
+      {!votingHasEnded ? (
+        <>
+          <BallotSection title="Projects added:">
+            <div>
+              <span className="text-gray-900">{allocations.length}</span>
+              /200
+            </div>
+          </BallotSection>
+          <BallotSection
+            title={
+              <div className="flex justify-between">
+                OP allocated:
+                <div
+                  className={clsx("text-gray-900", {
+                    ["text-primary-500"]: sum > MAX_ALLOCATION_TOTAL,
+                  })}
+                >
+                  {formatNumber(sum)} OP
+                </div>
+              </div>
+            }
+          >
+            <Progress value={sum} max={MAX_ALLOCATION_TOTAL} />
+            <div className="flex justify-between text-xs">
+              <div>Total</div>
+              <div>{formatNumber(MAX_ALLOCATION_TOTAL)} OP</div>
+            </div>
+          </BallotSection>
+          {canSubmit ? (
+            <SubmitBallotButton disabled={sum > MAX_ALLOCATION_TOTAL} />
+          ) : allocations.length ? (
+            <Button variant="outline" as={Link} href={"/ballot"}>
+              View ballot
+            </Button>
+          ) : (
+            <Button variant="primary" disabled>
+              No projects added yet
+            </Button>
+          )}
+          <Divider />
+          <p className="text-gray-700">
+            {canSubmit
+              ? `If you don't allocate all 30m OP, the remainder will be distributed in proportion to all badgeholders' votes.`
+              : `As a badgeholder you are tasked with upholding the principle of “impact
         = profit” - the idea that positive impact to the Collective should be
         rewarded with profit to the individual.`}
-      </p>
-      <div>
-        <ExternalLink href="/" target="_blank">
-          Badgeholder Manual
-        </ExternalLink>
-      </div>
+          </p>
+          <div>
+            <ExternalLink href="/" target="_blank">
+              Badgeholder Manual
+            </ExternalLink>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };
 
-const SubmitBallotButton = () => {
+const SubmitBallotButton = ({ disabled = false }) => {
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
 
@@ -127,7 +137,11 @@ const SubmitBallotButton = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={async () => setOpen(true)}>
+      <Button
+        variant="primary"
+        disabled={disabled}
+        onClick={async () => setOpen(true)}
+      >
         Submit ballot
       </Button>
       <Dialog size="sm" isOpen={isOpen} onOpenChange={setOpen} title={title}>
@@ -168,5 +182,3 @@ const BallotSection = ({
     </div>
   </div>
 );
-
-const TimeSlice = createComponent("span", tv({ base: "text-gray-900" }));

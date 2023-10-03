@@ -1,20 +1,17 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 import { Layout } from "~/components/Layout";
 import { Pagination } from "~/components/Pagination";
 import { DisplayAndSortFilter } from "~/components/DisplayAndSortFilter";
-import { useRouter } from "next/router";
-import {
-  useFilter,
-  toURL,
-  type Filter,
-  useUpdateFilterFromRouter,
-} from "~/hooks/useFilter";
+import { useFilter, toURL, useUpdateFilterFromRouter } from "~/hooks/useFilter";
 import { Lists } from "~/components/Lists";
 import { useLists } from "~/hooks/useLists";
 import { CategoriesFilter } from "~/components/CategoriesFilter";
 import { Tag } from "~/components/ui/Tag";
 import { Divider } from "~/components/ui/Divider";
+import { Button } from "~/components/ui/Button";
 import { Like } from "~/components/icons";
-import Link from "next/link";
 
 export default function ListsPage() {
   const router = useRouter();
@@ -34,11 +31,16 @@ export default function ListsPage() {
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Lists</h1>
 
-        <DisplayAndSortFilter
-          baseUrl="/lists"
-          filter={filter!}
-          sortOptions={["shuffle", "asc", "desc", "liked"]}
-        />
+        <div className="flex items-center gap-2">
+          <Button variant="primary" as={Link} href="/lists/create">
+            New list
+          </Button>
+          <DisplayAndSortFilter
+            baseUrl="/lists"
+            filter={filter!}
+            sortOptions={["shuffle", "asc", "desc", "liked"]}
+          />
+        </div>
       </div>
       <div className="no-scrollbar">
         <CategoriesFilter

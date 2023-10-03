@@ -18,5 +18,7 @@ export function useProfile(address?: string) {
   );
 }
 export function useAllProfiles() {
-  return useQuery<Profile[]>(["profiles"], async () => fetchProfiles());
+  return useQuery<Profile[]>(["profiles"], async () =>
+    fetch("/api/profiles").then((r) => r.json())
+  );
 }

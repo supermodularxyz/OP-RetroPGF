@@ -24,7 +24,7 @@ export const Banner = ({
 }: { icon?: IconType } & ComponentProps<typeof BannerComponent>) => {
   return (
     <BannerComponent {...props}>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         {icon ? createElement(icon, { className: "w-4 h-4" }) : null}
         <div className="font-semibold">{title}</div>
       </div>
