@@ -97,7 +97,7 @@ const ConnectedDetails = ({
   return (
     <SignMessage>
       <div className="flex gap-2">
-        {submitted.publishedAt ? (
+        {submitted?.publishedAt ? (
           <Chip>Already submitted</Chip>
         ) : (
           <Chip className="gap-2" as={Link} href={"/ballot"}>
