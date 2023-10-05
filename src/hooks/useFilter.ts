@@ -10,6 +10,7 @@ export type Filter = {
   display?: "grid" | "list";
   sort?: FilterSort;
   search?: string;
+  seed?: string;
   categories?: ImpactCategory[];
 };
 
@@ -24,6 +25,7 @@ export const initialFilter: Filter = {
   display: "grid",
   sort: "shuffle",
   search: "",
+  seed: "",
   categories: [],
 };
 

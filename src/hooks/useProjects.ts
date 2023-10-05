@@ -4,8 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useAllLists } from "./useLists";
 import axios from "axios";
 
-const SEED = Math.random().toString(16).slice(2);
-console.log({ SEED });
 export const PAGE_SIZE = 12;
 
 export type Project = {
@@ -161,10 +159,11 @@ export function useProjects(filter: Filter) {
     sort = "shuffle",
     categories = [],
     search = "",
+    seed,
   } = filter ?? initialFilter;
 
   return useQuery(
-    ["projects", { page, sort, categories, search, SEED }],
+    ["projects", { page, sort, categories, search, seed }],
     () => {
       return axios
         .post<{
@@ -187,7 +186,7 @@ export function useProjects(filter: Filter) {
             skip: (page - 1) * PAGE_SIZE,
             orderBy: sortMap[sort as keyof typeof sortMap] ?? sort,
             search,
-            seed: SEED,
+            seed,
             category: categories.length ? categories : undefined,
           },
         })
