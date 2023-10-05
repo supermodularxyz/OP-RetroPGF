@@ -48,8 +48,8 @@ export const Header = () => {
   };
 
   return (
-    <header className="relative z-10 bg-white shadow-md">
-      <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center px-2">
+    <header className="relative z-[100] bg-white shadow-md">
+      <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center sm:px-8 px-2">
         <div className="mr-4 flex items-center lg:mr-16">
           <IconButton
             icon={isOpen ? X : Menu}

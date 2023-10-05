@@ -18,7 +18,7 @@ import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { z } from "zod";
 import clsx from "clsx";
 
-const MAX_ALLOCATION_PROJECT = Number(
+export const MAX_ALLOCATION_PROJECT = Number(
   process.env.NEXT_PUBLIC_MAX_ALLOCATION_PROJECT!
 );
 
