@@ -4,25 +4,26 @@ import { Tag } from "~/components/ui/Tag";
 import {
   type ImpactCategory,
   impactCategoryLabels,
-  useCategories,
+  categoryMap,
 } from "~/hooks/useCategories";
 import { type Filter } from "~/hooks/useFilter";
 
 export const CategoriesFilter = ({
+  count,
   selected = [],
   onSelect,
   children,
 }: {
+  count?: Record<string, number>;
   selected?: Filter["categories"];
   onSelect: (categories: Filter["categories"]) => void;
 } & PropsWithChildren) => {
-  const categoriesCount = useCategories();
   return (
     <div className="my-2 flex gap-2 overflow-x-auto py-1">
       {children}
       {Object.entries(impactCategoryLabels).map(([key, label]) => {
         const category = key as ImpactCategory;
-        const count = categoriesCount[category];
+        const num = count?.[categoryMap[category]] ?? "?";
         return (
           <Tag
             as={count ? Link : undefined}
@@ -39,7 +40,7 @@ export const CategoriesFilter = ({
           >
             {label}
             <div className="rounded-lg bg-white px-2 py-1 text-xs font-bold">
-              {count}
+              {num}
             </div>
           </Tag>
         );

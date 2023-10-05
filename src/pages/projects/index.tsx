@@ -29,6 +29,7 @@ export default function ProjectsPage() {
       </div>
       <div className="no-scrollbar">
         <CategoriesFilter
+          count={projects?.categories}
           selected={filter?.categories}
           onSelect={(categories) =>
             `/projects?${toURL(query, { categories, page: 1 })}`

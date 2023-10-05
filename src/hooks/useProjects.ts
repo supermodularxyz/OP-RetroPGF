@@ -194,15 +194,14 @@ export function useProjects(filter: Filter) {
           const { projects, projectsAggregate } = r.data.data.retroPGF;
 
           const data = projects.edges.map((edge) => edge.node);
-
-          const { total } = projectsAggregate;
+          const { total, ...categories } = projectsAggregate;
           const pages = Math.ceil(total / PAGE_SIZE);
 
-          return { data, pages };
+          return { data, pages, categories };
         })
         .catch((err) => {
           console.log("err", err);
-          return { data: [], pages: 1 };
+          return { data: [], pages: 1, categories: {} };
         });
     }
   );

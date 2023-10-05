@@ -1,3 +1,8 @@
+/*
+
+TODO: Remove this because profiles are included in Projects query.
+
+*/
 import { useQuery } from "@tanstack/react-query";
 import { fetchProfiles } from "~/utils/attestations";
 
