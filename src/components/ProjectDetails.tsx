@@ -43,16 +43,12 @@ import { useMemo, useRef } from "react";
 import { useIntersection } from "react-use";
 import clsx from "clsx";
 import { type List } from "~/hooks/useLists";
-import { useProfile } from "~/hooks/useProfiles";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
   const { data: allProjects } = useAllProjects();
   const { data: lists } = useListsForProject(project?.id);
-  const { data: profile } = useProfile(project?.owner);
-
-  console.log("profile", profile);
 
   const currentIndex = useMemo(
     () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
@@ -116,16 +112,16 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       <div ref={intersectionRef}>
         <picture>
           <img
-            alt={profile?.name}
-            src={profile?.bannerImageUrl}
+            alt={project?.profile?.name}
+            src={project?.profile?.bannerImageUrl}
             className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]"
           />
         </picture>
         <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar
             size="lg"
-            alt={profile?.name}
-            src={profile?.profileImageUrl}
+            alt={project?.profile?.name}
+            src={project?.profile?.profileImageUrl}
           />
           <div className="flex-1 items-center justify-between md:flex">
             <div>

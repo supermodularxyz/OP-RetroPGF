@@ -46,10 +46,15 @@ export const ProjectGridItem = ({
 }) => {
   return (
     <Card className={clsx({ ["animate-pulse"]: isLoading })}>
-      <div className="h-24 rounded-2xl bg-gray-200" />
+      <div
+        className="h-24 rounded-2xl bg-gray-200 bg-cover"
+        style={{
+          backgroundImage: `url(${project?.profile?.bannerImageUrl})`,
+        }}
+      />
       <div className="space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
-          <AvatarWithBorder />
+          <AvatarWithBorder src={project?.profile?.profileImageUrl} />
         </div>
         <CardTitle>
           <Skeleton isLoading={isLoading} className="min-w-[140px]">
@@ -73,7 +78,7 @@ export const ProjectListItem = ({ project }: { project: Project }) => {
   return (
     <div className="flex  cursor-pointer gap-6 pt-6">
       <div>
-        <AvatarWithBorder />
+        <AvatarWithBorder src={project?.profile?.profileImageUrl} />
       </div>
       <div className="flex flex-1 flex-col gap-2">
         <CardTitle>{project.displayName}</CardTitle>

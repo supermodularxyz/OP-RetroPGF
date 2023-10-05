@@ -4,6 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useAllLists } from "./useLists";
 import axios from "axios";
 
+const SEED = Math.random().toString(16).slice(2);
+console.log({ SEED });
+export const PAGE_SIZE = 12;
+
 export type Project = {
   id: string;
   applicantType: "PROJECT" | "INDIVIDUAL";
@@ -44,6 +48,14 @@ export type Project = {
   certifiedNotDesignatedOrSanctionedOrBlocked: boolean;
   certifiedNotSponsoredByPoliticalFigureOrGovernmentEntity: boolean;
   certifiedNotBarredFromParticipating: boolean;
+  profile?: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+    bannerImageUrl: string;
+    websiteUrl: string;
+    bio: string;
+  };
 };
 
 export const fundingSourcesLabels = {
@@ -65,7 +77,9 @@ const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
 const PROJECT_FRAGMENT = `
 displayName
-payoutAddress
+payoutAddress {
+  address
+}
 websiteUrl
 applicantType
 bio
@@ -88,7 +102,16 @@ impactMetrics {
   description
   number
   url
-}`;
+}
+profile {
+  id
+  name
+  profileImageUrl
+  bannerImageUrl
+  websiteUrl
+  bio
+}
+`;
 const ProjectQuery = `
   query Project($id: ID!) {
     retroPGF {
@@ -99,9 +122,9 @@ const ProjectQuery = `
   }
 `;
 const ProjectsQuery = `
-  query Projects($first: Int!,  $orderBy: ProjectOrder!, $search: String, $seed: String) {
+  query Projects($first: Int!, $skip: Int!, $orderBy: ProjectOrder!, $category: [ProjectCategory!], $search: String, $seed: String) {
     retroPGF {
-      projects(first: $first, orderBy: $orderBy, search: $search, seed: $seed) {
+      projects(first: $first, skip: $skip, orderBy: $orderBy, category: $category, search: $search, seed: $seed) {
         pageInfo {
           hasNextPage
           hasPreviousPage
@@ -125,6 +148,13 @@ const ProjectsQuery = `
     }
   }
 `;
+
+const sortMap = {
+  shuffle: "shuffle",
+  asc: "alphabeticalAZ",
+  desc: "alphabeticalZA",
+  liked: "byIncludedInBallots",
+};
 export function useProjects(filter: Filter) {
   const {
     page = 1,
@@ -133,59 +163,67 @@ export function useProjects(filter: Filter) {
     search = "",
   } = filter ?? initialFilter;
 
-  return useQuery(["projects", { page, sort, categories, search }], () => {
-    return axios
-      .post<{
-        data: {
-          retroPGF: {
-            projects: {
-              edges: {
-                node: {
-                  id: string;
-                };
-              }[];
+  return useQuery(
+    ["projects", { page, sort, categories, search, SEED }],
+    () => {
+      return axios
+        .post<{
+          data: {
+            retroPGF: {
+              projects: { edges: { node: Project }[] };
+              projectsAggregate: {
+                total: number;
+                collectiveGovernance: number;
+                developerEcosystem: number;
+                endUserExperienceAndAdoption: number;
+                opStack: number;
+              };
             };
           };
-        };
-      }>(`${backendUrl}/graphql`, {
-        query: ProjectsQuery,
-        variables: {
-          first: 10,
-          orderBy: "alphabeticalAZ",
-          search: "",
-          category: null,
-        },
-      })
-      .then((r) => {
-        const data = r.data.data.retroPGF.projects.edges.map(
-          (edge) => edge.node
-        );
-        return {
-          data,
-          pages: 10,
-        };
-      })
-      .catch((err) => {
-        console.log("err", err);
-        return [];
-      });
-    // return paginate(sortAndFilter(projects.data ?? [], filter), filter?.page);
-  });
+        }>(`${backendUrl}/graphql`, {
+          query: ProjectsQuery,
+          variables: {
+            first: PAGE_SIZE,
+            skip: (page - 1) * PAGE_SIZE,
+            orderBy: sortMap[sort as keyof typeof sortMap] ?? sort,
+            search,
+            seed: SEED,
+            category: categories.length ? categories : undefined,
+          },
+        })
+        .then((r) => {
+          const { projects, projectsAggregate } = r.data.data.retroPGF;
+
+          const data = projects.edges.map((edge) => edge.node);
+
+          const { total } = projectsAggregate;
+          const pages = Math.ceil(total / PAGE_SIZE);
+
+          return { data, pages };
+        })
+        .catch((err) => {
+          console.log("err", err);
+          return { data: [], pages: 1 };
+        });
+    }
+  );
 }
 
 export function useProject(id: string) {
-  console.log("ID", id?.split("|"));
   return useQuery(
     ["projects", id],
     async () =>
       axios
-        .post(`${backendUrl}/graphql`, {
-          query: ProjectQuery,
-          variables: {
-            id: id.split("|")[1],
-          },
-        })
-        .then((r) => r.data.data.retroPGF.project),
+        .post<{ data: { retroPGF: { project: Project } } }>(
+          `${backendUrl}/graphql`,
+          {
+            query: ProjectQuery,
+            variables: {
+              id: id.split("|")[1],
+            },
+          }
+        )
+        .then((r) => r.data.data.retroPGF.project ?? null),
     { enabled: Boolean(id) }
   );
 }

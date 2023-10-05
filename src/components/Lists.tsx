@@ -150,11 +150,10 @@ export const ProjectsLogosCard = ({ projects }: { projects: Allocation[] }) => (
 
 const ProjectAvatar = ({ id }: { id: string }) => {
   const { data: project } = useProject(id);
-  const { data: profile } = useProfile(project?.owner);
 
   return (
     <AvatarWithBorder
-      src={profile?.profileImageUrl}
+      src={project?.profile?.profileImageUrl}
       className="-mx-1"
       size="sm"
     />
