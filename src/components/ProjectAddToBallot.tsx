@@ -17,12 +17,14 @@ import { sumBallot } from "~/hooks/useBallot";
 import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { z } from "zod";
 import clsx from "clsx";
+import { useAccount } from "wagmi";
 
 export const MAX_ALLOCATION_PROJECT = Number(
   process.env.NEXT_PUBLIC_MAX_ALLOCATION_PROJECT!
 );
 
 export const ProjectAddToBallot = ({ project }: { project: Project }) => {
+  const { address } = useAccount();
   const [isOpen, setOpen] = useState(false);
   const add = useAddToBallot();
   const remove = useRemoveFromBallot();
@@ -45,6 +47,7 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
         </IconButton>
       ) : (
         <IconButton
+          disabled={!address}
           onClick={() => setOpen(true)}
           variant="primary"
           icon={AddBallot}
