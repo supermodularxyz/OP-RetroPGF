@@ -173,7 +173,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             <FaCheckToSlot className="text-gray-500" /> 56 ballots
           </Tag>
           <Tag>
-            <LayoutList className="text-gray-500" /> {project.lists?.length}{" "}
+            <LayoutList className="text-gray-500" /> {project?.lists?.length}{" "}
             voting lists
           </Tag>
           <Tag>

@@ -61,6 +61,9 @@ lists {
   }
   listContent {
     OPAmount
+    project {
+      id
+    }
   }
 }
 `;

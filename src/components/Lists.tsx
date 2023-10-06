@@ -140,7 +140,7 @@ export const ProjectsLogosCard = ({
   <div className="flex items-center gap-3">
     <div className="ml-1 flex">
       {projects?.slice(0, 4).map((item) => (
-        <ProjectAvatar key={item.project.id} id={item.project.id} />
+        <ProjectAvatar key={item.project?.id} id={item.project?.id} />
       ))}
     </div>
     {projects?.length > 4 && (
