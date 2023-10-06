@@ -24,11 +24,13 @@ export const Dialog = ({
           {title}
         </RadixDialog.Title>
         {children}
-        <RadixDialog.Close asChild>
-          <Button variant="ghost" className="absolute right-4 top-4">
-            &times;
-          </Button>
-        </RadixDialog.Close>
+        {onOpenChange ? (
+          <RadixDialog.Close asChild>
+            <Button variant="ghost" className="absolute right-4 top-4">
+              &times;
+            </Button>
+          </RadixDialog.Close>
+        ) : null}
       </Content>
     </RadixDialog.Portal>
   </RadixDialog.Root>

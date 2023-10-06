@@ -1,53 +1,35 @@
+import Link from "next/link";
 import { type z } from "zod";
-import { Button, IconButton } from "~/components/ui/Button";
+import { useState } from "react";
+import { useAccount } from "wagmi";
+import { useFormContext } from "react-hook-form";
+
 import {
   AddBallot,
-  Adjustment,
   ArrowRotateLeft,
   CircleCheck,
   CircleExclamation,
 } from "~/components/icons";
+import { Button, IconButton } from "~/components/ui/Button";
 import { Dialog } from "./ui/Dialog";
-import {
-  useState,
-  createElement,
-  type FunctionComponent,
-  type ComponentPropsWithoutRef,
-} from "react";
 import { Form } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
-import { useAccount } from "wagmi";
 import { AllocationForm } from "./AllocationList";
 import { AllocationsSchema } from "~/schemas/allocation";
-import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
-import { ballotToArray, sumBallot, useBallot } from "~/hooks/useBallot";
-import { OP_TO_ALLOCATE } from "./BallotOverview";
-
+import {
+  Allocation,
+  ballotToArray,
+  sumBallot,
+  useBallot,
+} from "~/hooks/useBallot";
+import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
-import Link from "next/link";
+import { FeedbackDialog } from "./FeedbackDialog";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
-
-const FeedbackDialog = ({
-  icon,
-  variant,
-  children,
-}: ComponentPropsWithoutRef<"div"> & {
-  variant: "success" | "info";
-  icon: FunctionComponent<{ className: string }>;
-}) => {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <Banner variant={variant}>
-        {createElement(icon, { className: "w-8 h-8" })}
-      </Banner>
-      {children}
-    </div>
-  );
-};
 
 export const ListEditDistribution = ({
   list,
@@ -58,13 +40,16 @@ export const ListEditDistribution = ({
 }) => {
   const { address } = useAccount();
   const [isOpen, setOpen] = useState(false);
+  const { data: ballot } = useBallot();
   const add = useAddToBallot();
 
-  const { data: ballot } = useBallot();
-
   // What list projects are already in the ballot?
-  const alreadyInBallot = listProjects.filter((p) => ballot?.[p.id]);
-  console.log({ alreadyInBallot });
+  function itemsInBallot(allocations: Allocation[]) {
+    return allocations?.filter((p) => ballot?.[p.id]);
+  }
+  const [alreadyInBallot, updateInBallot] = useState(
+    itemsInBallot(listProjects)
+  );
 
   function handleAddToBallot({
     allocations,
@@ -82,22 +67,22 @@ export const ListEditDistribution = ({
   return (
     <div>
       <IconButton
-        variant="outline"
+        variant="primary"
         onClick={() => setOpen(true)}
-        icon={Adjustment}
+        icon={AddBallot}
         className="w-full md:w-auto"
         disabled={!address}
       >
-        Edit distribution
+        Add to ballot
       </IconButton>
       <Dialog
+        title={showDialogTitle ? `Edit distribution` : null}
         size={add.isSuccess ? "sm" : "md"}
         isOpen={isOpen}
         onOpenChange={() => {
           setOpen(false);
           add.reset(); // This is needed to reset add.isSuccess and show the allocations again
         }}
-        title={showDialogTitle ? `Edit distribution` : null}
       >
         {add.isSuccess ? (
           <FeedbackDialog variant="success" icon={CircleCheck}>
@@ -123,13 +108,22 @@ export const ListEditDistribution = ({
                 title={`${alreadyInBallot.length} project(s) in the ${list.displayName} list already exist in your ballot.`}
               >
                 <div className="flex gap-2">
-                  You can change your OP allocation based on the list.
+                  You can change your OP alloaction based on the list or remove
+                  the project(s) from the list to keep your existing allocation.
                 </div>
               </Banner>
             ) : null}
-            <ResetDistribution />
+            <ResetDistribution
+              onReset={() => updateInBallot(itemsInBallot(listProjects))}
+            />
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationForm filter={{}} list={alreadyInBallot} />
+              <AllocationForm
+                filter={{}}
+                list={alreadyInBallot}
+                onSave={({ allocations }) =>
+                  updateInBallot(itemsInBallot(allocations))
+                }
+              />
             </div>
             <TotalOPBanner />
             <div className="flex gap-2">
@@ -167,7 +161,7 @@ const TotalOPBanner = () => {
 
   const current = sumBallot(allocations);
 
-  const exceeds = current + sum - OP_TO_ALLOCATE;
+  const exceeds = current + sum - MAX_ALLOCATION_TOTAL;
 
   const isExceeding = exceeds > 0;
   return (
@@ -184,17 +178,19 @@ const TotalOPBanner = () => {
   );
 };
 
-const ResetDistribution = () => {
+const ResetDistribution = ({ onReset }: { onReset: () => void }) => {
   const form = useFormContext();
 
-  console.log(form.formState.isDirty);
   return (
     <IconButton
       className={form.formState.isDirty ? "" : "text-gray-400"}
       icon={ArrowRotateLeft}
       variant="ghost"
       type="button"
-      onClick={() => form.reset()}
+      onClick={() => {
+        form.reset();
+        onReset();
+      }}
     >
       Reset distribution
     </IconButton>

@@ -4,7 +4,7 @@ import { createComponent } from ".";
 const ProgressWrapper = createComponent(
   "div",
   tv({
-    base: "h-1 rounded-full bg-gray-200 relative",
+    base: "h-1 rounded-full bg-gray-200 relative overflow-hidden",
   })
 );
 

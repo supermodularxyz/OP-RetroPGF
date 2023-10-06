@@ -103,17 +103,7 @@ export const ListDetails = ({ list }: { list: List }) => {
                   {formatNumber(allocatedOP)} OP allocated
                 </p>
               </div>
-              <div className="mt-2 flex flex-col items-center gap-4 sm:mt-0 sm:flex-row">
-                <ListEditDistribution list={list} listProjects={listProjects} />
-                <IconButton
-                  variant="primary"
-                  icon={AddBallot}
-                  className="w-full md:w-auto"
-                  disabled={!address}
-                >
-                  Add to ballot
-                </IconButton>
-              </div>
+              <ListEditDistribution list={list} listProjects={listProjects} />
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
               <AllocationList allocations={listProjects} />

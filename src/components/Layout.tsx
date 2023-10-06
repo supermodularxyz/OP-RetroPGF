@@ -39,8 +39,6 @@ export const Layout = (
           <div
             className={clsx("min-w-0 flex-1 px-4 pb-24", {
               ["mx-auto max-w-5xl"]: !props.sidebar,
-              ["md:ml-8 md:pl-80"]: props.sidebar === "left",
-              ["md:mr-8"]: props.sidebar === "right",
             })}
           >
             {props.children}
@@ -59,7 +57,7 @@ const Sidebar = ({
   <div className="">
     <div
       className={clsx("w-[336px] px-2 md:px-4", {
-        ["md:fixed"]: side === "left",
+        ["md:sticky top-[2rem] left-0"]: side === "left",
       })}
       {...props}
     />

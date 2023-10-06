@@ -18,7 +18,9 @@ import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
 import { VotingEndsIn, useVotingTimeLeft } from "./VotingEndsIn";
 
-export const OP_TO_ALLOCATE = 30_000_000;
+export const MAX_ALLOCATION_TOTAL = Number(
+  process.env.NEXT_PUBLIC_MAX_ALLOCATION_TOTAL!
+);
 export const BallotOverview = () => {
   const router = useRouter();
 
@@ -51,18 +53,24 @@ export const BallotOverview = () => {
             title={
               <div className="flex justify-between">
                 OP allocated:
-                <div className="text-gray-900">{formatNumber(sum)} OP</div>
+                <div
+                  className={clsx("text-gray-900", {
+                    ["text-primary-500"]: sum > MAX_ALLOCATION_TOTAL,
+                  })}
+                >
+                  {formatNumber(sum)} OP
+                </div>
               </div>
             }
           >
-            <Progress value={sum} max={OP_TO_ALLOCATE} />
+            <Progress value={sum} max={MAX_ALLOCATION_TOTAL} />
             <div className="flex justify-between text-xs">
               <div>Total</div>
-              <div>{formatNumber(OP_TO_ALLOCATE)} OP</div>
+              <div>{formatNumber(MAX_ALLOCATION_TOTAL)} OP</div>
             </div>
           </BallotSection>
           {canSubmit ? (
-            <SubmitBallotButton />
+            <SubmitBallotButton disabled={sum > MAX_ALLOCATION_TOTAL} />
           ) : allocations.length ? (
             <Button variant="outline" as={Link} href={"/ballot"}>
               View ballot
@@ -91,7 +99,7 @@ export const BallotOverview = () => {
   );
 };
 
-const SubmitBallotButton = () => {
+const SubmitBallotButton = ({ disabled = false }) => {
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
 
@@ -129,7 +137,11 @@ const SubmitBallotButton = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={async () => setOpen(true)}>
+      <Button
+        variant="primary"
+        disabled={disabled}
+        onClick={async () => setOpen(true)}
+      >
         Submit ballot
       </Button>
       <Dialog size="sm" isOpen={isOpen} onOpenChange={setOpen} title={title}>
