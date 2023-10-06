@@ -280,7 +280,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <div className="mt-12 space-y-4">
           <H3>Included in the following lists</H3>
           <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
-            {lists?.map((list) => (
+            {project?.lists?.map((list) => (
               <Link
                 key={list.id}
                 href={`/lists/${list.id}`}
@@ -304,7 +304,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 };
 
 function sumListAllocation(list: List) {
-  return list.projects.reduce((acc, x) => acc + x.amount, 0);
+  return list.listContent?.reduce((acc, x) => acc + x.OPAmount, 0);
 }
 
 const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));

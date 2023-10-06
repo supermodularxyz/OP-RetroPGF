@@ -8,9 +8,8 @@ import { Like, Liked } from "~/components/icons";
 import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import Link from "next/link";
-import { useAccount } from "wagmi";
+import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
 import { type Allocation } from "~/hooks/useBallot";
-import { useProfile } from "~/hooks/useProfiles";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -53,8 +52,8 @@ export const ListGridItem = ({ list }: { list: List }) => {
       <div className="space-y-3 p-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{list.displayName}</CardTitle>
-            <AvatarWithName name={list.displayName} owner={list.owner} />
+            <CardTitle>{list.listName}</CardTitle>
+            <AvatarWithName address={list.author.address} />
           </div>
           <LikeCount listId={list.id} />
         </div>
@@ -81,13 +80,13 @@ export const ListListItem = ({
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CardTitle>{list.displayName}</CardTitle>
+            <CardTitle>{list.listName}</CardTitle>
             <Divider orientation={"vertical"} />
             <LikeCount listId={list.id} />
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
-        <AvatarWithName name={list.displayName} owner={list?.owner} />
+        <AvatarWithName address={list?.author.address!} />
       </div>
       <ProjectsLogosCard projects={list.projects} />
 
@@ -117,18 +116,16 @@ export const LikeCount = ({ listId = "" }) => {
   );
 };
 
-export const AvatarWithName = ({
-  name,
-  owner,
-}: {
-  name: string;
-  owner?: string;
-}) => {
-  const { data: profile } = useProfile(owner);
+export const AvatarWithName = ({ address }: { address: Address }) => {
+  const ens = useEnsName({ address, chainId: 1, enabled: Boolean(address) });
+  const name = ens.data;
+  const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });
+
+  console.log(address, name, avatar.data);
   return (
     <div className="flex items-center gap-2">
-      <Avatar src={profile?.profileImageUrl} size="xs" rounded="full" />
-      <p className="text-sm font-semibold">{name} </p>
+      <Avatar src={avatar.data} size="xs" rounded="full" />
+      <p className="text-sm font-semibold">{name ?? address} </p>
     </div>
   );
 };
@@ -140,9 +137,9 @@ export const ProjectsLogosCard = ({ projects }: { projects: Allocation[] }) => (
         <ProjectAvatar key={project.id} id={project.id} />
       ))}
     </div>
-    {projects.length > 4 && (
+    {projects?.length > 4 && (
       <p className="text-xs text-neutral-600">
-        +{projects.length - 4} projects
+        +{projects?.length - 4} projects
       </p>
     )}
   </div>

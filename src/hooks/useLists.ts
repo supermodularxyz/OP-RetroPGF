@@ -9,13 +9,22 @@ import { type ImpactCategory } from "./useCategories";
 export type List = {
   id: string;
   listName: string;
-  displayName: string;
+  listDescription: string;
   owner: string;
   bio: string;
   impactCategory: ImpactCategory[];
   impactEvaluation: string;
   impactEvaluationLink: string;
   projects: Allocation[];
+  listContent: {
+    OPAmount: number;
+  }[];
+  author: {
+    address: Address;
+    resolvedName: {
+      name?: string;
+    };
+  };
 };
 
 export function useAllLists() {

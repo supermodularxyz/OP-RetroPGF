@@ -1,8 +1,9 @@
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
-import { useQuery } from "@tanstack/react-query";
 import { useAllLists } from "./useLists";
-import axios from "axios";
+import { type List } from "~/hooks/useLists";
 
 export const PAGE_SIZE = 12;
 
@@ -54,6 +55,7 @@ export type Project = {
     websiteUrl: string;
     bio: string;
   };
+  lists: List[];
 };
 
 export const fundingSourcesLabels = {
@@ -108,6 +110,20 @@ profile {
   bannerImageUrl
   websiteUrl
   bio
+}
+lists {
+  id
+  listName
+  listDescription
+  author {
+    address
+    resolvedName {
+      name
+    }
+  }
+  listContent {
+    OPAmount
+  }
 }
 `;
 const ProjectQuery = `
