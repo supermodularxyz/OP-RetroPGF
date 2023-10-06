@@ -28,7 +28,7 @@ export default function ListsPage() {
 
   return (
     <Layout sidebar="left">
-      <div className="flex justify-between">
+      <div className="justify-between md:flex">
         <h1 className="text-2xl font-bold text-gray-900">Lists</h1>
 
         <div className="flex items-center gap-2">

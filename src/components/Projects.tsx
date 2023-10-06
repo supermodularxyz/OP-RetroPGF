@@ -15,7 +15,7 @@ export const Projects = ({ filter, projects }: Props) => {
   const { isLoading } = useAllProjects();
   return (
     <div
-      className={clsx("mb-8 grid gap-4", {
+      className={clsx("mb-8 flex flex-col gap-4 md:grid", {
         ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
         ["gap-6 divide-y divide-neutral-200"]: isList,
       })}
@@ -45,7 +45,7 @@ export const ProjectGridItem = ({
   isLoading?: boolean;
 }) => {
   return (
-    <Card className={clsx({ ["animate-pulse"]: isLoading })}>
+    <Card className={clsx("max-w-full", { ["animate-pulse"]: isLoading })}>
       <div className="h-24 rounded-2xl bg-gray-200" />
       <div className="space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">

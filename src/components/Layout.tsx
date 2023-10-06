@@ -56,8 +56,8 @@ const Sidebar = ({
 }: { side?: "left" | "right" } & PropsWithChildren) => (
   <div className="">
     <div
-      className={clsx("w-[336px] px-2 md:px-4", {
-        ["md:sticky top-[2rem] left-0"]: side === "left",
+      className={clsx("px-2 md:w-[336px] md:px-4", {
+        ["left-0 top-[2rem] md:sticky"]: side === "left",
       })}
       {...props}
     />

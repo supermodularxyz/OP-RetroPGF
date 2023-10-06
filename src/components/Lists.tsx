@@ -21,7 +21,7 @@ export const Lists = ({ filter, lists }: Props) => {
     <>
       {!lists ? null : (
         <div
-          className={clsx("mb-8 grid gap-4", {
+          className={clsx("mb-8 flex flex-col gap-4 md:grid", {
             ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
             ["gap-6 divide-y divide-neutral-200"]: isList,
           })}
