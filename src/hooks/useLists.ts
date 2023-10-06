@@ -6,6 +6,7 @@ import { useAccount, type Address } from "wagmi";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
 import axios from "axios";
+import { useAccessToken } from "./useAuth";
 
 export type List = {
   id: string;
@@ -61,10 +62,13 @@ export function useLikes(listId: string) {
 export function useLikeList(listId: string) {
   const queryClient = useQueryClient();
   const { address } = useAccount();
+  const { data: token } = useAccessToken();
 
   return useMutation(
     async (listId: string) => {
-      return axios.post(`${backendUrl}/api/likes/${listId}/like`);
+      return axios.post(`${backendUrl}/api/likes/${listId}/like`, undefined, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
     },
     {
       // Optimistically update state
@@ -77,8 +81,9 @@ export function useLikeList(listId: string) {
         });
         return { listId };
       },
+
       // Refetch all likes so it's included in the counts everywhere.
-      onSettled: () => queryClient.invalidateQueries({ queryKey: ["likes"] }),
+      onSettled: () => queryClient.invalidateQueries(["likes"]),
     }
   );
 }
