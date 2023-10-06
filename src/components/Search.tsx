@@ -99,20 +99,26 @@ export const Search = ({ onSelect }: Props) => {
                       heading={type}
                       className="uppercase text-gray-700"
                     >
-                      {items.map((item) => (
-                        <Command.Item
-                          key={`${type}/${item.id}`}
-                          value={`/${type}/${item.id}`}
-                          className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg p-2 normal-case text-gray-900 hover:bg-gray-100 data-[selected]:bg-gray-100"
-                          onSelect={(path) => {
-                            setSearch("");
-                            onSelect(path);
-                          }}
-                        >
-                          <div className="h-6 w-6 bg-gray-200" />
-                          {item.displayName}
-                        </Command.Item>
-                      ))}
+                      {items.map(
+                        (item: {
+                          id: string;
+                          displayName?: string;
+                          listName?: string;
+                        }) => (
+                          <Command.Item
+                            key={`${type}/${item.id}`}
+                            value={`/${type}/${item.id}`}
+                            className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg p-2 normal-case text-gray-900 hover:bg-gray-100 data-[selected]:bg-gray-100"
+                            onSelect={(path) => {
+                              setSearch("");
+                              onSelect(path);
+                            }}
+                          >
+                            <div className="h-6 w-6 bg-gray-200" />
+                            {item.displayName ?? item.listName}
+                          </Command.Item>
+                        )
+                      )}
                     </Command.Group>
                   ) : null;
                 })}

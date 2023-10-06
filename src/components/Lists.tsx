@@ -89,7 +89,7 @@ export const ListListItem = ({
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
-        <AvatarWithName address={list?.author.address!} />
+        <AvatarWithName address={list?.author.address} />
       </div>
       <ProjectsLogosCard projects={list.listContent} />
 

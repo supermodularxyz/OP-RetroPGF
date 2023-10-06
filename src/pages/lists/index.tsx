@@ -9,7 +9,6 @@ import { Lists } from "~/components/Lists";
 import { useLists } from "~/hooks/useLists";
 import { CategoriesFilter } from "~/components/CategoriesFilter";
 import { Tag } from "~/components/ui/Tag";
-import { Divider } from "~/components/ui/Divider";
 import { Button } from "~/components/ui/Button";
 import { Like } from "~/components/icons";
 
@@ -18,13 +17,11 @@ export default function ListsPage() {
   const query = router.query;
 
   const { data: filter } = useFilter("lists");
-  const { data: lists } = useLists(filter!);
+  const { data: lists } = useLists(filter);
   const currentPage = Number(filter?.page);
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
-
-  console.log("lists", lists);
 
   return (
     <Layout sidebar="left">

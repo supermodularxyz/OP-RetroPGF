@@ -105,7 +105,7 @@ export const ListEditDistribution = ({
               <Banner
                 icon={CircleExclamation}
                 variant="warning"
-                title={`${alreadyInBallot.length} project(s) in the ${list.displayName} list already exist in your ballot.`}
+                title={`${alreadyInBallot.length} project(s) in the ${list.listName} list already exist in your ballot.`}
               >
                 <div className="flex gap-2">
                   You can change your OP alloaction based on the list or remove
