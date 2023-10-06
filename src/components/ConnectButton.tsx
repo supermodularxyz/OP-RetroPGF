@@ -19,6 +19,7 @@ import { AddBallot } from "./icons";
 import { countBallot, useBallot, useSubmittedBallot } from "~/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
 import { useNonce, useSession, useVerify } from "~/hooks/useAuth";
+import { Dialog } from "./ui/Dialog";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
 
@@ -169,5 +170,16 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   if (session?.address) {
     return <>{children}</>;
   }
+  return (
+    <>
+      {children}
+      <Dialog size="sm" title="Authenticate" isOpen>
+        <p className="mb-4">Sign message to authenticate</p>
+        <div className="flex justify-center">
+          <Button onClick={handleSign}>Sign message</Button>
+        </div>
+      </Dialog>
+    </>
+  );
   return <Button onClick={handleSign}>Sign message</Button>;
 };
