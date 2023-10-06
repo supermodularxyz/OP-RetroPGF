@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { useAccount } from "wagmi";
+import { tv } from "tailwind-variants";
+
 import { useLikeList, type List } from "~/hooks/useLists";
-import { Button, IconButton } from "~/components/ui/Button";
+import { Button } from "~/components/ui/Button";
 import {
   ExternalLinkOutline,
   Document,
@@ -9,7 +11,6 @@ import {
   Share,
   Flag,
 } from "~/components/icons";
-import { tv } from "tailwind-variants";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
@@ -36,7 +37,7 @@ export const ListDetails = ({ list }: { list: List }) => {
         <div className="grid gap-10">
           <div className="flex justify-between gap-4 sm:items-center">
             <div>
-              <h3 className="mb-2 text-2xl font-bold">{list?.displayName}</h3>
+              <h3 className="mb-2 text-2xl font-bold">{list?.listName}</h3>
               <div className="flex items-center gap-1">
                 <Avatar size="xs" rounded="full" />
                 <div className="flex items-center">
@@ -76,7 +77,7 @@ export const ListDetails = ({ list }: { list: List }) => {
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">About</h3>
-            <p>{list.bio}</p>
+            <p>{list.listDescription}</p>
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Impact Evaluation</h3>

@@ -2,10 +2,9 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
-import { useAllLists } from "./useLists";
 import { type List } from "~/hooks/useLists";
-
-export const PAGE_SIZE = 12;
+import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
+import { Aggregate, createQueryVariables, PAGE_SIZE } from "~/graphql/utils";
 
 export type Project = {
   id: string;
@@ -75,152 +74,34 @@ export function useAllProjects() {
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-const PROJECT_FRAGMENT = `
-displayName
-payoutAddress {
-  address
-}
-websiteUrl
-applicantType
-bio
-contributionDescription
-contributionLinks {
-  description
-  type
-  url
-}
-fundingSources {
-  currency
-  amount
-  description
-  type
-}
-id
-impactCategory
-impactDescription
-impactMetrics {
-  description
-  number
-  url
-}
-profile {
-  id
-  name
-  profileImageUrl
-  bannerImageUrl
-  websiteUrl
-  bio
-}
-lists {
-  id
-  listName
-  listDescription
-  author {
-    address
-    resolvedName {
-      name
-    }
-  }
-  listContent {
-    OPAmount
-  }
-}
-`;
-const ProjectQuery = `
-  query Project($id: ID!) {
-    retroPGF {
-      project(id: $id) {
-        ${PROJECT_FRAGMENT}
-      }
-    }
-  }
-`;
-const ProjectsQuery = `
-  query Projects($first: Int!, $skip: Int!, $orderBy: ProjectOrder!, $category: [ProjectCategory!], $search: String, $seed: String) {
-    retroPGF {
-      projects(first: $first, skip: $skip, orderBy: $orderBy, category: $category, search: $search, seed: $seed) {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-        }
-        edges {
-          cursor
-          node {
-            ${PROJECT_FRAGMENT}
-          }
-        }
-      }
-      projectsAggregate {
-        collectiveGovernance
-        developerEcosystem
-        opStack
-        total
-        endUserExperienceAndAdoption
-      }
-    }
-  }
-`;
-
-const sortMap = {
-  shuffle: "shuffle",
-  asc: "alphabeticalAZ",
-  desc: "alphabeticalZA",
-  liked: "byIncludedInBallots",
-};
-export function useProjects(filter: Filter) {
-  const {
-    page = 1,
-    sort = "shuffle",
-    categories = [],
-    search = "",
-    seed,
-  } = filter ?? initialFilter;
-
-  return useQuery(
-    ["projects", { page, sort, categories, search, seed }],
-    () => {
-      return axios
-        .post<{
-          data: {
-            retroPGF: {
-              projects: { edges: { node: Project }[] };
-              projectsAggregate: {
-                total: number;
-                collectiveGovernance: number;
-                developerEcosystem: number;
-                endUserExperienceAndAdoption: number;
-                opStack: number;
-              };
-            };
+export function useProjects(filter: Filter = initialFilter) {
+  return useQuery(["projects", filter], () => {
+    return axios
+      .post<{
+        data: {
+          retroPGF: {
+            projects: { edges: { node: Project }[] };
+            projectsAggregate: Aggregate;
           };
-        }>(`${backendUrl}/graphql`, {
-          query: ProjectsQuery,
-          variables: {
-            first: PAGE_SIZE,
-            skip: (page - 1) * PAGE_SIZE,
-            orderBy: sortMap[sort as keyof typeof sortMap] ?? sort,
-            search,
-            seed,
-            category: categories.length ? categories : undefined,
-          },
-        })
-        .then((r) => {
-          const { projects, projectsAggregate } = r.data.data.retroPGF;
+        };
+      }>(`${backendUrl}/graphql`, {
+        query: ProjectsQuery,
+        variables: createQueryVariables(filter),
+      })
+      .then((r) => {
+        const { projects, projectsAggregate } = r.data.data.retroPGF;
 
-          const data = projects.edges.map((edge) => edge.node);
-          const { total, ...categories } = projectsAggregate;
-          const pages = Math.ceil(total / PAGE_SIZE);
+        const data = projects.edges.map((edge) => edge.node);
+        const { total, ...categories } = projectsAggregate;
+        const pages = Math.ceil(total / PAGE_SIZE);
 
-          return { data, pages, categories };
-        })
-        .catch((err) => {
-          console.log("err", err);
-          return { data: [], pages: 1, categories: {} };
-        });
-    }
-  );
+        return { data, pages, categories };
+      })
+      .catch((err) => {
+        console.log("err", err);
+        return { data: [], pages: 1, categories: {} };
+      });
+  });
 }
 
 export function useProject(id: string) {
@@ -239,15 +120,6 @@ export function useProject(id: string) {
         )
         .then((r) => r.data.data?.retroPGF.project ?? null),
     { enabled: Boolean(id) }
-  );
-}
-
-export function useListsForProject(id: string) {
-  const { data: lists, isLoading } = useAllLists();
-  return useQuery(
-    ["projects", id, "lists"],
-    () => lists?.filter((list) => list.projects.find((p) => p.id === id)),
-    { enabled: Boolean(id && !isLoading) }
   );
 }
 

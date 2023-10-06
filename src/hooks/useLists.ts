@@ -1,23 +1,26 @@
+import axios from "axios";
+import { useAccount, type Address } from "wagmi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
-import { sortAndFilter, paginate } from "./useProjects";
 import { allListsLikes } from "~/data/mock";
-import { useAccount, type Address } from "wagmi";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
+import { ListQuery, ListsQuery } from "~/graphql/queries";
+import { Aggregate, createQueryVariables, PAGE_SIZE } from "~/graphql/utils";
+import { Project } from "./useProjects";
 
 export type List = {
   id: string;
   listName: string;
   listDescription: string;
   owner: string;
-  bio: string;
-  impactCategory: ImpactCategory[];
+  categories: ImpactCategory[];
   impactEvaluation: string;
   impactEvaluationLink: string;
   projects: Allocation[];
   listContent: {
     OPAmount: number;
+    project: Project;
   }[];
   author: {
     address: Address;
@@ -27,33 +30,52 @@ export type List = {
   };
 };
 
-export function useAllLists() {
-  return useQuery<List[]>(["lists", "all"], () =>
-    fetch("/api/lists").then((r) => r.json())
-  );
-}
-export function useLists(filter: Filter) {
-  const {
-    page = 1,
-    sort = "shuffle",
-    categories = [],
-    search = "",
-  } = filter ?? initialFilter;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-  // TODO: Call EAS attestations
-  const { data: lists, isLoading } = useAllLists();
-  return useQuery(
-    ["lists", { page, sort, categories, search }],
-    () => paginate(sortAndFilter(lists, filter), filter?.page),
-    { enabled: !isLoading }
-  );
+export function useLists(filter: Filter = initialFilter) {
+  return useQuery(["lists", filter], () => {
+    return axios
+      .post<{
+        data: {
+          retroPGF: {
+            lists: { edges: { node: List }[] };
+            listsAggregate: Aggregate;
+          };
+        };
+      }>(`${backendUrl}/graphql`, {
+        query: ListsQuery,
+        variables: createQueryVariables(filter),
+      })
+      .then((r) => {
+        const { lists, listsAggregate } = r.data.data.retroPGF;
+
+        const data = lists.edges.map((edge) => edge.node);
+        const { total, ...categories } = listsAggregate;
+        const pages = Math.ceil(total / PAGE_SIZE);
+
+        return { data, pages, categories };
+      })
+      .catch((err) => {
+        console.log("err", err);
+        return { data: [], pages: 1, categories: {} };
+      });
+  });
 }
 
 export function useList(id: string) {
-  const { data: lists, isLoading } = useAllLists();
-  return useQuery(["lists", id], async () => lists?.find((p) => p.id === id), {
-    enabled: Boolean(id && !isLoading),
-  });
+  return useQuery(
+    ["lists", id],
+    async () =>
+      axios
+        .post<{ data: { retroPGF: { list: List } } }>(`${backendUrl}/graphql`, {
+          query: ListQuery,
+          variables: {
+            id: id.split("|")[1],
+          },
+        })
+        .then((r) => r.data.data?.retroPGF.list ?? null),
+    { enabled: Boolean(id) }
+  );
 }
 
 export function useLikes(listId: string) {

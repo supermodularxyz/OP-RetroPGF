@@ -1,3 +1,7 @@
+import clsx from "clsx";
+import Link from "next/link";
+import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
+
 import { type Filter } from "~/hooks/useFilter";
 import { useProject } from "~/hooks/useProjects";
 import { type List, useLikes } from "~/hooks/useLists";
@@ -5,11 +9,8 @@ import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
-import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
-import Link from "next/link";
-import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
-import { type Allocation } from "~/hooks/useBallot";
+import { truncate } from "~/utils/truncate";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -53,16 +54,18 @@ export const ListGridItem = ({ list }: { list: List }) => {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>{list.listName}</CardTitle>
-            <AvatarWithName address={list.author.address} />
+            <AvatarWithName address={list.author?.address} />
           </div>
           <LikeCount listId={list.id} />
         </div>
 
-        <ProjectsLogosCard projects={list.projects} />
+        <ProjectsLogosCard projects={list.listContent} />
 
-        <p className="line-clamp-2 text-sm text-neutral-700">{list.bio}</p>
+        <p className="line-clamp-2 text-sm text-neutral-700">
+          {list.listDescription}
+        </p>
 
-        <ImpactCategories tags={list.impactCategory} />
+        <ImpactCategories tags={list.categories} />
       </div>
     </Card>
   );
@@ -88,13 +91,13 @@ export const ListListItem = ({
         </div>
         <AvatarWithName address={list?.author.address!} />
       </div>
-      <ProjectsLogosCard projects={list.projects} />
+      <ProjectsLogosCard projects={list.listContent} />
 
       <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-        {list.bio}
+        {list.listDescription}
       </p>
 
-      <ImpactCategories tags={list.impactCategory} />
+      <ImpactCategories tags={list.categories} />
     </div>
   );
 };
@@ -121,20 +124,23 @@ export const AvatarWithName = ({ address }: { address: Address }) => {
   const name = ens.data;
   const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });
 
-  console.log(address, name, avatar.data);
   return (
     <div className="flex items-center gap-2">
       <Avatar src={avatar.data} size="xs" rounded="full" />
-      <p className="text-sm font-semibold">{name ?? address} </p>
+      <p className="text-sm font-semibold">{name ?? truncate(address)} </p>
     </div>
   );
 };
 
-export const ProjectsLogosCard = ({ projects }: { projects: Allocation[] }) => (
+export const ProjectsLogosCard = ({
+  projects,
+}: {
+  projects: List["listContent"];
+}) => (
   <div className="flex items-center gap-3">
     <div className="ml-1 flex">
-      {projects?.slice(0, 4).map((project) => (
-        <ProjectAvatar key={project.id} id={project.id} />
+      {projects?.slice(0, 4).map((item) => (
+        <ProjectAvatar key={item.project.id} id={item.project.id} />
       ))}
     </div>
     {projects?.length > 4 && (

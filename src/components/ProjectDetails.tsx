@@ -19,7 +19,7 @@ import {
 import {
   type Project,
   fundingSourcesLabels,
-  useListsForProject,
+  // useListsForProject,
 } from "~/hooks/useProjects";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
@@ -48,7 +48,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
   const { data: allProjects } = useAllProjects();
-  const { data: lists } = useListsForProject(project?.id);
+  // const { data: lists } = useListsForProject(project?.id);
 
   const currentIndex = useMemo(
     () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
@@ -173,8 +173,8 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             <FaCheckToSlot className="text-gray-500" /> 56 ballots
           </Tag>
           <Tag>
-            <LayoutList className="text-gray-500" /> {lists?.length} voting
-            lists
+            <LayoutList className="text-gray-500" /> {project.lists?.length}{" "}
+            voting lists
           </Tag>
           <Tag>
             <Contribution className="text-gray-500" />
