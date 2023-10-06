@@ -17,6 +17,9 @@ import { useUploadMetadata } from "~/hooks/useMetadata";
 import { toURL } from "~/hooks/useFilter";
 import { createComponent } from "~/components/ui";
 import { Link } from "~/components/ui/Link";
+import { Dialog } from "~/components/ui/Dialog";
+import { FeedbackDialog } from "~/components/FeedbackDialog";
+import { Spinner } from "~/components/ui/Spinner";
 
 const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const create = useCreateList();
@@ -28,6 +31,8 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   }
 
   const error = create.error || upload.error;
+  const isLoading = create.isLoading || upload.isLoading;
+
   return (
     <Form
       schema={CreateListSchema}
@@ -48,42 +53,55 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         );
       }}
     >
-      <FormControl name="listName" label="List name" required>
-        <Input placeholder="Give your list a name..." />
-      </FormControl>
-      <FormControl name="listDescription" label="Description">
-        <Textarea rows={4} placeholder="What's this list about?" />
-      </FormControl>
-      <FormControl name="impactEvaluationDescription" label="Impact evaluation">
-        <Textarea
-          rows={4}
-          placeholder="How did you evaluate the impact of projects? Help other badgeholders understand your methodology."
-        />
-      </FormControl>
-      <FormControl
-        name="impactEvaluationLink"
-        label="Link to relevant resource"
-      >
-        <Input placeholder="https://" />
-      </FormControl>
-      <div className="mb-4 rounded-2xl border border-neutral-300 p-6">
-        <AllocationFormWithSearch onSave={handleSaveDraft} />
-        <TotalOP />
-      </div>
-
-      <div className="mb-4 flex justify-end">
-        <Button
-          disabled={create.isLoading || upload.isLoading}
-          variant="primary"
+      <fieldset disabled={isLoading}>
+        <FormControl name="listName" label="List name" required>
+          <Input placeholder="Give your list a name..." />
+        </FormControl>
+        <FormControl name="listDescription" label="Description">
+          <Textarea rows={4} placeholder="What's this list about?" />
+        </FormControl>
+        <FormControl
+          name="impactEvaluationDescription"
+          label="Impact evaluation"
         >
-          Create list
-        </Button>
-      </div>
-      {error ? (
-        <Banner variant="warning" className="overflow-x-scroll whitespace-pre">
-          {JSON.stringify(error, null, 2)}
-        </Banner>
-      ) : null}
+          <Textarea
+            rows={4}
+            placeholder="How did you evaluate the impact of projects? Help other badgeholders understand your methodology."
+          />
+        </FormControl>
+        <FormControl
+          name="impactEvaluationLink"
+          label="Link to relevant resource"
+        >
+          <Input placeholder="https://" />
+        </FormControl>
+        <div className="mb-4 rounded-2xl border border-neutral-300 p-6">
+          <AllocationFormWithSearch onSave={handleSaveDraft} />
+          <TotalOP />
+        </div>
+
+        <div className="mb-4 flex justify-end">
+          <Button
+            disabled={create.isLoading || upload.isLoading}
+            variant="primary"
+          >
+            Create list
+          </Button>
+        </div>
+        {error ? (
+          <Banner
+            variant="warning"
+            className="overflow-x-scroll whitespace-pre"
+          >
+            {JSON.stringify(error, null, 2)}
+          </Banner>
+        ) : null}
+        <Dialog size="sm" isOpen={isLoading}>
+          <FeedbackDialog variant="info" icon={Spinner}>
+            <div className="font-semibold">Your list is being created...</div>
+          </FeedbackDialog>
+        </Dialog>
+      </fieldset>
     </Form>
   );
 };

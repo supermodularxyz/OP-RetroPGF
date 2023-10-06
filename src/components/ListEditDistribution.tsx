@@ -1,25 +1,21 @@
+import Link from "next/link";
 import { type z } from "zod";
-import { Button, IconButton } from "~/components/ui/Button";
+import { useState } from "react";
+import { useAccount } from "wagmi";
+import { useFormContext } from "react-hook-form";
+
 import {
   AddBallot,
-  Adjustment,
   ArrowRotateLeft,
   CircleCheck,
   CircleExclamation,
 } from "~/components/icons";
+import { Button, IconButton } from "~/components/ui/Button";
 import { Dialog } from "./ui/Dialog";
-import {
-  useState,
-  createElement,
-  type FunctionComponent,
-  type ComponentPropsWithoutRef,
-} from "react";
 import { Form } from "./ui/Form";
 import { type List } from "~/hooks/useLists";
-import { useAccount } from "wagmi";
 import { AllocationForm } from "./AllocationList";
 import { AllocationsSchema } from "~/schemas/allocation";
-import { useFormContext } from "react-hook-form";
 import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
 import {
@@ -29,30 +25,11 @@ import {
   useBallot,
 } from "~/hooks/useBallot";
 import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
-
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
-import Link from "next/link";
+import { FeedbackDialog } from "./FeedbackDialog";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
-
-const FeedbackDialog = ({
-  icon,
-  variant,
-  children,
-}: ComponentPropsWithoutRef<"div"> & {
-  variant: "success" | "info";
-  icon: FunctionComponent<{ className: string }>;
-}) => {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <Banner variant={variant}>
-        {createElement(icon, { className: "w-8 h-8" })}
-      </Banner>
-      {children}
-    </div>
-  );
-};
 
 export const ListEditDistribution = ({
   list,
