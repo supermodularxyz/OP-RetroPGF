@@ -221,7 +221,7 @@ export function useProject(id: string) {
             },
           }
         )
-        .then((r) => r.data.data.retroPGF.project ?? null),
+        .then((r) => r.data.data?.retroPGF.project ?? null),
     { enabled: Boolean(id) }
   );
 }
