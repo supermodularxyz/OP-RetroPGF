@@ -1,18 +1,17 @@
 import clsx from "clsx";
+import Link from "next/link";
 import { type Filter } from "~/hooks/useFilter";
-import { useAllProjects, type Project } from "~/hooks/useProjects";
+import { type Project } from "~/hooks/useProjects";
 import { Card, CardTitle } from "~/components/ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
-import Link from "next/link";
 import { AvatarWithBorder } from "./ui/Avatar";
 import { Skeleton } from "./ui/Skeleton";
 
-type Props = { filter?: Filter; projects?: Project[] };
+type Props = { filter?: Filter; projects?: Project[]; isLoading?: boolean };
 
-export const Projects = ({ filter, projects }: Props) => {
+export const Projects = ({ filter, projects, isLoading }: Props) => {
   const isList = filter?.display === "list";
 
-  const { isLoading } = useAllProjects();
   return (
     <div
       className={clsx("mb-8 flex flex-col gap-4 md:grid", {

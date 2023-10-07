@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Head from "next/head";
 import { useState, type PropsWithChildren, useEffect } from "react";
 import { useAccount } from "wagmi";
@@ -5,14 +6,10 @@ import { useAccount } from "wagmi";
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
-import clsx from "clsx";
-import { useAllProjects } from "~/hooks/useProjects";
 
 export const Layout = (
   props: { sidebar?: "left" | "right" } & PropsWithChildren
 ) => {
-  useAllProjects();
-
   const { address } = useAccount();
   const [isLoaded, setLoaded] = useState(false);
 

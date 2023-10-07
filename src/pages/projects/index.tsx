@@ -12,7 +12,7 @@ export default function ProjectsPage() {
   const query = router.query;
 
   const { data: filter } = useFilter("projects");
-  const { data: projects } = useProjects(filter);
+  const { data: projects, isLoading } = useProjects(filter);
   const currentPage = Number(filter?.page);
 
   // TODO: Move this to a shared FilterLayout?
@@ -37,7 +37,11 @@ export default function ProjectsPage() {
         />
       </div>
 
-      <Projects filter={filter} projects={projects?.data} />
+      <Projects
+        filter={filter}
+        projects={projects?.data}
+        isLoading={isLoading}
+      />
 
       <Pagination
         currentPage={currentPage}

@@ -66,12 +66,6 @@ export const fundingSourcesLabels = {
   OTHER: "Other",
 };
 
-export function useAllProjects() {
-  return useQuery<Project[]>(["projects", "all"], () =>
-    fetch("/api/projects").then((r) => r.json())
-  );
-}
-
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
 export function useProjects(filter: Filter = initialFilter) {

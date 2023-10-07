@@ -1,4 +1,6 @@
-import router from "next/router";
+import { useRef } from "react";
+import { useIntersection } from "react-use";
+import clsx from "clsx";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { FaCheckToSlot } from "react-icons/fa6";
@@ -7,20 +9,12 @@ import { useCopyToClipboard } from "react-use";
 
 import { createComponent } from "~/components/ui";
 import {
-  ArrowLeft,
-  ArrowRight,
   Code,
   Contribution,
-  Github,
   LayoutList,
   Link as LinkIcon,
-  Twitter,
 } from "~/components/icons";
-import {
-  type Project,
-  fundingSourcesLabels,
-  // useListsForProject,
-} from "~/hooks/useProjects";
+import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
@@ -36,24 +30,12 @@ import { Avatar } from "~/components/ui/Avatar";
 
 import { MoreDropdown } from "./MoreDropdown";
 import { IconBadge } from "./ui/Badge";
-import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
-import { IconButton } from "./ui/Button";
-import { useMemo, useRef } from "react";
-import { useIntersection } from "react-use";
-import clsx from "clsx";
+
 import { type List } from "~/hooks/useLists";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
-
-  const { data: allProjects } = useAllProjects();
-  // const { data: lists } = useListsForProject(project?.id);
-
-  const currentIndex = useMemo(
-    () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
-    [project, allProjects]
-  );
 
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
@@ -61,11 +43,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     rootMargin: "0px",
     threshold: 0,
   });
-
-  async function handleNavigate(dir: number) {
-    const id = allProjects?.[currentIndex + dir]?.id;
-    if (id) await router.push(`/projects/${id}`);
-  }
 
   return (
     <>
@@ -84,30 +61,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             {project?.displayName}&apos;s Round application
           </h1>
         )}
-
-        <div className="flex items-center gap-6">
-          {intersection?.isIntersecting && (
-            <p className="font-neutral-500 text-sm font-semibold">
-              {currentIndex + 1} of {allProjects?.length} applications
-            </p>
-          )}
-          <div className="flex flex-shrink-0 gap-2">
-            <IconButton
-              variant="outline"
-              onClick={() => handleNavigate(-1)}
-              icon={ArrowLeft}
-              className="flex-shrink-0"
-              disabled={!currentIndex}
-            />
-            <IconButton
-              variant="outline"
-              onClick={() => handleNavigate(+1)}
-              icon={ArrowRight}
-              className="flex-shrink-0"
-              disabled={currentIndex + 1 === allProjects?.length}
-            />
-          </div>
-        </div>
       </div>
       <div ref={intersectionRef}>
         <picture>
