@@ -80,7 +80,7 @@ export const ListDetails = ({ list }: { list: List }) => {
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Impact Evaluation</h3>
-            <p>{list.impactEvaluation}</p>
+            <p>{list.impactEvaluationDescription}</p>
             <Button
               as={Link}
               href={list.impactEvaluationLink}
@@ -95,9 +95,7 @@ export const ListDetails = ({ list }: { list: List }) => {
           <Card>
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-2">
-                <p className="font-bold">
-                  {list.projects?.length || 0} projects{" "}
-                </p>
+                <p className="font-bold">{listProjects.length} projects</p>
                 <span>·</span>
                 <p className="font-bold">
                   {formatNumber(allocatedOP)} OP allocated

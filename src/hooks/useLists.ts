@@ -15,7 +15,7 @@ export type List = {
   listDescription: string;
   owner: string;
   categories: ImpactCategory[];
-  impactEvaluation: string;
+  impactEvaluationDescription: string;
   impactEvaluationLink: string;
   projects: Allocation[];
   listContent: {
