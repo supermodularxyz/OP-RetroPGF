@@ -233,22 +233,26 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <div className="mt-12 space-y-4">
           <H3>Included in the following lists</H3>
           <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
-            {project?.lists?.map((list) => (
-              <Link
-                key={list.id}
-                href={`/lists/${list.id}`}
-                className="pt-6 first:pt-0"
-              >
-                <ListListItem
-                  list={list}
-                  allocation={formatCurrency(
-                    sumListAllocation(list),
-                    "OP",
-                    false
-                  )}
-                />
-              </Link>
-            ))}
+            {project?.lists.length ? (
+              project?.lists?.map((list) => (
+                <Link
+                  key={list.id}
+                  href={`/lists/${list.id}`}
+                  className="pt-6 first:pt-0"
+                >
+                  <ListListItem
+                    list={list}
+                    allocation={formatCurrency(
+                      sumListAllocation(list),
+                      "OP",
+                      false
+                    )}
+                  />
+                </Link>
+              ))
+            ) : (
+              <div>This project is not included in any lists.</div>
+            )}
           </Card>
         </div>
       </div>
