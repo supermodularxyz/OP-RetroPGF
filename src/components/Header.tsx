@@ -64,7 +64,10 @@ export const Header = () => {
             <NavLink
               isActive={asPath === link.href}
               key={link.href}
-              href={`${link.href}?${toURL(params[link.type]!)}`}
+              href={`${link.href}?${toURL({
+                ...params[link.type],
+                seed: Date.now().toString(),
+              })}`}
             >
               {link.children}
             </NavLink>

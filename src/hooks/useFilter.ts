@@ -25,7 +25,7 @@ export const initialFilter: Filter = {
   display: "grid",
   sort: "shuffle",
   search: "",
-  seed: "",
+  seed: Date.now().toString(),
   categories: [],
 };
 
