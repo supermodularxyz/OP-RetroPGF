@@ -4,13 +4,7 @@ import { tv } from "tailwind-variants";
 
 import { useLikeList, type List } from "~/hooks/useLists";
 import { Button } from "~/components/ui/Button";
-import {
-  ExternalLinkOutline,
-  Document,
-  AddBallot,
-  Share,
-  Flag,
-} from "~/components/icons";
+import { ExternalLinkOutline, Document, Share, Flag } from "~/components/icons";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
@@ -20,16 +14,16 @@ import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
+import { truncate } from "~/utils/truncate";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const { address } = useAccount();
   const like = useLikeList(list?.id);
 
   const listProjects =
-    list?.listContent.map((p) => ({
-      id: p.project.id,
-      amount: p.OPAmount,
-    })) ?? [];
+    list?.listContent.map((p) => ({ id: p.project.id, amount: p.OPAmount })) ??
+    [];
+
   const allocatedOP = sumBallot(listProjects);
   return (
     <>
@@ -44,9 +38,10 @@ export const ListDetails = ({ list }: { list: List }) => {
                 <Avatar size="xs" rounded="full" />
                 <div className="flex items-center">
                   <div className="text-sm font-semibold">
-                    {list.author?.resolvedName.name}
+                    {list.author?.resolvedName.name ??
+                      truncate(list.author?.address)}
                   </div>
-                  <CopyButton value={list.owner} />
+                  <CopyButton value={list.author?.address} />
                 </div>
               </div>
             </div>
