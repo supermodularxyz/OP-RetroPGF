@@ -218,7 +218,7 @@ export const ProjectAvatarWithName = ({
       className="flex flex-1 items-center gap-2 py-1 hover:underline"
       href={`/projects/${project?.id}`}
     >
-      <Avatar size="sm" />
+      <Avatar size="sm" src={project?.profile?.profileImageUrl} />
       <div>
         <div className="whitespace-nowrap font-bold">
           {project?.displayName}

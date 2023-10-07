@@ -1,4 +1,6 @@
-import router from "next/router";
+import { useRef } from "react";
+import { useIntersection } from "react-use";
+import clsx from "clsx";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
 import { FaCheckToSlot } from "react-icons/fa6";
@@ -7,20 +9,12 @@ import { useCopyToClipboard } from "react-use";
 
 import { createComponent } from "~/components/ui";
 import {
-  ArrowLeft,
-  ArrowRight,
   Code,
   Contribution,
-  Github,
   LayoutList,
   Link as LinkIcon,
-  Twitter,
 } from "~/components/icons";
-import {
-  type Project,
-  fundingSourcesLabels,
-  useListsForProject,
-} from "~/hooks/useProjects";
+import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
@@ -36,28 +30,12 @@ import { Avatar } from "~/components/ui/Avatar";
 
 import { MoreDropdown } from "./MoreDropdown";
 import { IconBadge } from "./ui/Badge";
-import { useAllProjects } from "~/hooks/useProjects";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
-import { IconButton } from "./ui/Button";
-import { useMemo, useRef } from "react";
-import { useIntersection } from "react-use";
-import clsx from "clsx";
+
 import { type List } from "~/hooks/useLists";
-import { useProfile } from "~/hooks/useProfiles";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
-
-  const { data: allProjects } = useAllProjects();
-  const { data: lists } = useListsForProject(project?.id);
-  const { data: profile } = useProfile(project?.owner);
-
-  console.log("profile", profile);
-
-  const currentIndex = useMemo(
-    () => allProjects?.findIndex((p) => p.id === project?.id) ?? 0,
-    [project, allProjects]
-  );
 
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, {
@@ -65,11 +43,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     rootMargin: "0px",
     threshold: 0,
   });
-
-  async function handleNavigate(dir: number) {
-    const id = allProjects?.[currentIndex + dir]?.id;
-    if (id) await router.push(`/projects/${id}`);
-  }
 
   return (
     <>
@@ -88,44 +61,20 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             {project?.displayName}&apos;s Round application
           </h1>
         )}
-
-        <div className="flex items-center gap-6">
-          {intersection?.isIntersecting && (
-            <p className="font-neutral-500 text-sm font-semibold">
-              {currentIndex + 1} of {allProjects?.length} applications
-            </p>
-          )}
-          <div className="flex flex-shrink-0 gap-2">
-            <IconButton
-              variant="outline"
-              onClick={() => handleNavigate(-1)}
-              icon={ArrowLeft}
-              className="flex-shrink-0"
-              disabled={!currentIndex}
-            />
-            <IconButton
-              variant="outline"
-              onClick={() => handleNavigate(+1)}
-              icon={ArrowRight}
-              className="flex-shrink-0"
-              disabled={currentIndex + 1 === allProjects?.length}
-            />
-          </div>
-        </div>
       </div>
       <div ref={intersectionRef}>
         <picture>
           <img
-            alt={profile?.name}
-            src={profile?.bannerImageUrl}
+            alt={project?.profile?.name}
+            src={project?.profile?.bannerImageUrl}
             className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]"
           />
         </picture>
         <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar
             size="lg"
-            alt={profile?.name}
-            src={profile?.profileImageUrl}
+            alt={project?.profile?.name}
+            src={project?.profile?.profileImageUrl}
           />
           <div className="flex-1 items-center justify-between md:flex">
             <div>
@@ -177,8 +126,8 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             <FaCheckToSlot className="text-gray-500" /> 56 ballots
           </Tag>
           <Tag>
-            <LayoutList className="text-gray-500" /> {lists?.length} voting
-            lists
+            <LayoutList className="text-gray-500" /> {project?.lists?.length}{" "}
+            voting lists
           </Tag>
           <Tag>
             <Contribution className="text-gray-500" />
@@ -216,13 +165,8 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 OTHER: "div",
               }[link.type];
 
-              const linkUrl = {
-                GITHUB_REPO: link.url,
-                CONTRACT_ADDRESS: `https://optimistic.etherscan.io/address/${link.url}`,
-                OTHER: link.url,
-              }[link.type];
               return (
-                <Link key={link.url} href={linkUrl} target="_blank">
+                <Link key={link.url} href={link.url} target="_blank">
                   <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
                     <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
                       <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
@@ -289,22 +233,26 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <div className="mt-12 space-y-4">
           <H3>Included in the following lists</H3>
           <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
-            {lists?.map((list) => (
-              <Link
-                key={list.id}
-                href={`/lists/${list.id}`}
-                className="pt-6 first:pt-0"
-              >
-                <ListListItem
-                  list={list}
-                  allocation={formatCurrency(
-                    sumListAllocation(list),
-                    "OP",
-                    false
-                  )}
-                />
-              </Link>
-            ))}
+            {project?.lists.length ? (
+              project?.lists?.map((list) => (
+                <Link
+                  key={list.id}
+                  href={`/lists/${list.id}`}
+                  className="pt-6 first:pt-0"
+                >
+                  <ListListItem
+                    list={list}
+                    allocation={formatCurrency(
+                      sumListAllocation(list),
+                      "OP",
+                      false
+                    )}
+                  />
+                </Link>
+              ))
+            ) : (
+              <div>This project is not included in any lists.</div>
+            )}
           </Card>
         </div>
       </div>
@@ -313,7 +261,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 };
 
 function sumListAllocation(list: List) {
-  return list.projects.reduce((acc, x) => acc + x.amount, 0);
+  return list.listContent?.reduce((acc, x) => acc + x.OPAmount, 0);
 }
 
 const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));

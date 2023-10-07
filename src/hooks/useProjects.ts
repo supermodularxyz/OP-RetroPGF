@@ -1,7 +1,10 @@
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
-import { useQuery } from "@tanstack/react-query";
-import { useAllLists } from "./useLists";
+import { type List } from "~/hooks/useLists";
+import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
+import { Aggregate, createQueryVariables, PAGE_SIZE } from "~/graphql/utils";
 
 export type Project = {
   id: string;
@@ -43,6 +46,15 @@ export type Project = {
   certifiedNotDesignatedOrSanctionedOrBlocked: boolean;
   certifiedNotSponsoredByPoliticalFigureOrGovernmentEntity: boolean;
   certifiedNotBarredFromParticipating: boolean;
+  profile?: {
+    id: string;
+    name: string;
+    profileImageUrl: string;
+    bannerImageUrl: string;
+    websiteUrl: string;
+    bio: string;
+  };
+  lists: List[];
 };
 
 export const fundingSourcesLabels = {
@@ -54,44 +66,54 @@ export const fundingSourcesLabels = {
   OTHER: "Other",
 };
 
-export function useAllProjects() {
-  return useQuery<Project[]>(["projects", "all"], () =>
-    fetch("/api/projects").then((r) => r.json())
-  );
-}
-export function useProjects(filter: Filter) {
-  const {
-    page = 1,
-    sort = "shuffle",
-    categories = [],
-    search = "",
-  } = filter ?? initialFilter;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-  const projects = useAllProjects();
-  return useQuery(
-    ["projects", { page, sort, categories, search }],
-    () => {
-      return paginate(sortAndFilter(projects.data ?? [], filter), filter?.page);
-    },
-    { enabled: !projects.isLoading }
-  );
+export function useProjects(filter: Filter = initialFilter) {
+  return useQuery(["projects", filter], () => {
+    return axios
+      .post<{
+        data: {
+          retroPGF: {
+            projects: { edges: { node: Project }[] };
+            projectsAggregate: Aggregate;
+          };
+        };
+      }>(`${backendUrl}/graphql`, {
+        query: ProjectsQuery,
+        variables: createQueryVariables(filter),
+      })
+      .then((r) => {
+        const { projects, projectsAggregate } = r.data.data.retroPGF;
+
+        const data = projects.edges.map((edge) => edge.node);
+        const { total, ...categories } = projectsAggregate;
+        const pages = Math.ceil(total / PAGE_SIZE);
+
+        return { data, pages, categories };
+      })
+      .catch((err) => {
+        console.log("err", err);
+        return { data: [], pages: 1, categories: {} };
+      });
+  });
 }
 
 export function useProject(id: string) {
-  const projects = useAllProjects();
   return useQuery(
     ["projects", id],
-    async () => projects.data?.find((p) => p.id === id),
-    { enabled: Boolean(id) && !projects.isLoading }
-  );
-}
-
-export function useListsForProject(id: string) {
-  const { data: lists, isLoading } = useAllLists();
-  return useQuery(
-    ["projects", id, "lists"],
-    () => lists?.filter((list) => list.projects.find((p) => p.id === id)),
-    { enabled: Boolean(id && !isLoading) }
+    async () =>
+      axios
+        .post<{ data: { retroPGF: { project: Project } } }>(
+          `${backendUrl}/graphql`,
+          {
+            query: ProjectQuery,
+            variables: {
+              id: id.split("|")[1],
+            },
+          }
+        )
+        .then((r) => r.data.data?.retroPGF.project ?? null),
+    { enabled: Boolean(id) }
   );
 }
 

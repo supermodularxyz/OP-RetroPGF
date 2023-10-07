@@ -1,3 +1,7 @@
+import clsx from "clsx";
+import Link from "next/link";
+import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
+
 import { type Filter } from "~/hooks/useFilter";
 import { useProject } from "~/hooks/useProjects";
 import { type List, useLikes } from "~/hooks/useLists";
@@ -5,12 +9,8 @@ import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
-import clsx from "clsx";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
-import Link from "next/link";
-import { useAccount } from "wagmi";
-import { type Allocation } from "~/hooks/useBallot";
-import { useProfile } from "~/hooks/useProfiles";
+import { truncate } from "~/utils/truncate";
 
 type Props = { filter?: Filter; lists?: List[] };
 
@@ -53,17 +53,19 @@ export const ListGridItem = ({ list }: { list: List }) => {
       <div className="space-y-3 p-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{list.displayName}</CardTitle>
-            <AvatarWithName name={list.displayName} owner={list.owner} />
+            <CardTitle>{list.listName}</CardTitle>
+            <AvatarWithName address={list.author?.address} />
           </div>
           <LikeCount listId={list.id} />
         </div>
 
-        <ProjectsLogosCard projects={list.projects} />
+        <ProjectsLogosCard projects={list.listContent} />
 
-        <p className="line-clamp-2 text-sm text-neutral-700">{list.bio}</p>
+        <p className="line-clamp-2 text-sm text-neutral-700">
+          {list.listDescription}
+        </p>
 
-        <ImpactCategories tags={list.impactCategory} />
+        <ImpactCategories tags={list.categories} />
       </div>
     </Card>
   );
@@ -81,21 +83,21 @@ export const ListListItem = ({
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CardTitle>{list.displayName}</CardTitle>
+            <CardTitle>{list.listName}</CardTitle>
             <Divider orientation={"vertical"} />
             <LikeCount listId={list.id} />
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
-        <AvatarWithName name={list.displayName} owner={list?.owner} />
+        <AvatarWithName address={list?.author.address} />
       </div>
-      <ProjectsLogosCard projects={list.projects} />
+      <ProjectsLogosCard projects={list.listContent} />
 
       <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-        {list.bio}
+        {list.listDescription}
       </p>
 
-      <ImpactCategories tags={list.impactCategory} />
+      <ImpactCategories tags={list.categories} />
     </div>
   );
 };
@@ -117,32 +119,33 @@ export const LikeCount = ({ listId = "" }) => {
   );
 };
 
-export const AvatarWithName = ({
-  name,
-  owner,
-}: {
-  name: string;
-  owner?: string;
-}) => {
-  const { data: profile } = useProfile(owner);
+export const AvatarWithName = ({ address }: { address: Address }) => {
+  const ens = useEnsName({ address, chainId: 1, enabled: Boolean(address) });
+  const name = ens.data;
+  const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });
+
   return (
     <div className="flex items-center gap-2">
-      <Avatar src={profile?.profileImageUrl} size="xs" rounded="full" />
-      <p className="text-sm font-semibold">{name} </p>
+      <Avatar src={avatar.data} size="xs" rounded="full" />
+      <p className="text-sm font-semibold">{name ?? truncate(address)} </p>
     </div>
   );
 };
 
-export const ProjectsLogosCard = ({ projects }: { projects: Allocation[] }) => (
+export const ProjectsLogosCard = ({
+  projects,
+}: {
+  projects: List["listContent"];
+}) => (
   <div className="flex items-center gap-3">
     <div className="ml-1 flex">
-      {projects?.slice(0, 4).map((project) => (
-        <ProjectAvatar key={project.id} id={project.id} />
+      {projects?.slice(0, 4).map((item) => (
+        <ProjectAvatar key={item.project?.id} id={item.project?.id} />
       ))}
     </div>
-    {projects.length > 4 && (
+    {projects?.length > 4 && (
       <p className="text-xs text-neutral-600">
-        +{projects.length - 4} projects
+        +{projects?.length - 4} projects
       </p>
     )}
   </div>
@@ -150,11 +153,10 @@ export const ProjectsLogosCard = ({ projects }: { projects: Allocation[] }) => (
 
 const ProjectAvatar = ({ id }: { id: string }) => {
   const { data: project } = useProject(id);
-  const { data: profile } = useProfile(project?.owner);
 
   return (
     <AvatarWithBorder
-      src={profile?.profileImageUrl}
+      src={project?.profile?.profileImageUrl}
       className="-mx-1"
       size="sm"
     />

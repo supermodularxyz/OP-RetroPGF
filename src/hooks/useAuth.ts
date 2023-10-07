@@ -25,24 +25,26 @@ export function useVerify() {
 }
 
 export function useSession() {
-  const queryClient = useQueryClient();
   const { data: token } = useAccessToken();
   const setToken = useSetAccessToken();
+
   return useQuery(
-    ["session"],
+    ["session", { token }],
     () =>
-      axios
-        .get<{ session: { address: string } }>(
-          `${backendUrl}/api/auth/session`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        )
-        .then((r) => r.data.session)
-        .catch(async (err) => {
-          setToken.mutate("");
-          await queryClient.invalidateQueries(["session"]);
-          throw err;
-        }),
-    { enabled: Boolean(token) }
+      token
+        ? axios
+            .get<{ session: { address: string } }>(
+              `${backendUrl}/api/auth/session`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            )
+            .then((r) => r.data.session)
+            .catch(async (err) => {
+              console.log("err", err);
+              setToken.mutate("");
+              throw err;
+            })
+        : null,
+    { cacheTime: 0 }
   );
 }
 

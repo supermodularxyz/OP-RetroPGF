@@ -10,6 +10,13 @@ export type ImpactCategory =
 
 export type ListsOnlyTags = "ALL" | "LIKED";
 
+export const categoryMap = {
+  COLLECTIVE_GOVERNANCE: "collectiveGovernance",
+  DEVELOPER_ECOSYSTEM: "developerEcosystem",
+  END_USER_EXPERIENCE_AND_ADOPTION: "endUserExperienceAndAdoption",
+  OP_STACK: "opStack",
+};
+
 export const impactCategoryLabels = {
   COLLECTIVE_GOVERNANCE: "Collective Governance",
   OP_STACK: "OP Stack",
@@ -36,7 +43,6 @@ export const useCategories = () => {
       {}
     );
     return (projects as Project[]).reduce((acc, x) => {
-      console.log(x, x.impactCategory);
       x.impactCategory?.forEach((category) => (acc[category] += 1));
       return acc;
     }, initialState as { [key in ImpactCategory]: number });
