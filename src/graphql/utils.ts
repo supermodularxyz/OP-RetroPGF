@@ -28,8 +28,8 @@ export function createQueryVariables({
     first: PAGE_SIZE,
     skip: (page - 1) * PAGE_SIZE,
     orderBy: sortMap[sort as keyof typeof sortMap] ?? sort,
-    // search,
-    // seed,
-    // category: categories.length ? categories : undefined,
+    search,
+    seed,
+    category: categories.length ? categories : undefined,
   };
 }
