@@ -14,3 +14,7 @@
     -ms-overflow-style: none;
     scrollbar-width: 0;
 }
+
+body {
+  width: 100%;
+}

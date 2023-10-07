@@ -49,7 +49,7 @@ export const Header = () => {
 
   return (
     <header className="relative z-[100] bg-white shadow-md">
-      <div className="container mx-auto  flex h-[72px] max-w-screen-2xl items-center sm:px-8 px-2">
+      <div className="container mx-auto flex h-[72px] max-w-screen-2xl items-center px-2 sm:px-8">
         <div className="mr-4 flex items-center lg:mr-16">
           <IconButton
             icon={isOpen ? X : Menu}
@@ -64,7 +64,10 @@ export const Header = () => {
             <NavLink
               isActive={asPath === link.href}
               key={link.href}
-              href={`${link.href}?${toURL(params[link.type]!)}`}
+              href={`${link.href}?${toURL({
+                ...params[link.type],
+                seed: Date.now().toString(),
+              })}`}
             >
               {link.children}
             </NavLink>

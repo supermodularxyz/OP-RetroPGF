@@ -1,21 +1,20 @@
 import clsx from "clsx";
+import Link from "next/link";
 import { type Filter } from "~/hooks/useFilter";
-import { useAllProjects, type Project } from "~/hooks/useProjects";
+import { type Project } from "~/hooks/useProjects";
 import { Card, CardTitle } from "~/components/ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
-import Link from "next/link";
 import { AvatarWithBorder } from "./ui/Avatar";
 import { Skeleton } from "./ui/Skeleton";
 
-type Props = { filter?: Filter; projects?: Project[] };
+type Props = { filter?: Filter; projects?: Project[]; isLoading?: boolean };
 
-export const Projects = ({ filter, projects }: Props) => {
+export const Projects = ({ filter, projects, isLoading }: Props) => {
   const isList = filter?.display === "list";
 
-  const { isLoading } = useAllProjects();
   return (
     <div
-      className={clsx("mb-8 grid gap-4", {
+      className={clsx("mb-8 flex flex-col gap-4 md:grid", {
         ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
         ["gap-6 divide-y divide-neutral-200"]: isList,
       })}
@@ -46,10 +45,15 @@ export const ProjectGridItem = ({
 }) => {
   return (
     <Card className={clsx({ ["animate-pulse"]: isLoading })}>
-      <div className="h-24 rounded-2xl bg-gray-200" />
+      <div
+        className="h-24 rounded-2xl bg-gray-200 bg-cover"
+        style={{
+          backgroundImage: `url(${project?.profile?.bannerImageUrl})`,
+        }}
+      />
       <div className="space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
-          <AvatarWithBorder />
+          <AvatarWithBorder src={project?.profile?.profileImageUrl} />
         </div>
         <CardTitle>
           <Skeleton isLoading={isLoading} className="min-w-[140px]">
@@ -73,7 +77,7 @@ export const ProjectListItem = ({ project }: { project: Project }) => {
   return (
     <div className="flex  cursor-pointer gap-6 pt-6">
       <div>
-        <AvatarWithBorder />
+        <AvatarWithBorder src={project?.profile?.profileImageUrl} />
       </div>
       <div className="flex flex-1 flex-col gap-2">
         <CardTitle>{project.displayName}</CardTitle>

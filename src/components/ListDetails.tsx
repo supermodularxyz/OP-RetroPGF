@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { useAccount } from "wagmi";
-import { useLikeList, type List } from "~/hooks/useLists";
-import { Button, IconButton } from "~/components/ui/Button";
-import {
-  ExternalLinkOutline,
-  Document,
-  AddBallot,
-  Share,
-  Flag,
-} from "~/components/icons";
 import { tv } from "tailwind-variants";
+
+import { useLikeList, type List } from "~/hooks/useLists";
+import { Button } from "~/components/ui/Button";
+import { ExternalLinkOutline, Document, Share, Flag } from "~/components/icons";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
@@ -19,14 +14,16 @@ import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
-import { useProfile } from "~/hooks/useProfiles";
+import { truncate } from "~/utils/truncate";
 
 export const ListDetails = ({ list }: { list: List }) => {
   const { address } = useAccount();
   const like = useLikeList(list?.id);
-  const { data: profile } = useProfile(list?.owner);
 
-  const listProjects = list?.projects ?? [];
+  const listProjects =
+    list?.listContent.map((p) => ({ id: p.project.id, amount: p.OPAmount })) ??
+    [];
+
   const allocatedOP = sumBallot(listProjects);
   return (
     <>
@@ -36,12 +33,15 @@ export const ListDetails = ({ list }: { list: List }) => {
         <div className="grid gap-10">
           <div className="flex justify-between gap-4 sm:items-center">
             <div>
-              <h3 className="mb-2 text-2xl font-bold">{list?.displayName}</h3>
+              <h3 className="mb-2 text-2xl font-bold">{list?.listName}</h3>
               <div className="flex items-center gap-1">
                 <Avatar size="xs" rounded="full" />
                 <div className="flex items-center">
-                  <div className="text-sm font-semibold">{profile?.name}</div>
-                  <CopyButton value={list.owner} />
+                  <div className="text-sm font-semibold">
+                    {list.author?.resolvedName.name ??
+                      truncate(list.author?.address)}
+                  </div>
+                  <CopyButton value={list.author?.address} />
                 </div>
               </div>
             </div>
@@ -76,11 +76,11 @@ export const ListDetails = ({ list }: { list: List }) => {
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">About</h3>
-            <p>{list.bio}</p>
+            <p>{list.listDescription}</p>
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Impact Evaluation</h3>
-            <p>{list.impactEvaluation}</p>
+            <p>{list.impactEvaluationDescription}</p>
             <Button
               as={Link}
               href={list.impactEvaluationLink}
@@ -95,9 +95,7 @@ export const ListDetails = ({ list }: { list: List }) => {
           <Card>
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-2">
-                <p className="font-bold">
-                  {list.projects?.length || 0} projects{" "}
-                </p>
+                <p className="font-bold">{listProjects.length} projects</p>
                 <span>·</span>
                 <p className="font-bold">
                   {formatNumber(allocatedOP)} OP allocated
