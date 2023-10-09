@@ -8,12 +8,7 @@ import { Button } from "./ui/Button";
 import { Divider } from "./ui/Divider";
 import { Progress } from "./ui/Progress";
 import { ExternalLink } from "./ui/Link";
-import {
-  ballotToArray,
-  sumBallot,
-  useBallot,
-  useSubmitBallot,
-} from "~/hooks/useBallot";
+import { sumBallot, useSubmitBallot, useBallot } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
 import { VotingEndsIn, useVotingTimeLeft } from "./VotingEndsIn";
@@ -26,7 +21,7 @@ export const BallotOverview = () => {
 
   const { data: ballot } = useBallot();
 
-  const allocations = ballotToArray(ballot);
+  const allocations = ballot?.votes ?? [];
   const sum = sumBallot(allocations);
 
   const [, , , seconds] = useVotingTimeLeft();
