@@ -9,7 +9,7 @@ import { Button } from "~/components/ui/Button";
 import { AllocationFormWithSearch } from "~/components/AllocationList";
 import { Banner } from "~/components/ui/Banner";
 import { MAX_ALLOCATION_TOTAL } from "~/components/BallotOverview";
-import { sumBallot } from "~/hooks/useBallot";
+import { Allocation, sumBallot } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { useCreateList } from "~/hooks/useCreateList";
 import { type CreateList, CreateListSchema } from "~/schemas/list";
@@ -108,10 +108,7 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
 const TotalOP = () => {
   const form = useFormContext();
 
-  const allocations = (form.watch("allocations") ?? []) as {
-    id: string;
-    amount: number;
-  }[];
+  const allocations = (form.watch("allocations") ?? []) as Allocation[];
 
   const current = sumBallot(allocations);
 

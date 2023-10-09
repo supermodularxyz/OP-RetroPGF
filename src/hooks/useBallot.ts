@@ -27,9 +27,13 @@ export function useAddToBallot() {
 export function useRemoveFromBallot() {
   const save = useSaveBallot();
   const { data: ballot } = useBallot();
-  return useMutation((projectId: string) =>
-    save.mutateAsync(ballot?.votes.filter((v) => v.projectId !== projectId)!)
-  );
+  return useMutation(async (projectId: string) => {
+    const updated = ballot?.votes.filter((v) => v.projectId !== projectId);
+    if (updated) {
+      return save.mutateAsync(updated);
+    }
+    return null;
+  });
 }
 
 export function useSaveBallot() {

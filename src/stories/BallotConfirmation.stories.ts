@@ -12,7 +12,7 @@ const meta = {
 
 const allocations = projects
   .slice(0, 5)
-  .map((p, i) => ({ ...p, amount: 1500 + i * 257 }));
+  .map((p, i) => ({ projectId: p.id, amount: 1500 + i * 257 }));
 
 export default meta;
 type Story = StoryObj<typeof meta>;
