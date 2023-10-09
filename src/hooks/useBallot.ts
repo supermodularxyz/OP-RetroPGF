@@ -109,7 +109,7 @@ export function useBallotProjectData() {
 
   return (
     allocations: { projectId: string; amount: number }[]
-  ): (Project & { key: string })[] =>
+  ): (Project & Allocation & { key: string })[] =>
     allocations.map((p) => ({
       ...queryClient.getQueryData(["projects", p.projectId])!,
       ...p,

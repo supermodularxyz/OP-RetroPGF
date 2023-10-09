@@ -75,6 +75,8 @@ export function AllocationForm({
     [fields, filter, mapProjectData]
   );
 
+  console.log(sortedFields, fields);
+
   return (
     <AllocationListWrapper>
       <Table>
@@ -90,7 +92,7 @@ export function AllocationForm({
             return (
               <Tr key={project.key}>
                 <Td className={"w-full"}>
-                  <ProjectAvatarWithName id={project.id} />
+                  <ProjectAvatarWithName id={project.projectId} />
                 </Td>
                 <Td>
                   {listAllocation ? (
@@ -216,6 +218,7 @@ export const ProjectAvatarWithName = ({
   subtitle?: string;
 }) => {
   const { data: project } = useProject(id);
+
   return (
     <Link
       tabIndex={-1}
