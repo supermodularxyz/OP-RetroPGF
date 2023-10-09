@@ -21,8 +21,10 @@ export const ListDetails = ({ list }: { list: List }) => {
   const like = useLikeList(list?.id);
 
   const listProjects =
-    list?.listContent.map((p) => ({ id: p.project.id, amount: p.OPAmount })) ??
-    [];
+    list?.listContent.map((p) => ({
+      projectId: p.project.id,
+      amount: p.OPAmount,
+    })) ?? [];
 
   const allocatedOP = sumBallot(listProjects);
   return (

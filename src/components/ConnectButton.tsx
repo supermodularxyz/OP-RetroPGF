@@ -16,7 +16,7 @@ import { createBreakpoint } from "react-use";
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
-import { countBallot, useBallot, useSubmittedBallot } from "~/hooks/useBallot";
+import { useBallot } from "~/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
 import { useNonce, useSession, useVerify } from "~/hooks/useAuth";
 import { Dialog } from "./ui/Dialog";
@@ -91,14 +91,13 @@ const ConnectedDetails = ({
   openAccountModal: () => void;
   isMobile: boolean;
 }) => {
-  const ballotSize = countBallot(useBallot().data);
-
-  const { data: submitted } = useSubmittedBallot();
+  const { data: ballot } = useBallot();
+  const ballotSize = (ballot?.votes ?? []).length;
 
   return (
     <SignMessage>
       <div className="flex gap-2">
-        {submitted?.publishedAt ? (
+        {ballot?.publishedAt ? (
           <Chip>Already submitted</Chip>
         ) : (
           <Chip className="gap-2" as={Link} href={"/ballot"}>
@@ -181,5 +180,4 @@ const SignMessage = ({ children }: PropsWithChildren) => {
       </Dialog>
     </>
   );
-  return <Button onClick={handleSign}>Sign message</Button>;
 };

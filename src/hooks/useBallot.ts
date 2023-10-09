@@ -1,37 +1,34 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { type Project } from "./useProjects";
 import axios from "axios";
 import { useAccount, useSignMessage } from "wagmi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { type Project } from "./useProjects";
 import { useAccessToken } from "./useAuth";
 
-export type Allocation = { id: string; amount: number };
-type Ballot = Record<string, Allocation>;
+export type Allocation = { projectId: string; amount: number };
+
+export type Ballot = {
+  id?: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  votes: Allocation[];
+};
 
 export function useAddToBallot() {
-  const queryClient = useQueryClient();
-  // Accept array of projects because this way we can easily add lists to ballots
-  return useMutation(async (projects: Allocation[]) =>
-    queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) =>
-      projects.reduce((acc, x) => ({ ...acc, [x.id]: x }), ballot)
-    )
+  const { data: ballot } = useBallot();
+  const save = useSaveBallot();
+  return useMutation((votes: Allocation[]) =>
+    save.mutateAsync(mergeBallot(ballot!, votes).votes)
   );
 }
 
 export function useRemoveFromBallot() {
-  const queryClient = useQueryClient();
-  return useMutation(async (allocationId: string) =>
-    queryClient.setQueryData(["ballot"], (ballot: Ballot = {}) => {
-      const { [allocationId]: removed, ..._ballot } = ballot;
-      return _ballot;
-    })
-  );
-}
-
-export function useBallot() {
-  const queryClient = useQueryClient();
-  return useQuery(
-    ["ballot"],
-    async () => queryClient.getQueryData<Ballot>(["ballot"]) ?? {}
+  const save = useSaveBallot();
+  const { data: ballot } = useBallot();
+  return useMutation((projectId: string) =>
+    save.mutateAsync(ballot?.votes.filter((v) => v.projectId !== projectId)!)
   );
 }
 
@@ -39,14 +36,15 @@ export function useSaveBallot() {
   const queryClient = useQueryClient();
   const { data: token } = useAccessToken();
 
-  return useMutation(async (ballot: Ballot) => {
-    queryClient.setQueryData(["ballot"], ballot);
-    return axios.post(
-      `${backendUrl}/api/ballot/save`,
-      { votes: mapBallotForBackend(ballot) },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-  });
+  return useMutation(
+    async (votes: Allocation[]) =>
+      axios.post(
+        `${backendUrl}/api/ballot/save`,
+        { votes: mapBallotForBackend(votes) },
+        { headers: { Authorization: `Bearer ${token}` } }
+      ),
+    { onSuccess: () => queryClient.invalidateQueries(["submitted-ballot"]) }
+  );
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
@@ -70,7 +68,7 @@ export function useSubmitBallot({
           {
             address,
             signature,
-            votes: mapBallotForBackend(ballot),
+            votes: mapBallotForBackend(ballot?.votes),
           },
           { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -79,24 +77,17 @@ export function useSubmitBallot({
   });
 }
 
-export function useSubmittedBallot() {
+export function useBallot() {
   const { address } = useAccount();
   const { data: token } = useAccessToken();
   return useQuery(
-    ["submitted-ballot"],
+    ["submitted-ballot", { address, token }],
     () =>
       axios
-        .get<{
-          submitted: {
-            address: string;
-            createdAt: string;
-            updatedAt: string;
-            publishedAt: string;
-          };
-        }>(`${backendUrl}/api/ballot/${address}`, {
+        .get<Ballot>(`${backendUrl}/api/ballot/${address}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
-        .then((r) => r.data.submitted ?? {}),
+        .then((r) => r.data ?? {}),
     { enabled: Boolean(address && token) }
   );
 }
@@ -113,31 +104,43 @@ export function useBallotProjectData() {
   const queryClient = useQueryClient();
 
   return (
-    allocations: { id: string; amount: number }[]
+    allocations: { projectId: string; amount: number }[]
   ): (Project & { key: string })[] =>
     allocations.map((p) => ({
-      ...queryClient.getQueryData(["projects", p.id])!,
+      ...queryClient.getQueryData(["projects", p.projectId])!,
       ...p,
     }));
 }
 
-export const ballotToArray = (ballot: Ballot = {}) =>
-  Object.keys(ballot).map((id) => ({
-    id,
-    ...ballot[id],
-  })) as Allocation[];
-
-export const arrayToBallot = (allocations: Allocation[] = []): Ballot =>
-  allocations.reduce((acc, x) => ({ ...acc, [x.id]: x }), {});
+export function ballotContains(id: string, ballot?: Ballot) {
+  return ballot?.votes.find((v) => v.projectId === id);
+}
 
 export const sumBallot = (allocations: Allocation[] = []) =>
-  allocations.reduce((sum, x) => sum + (!isNaN(x?.amount) ? x.amount : 0), 0);
+  allocations.reduce(
+    (sum, x) => sum + (!isNaN(Number(x?.amount)) ? Number(x.amount) : 0),
+    0
+  );
 
-export const countBallot = (ballot: Ballot = {}) => Object.keys(ballot).length;
-
-function mapBallotForBackend(ballot?: Ballot) {
-  return ballotToArray(ballot).map((p) => ({
-    projectId: p.id,
+function mapBallotForBackend(votes: Allocation[] = []) {
+  return votes.map((p) => ({
+    projectId: p.projectId,
     amount: String(p.amount),
   }));
+}
+
+function toObject(arr: object[] = [], key: string) {
+  return arr?.reduce(
+    (acc, x) => ({ ...acc, [x[key as keyof typeof acc]]: x }),
+    {}
+  );
+}
+function mergeBallot(ballot: Ballot, addedVotes: Allocation[]): Ballot {
+  return {
+    ...ballot,
+    votes: Object.values({
+      ...toObject(ballot?.votes, "projectId"),
+      ...toObject(addedVotes, "projectId"),
+    }),
+  };
 }

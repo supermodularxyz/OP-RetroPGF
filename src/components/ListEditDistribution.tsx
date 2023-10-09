@@ -20,7 +20,8 @@ import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
 import {
   Allocation,
-  ballotToArray,
+  Ballot,
+  ballotContains,
   sumBallot,
   useBallot,
 } from "~/hooks/useBallot";
@@ -45,23 +46,21 @@ export const ListEditDistribution = ({
 
   // What list projects are already in the ballot?
   function itemsInBallot(allocations: Allocation[]) {
-    return allocations?.filter((p) => ballot?.[p.id]);
+    return allocations?.filter((p) => ballotContains(p.projectId, ballot));
   }
+  // Keep the already in ballot in state because we want to update these when user removes allocations
   const [alreadyInBallot, updateInBallot] = useState(
     itemsInBallot(listProjects)
   );
 
-  function handleAddToBallot({
-    allocations,
-  }: {
-    allocations: FormAllocations;
-  }) {
-    add.mutate(allocations);
+  function handleAddToBallot(form: { allocations: FormAllocations }) {
+    add.mutate(form.allocations);
   }
 
   const allocations = listProjects.map((p) => ({
     ...p,
-    amount: ballot?.[p.id]?.amount ?? p.amount,
+    // Find existing allocations from ballot
+    amount: Number(ballotContains(p.projectId, ballot)?.amount ?? p.amount),
   }));
   const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
@@ -155,15 +154,15 @@ const TotalOPBanner = () => {
 
   // Load existing ballot
   const { data: ballot } = useBallot();
-  const sum = sumBallot(ballotToArray(ballot));
 
+  const sum = sumBallot(ballot?.votes);
   const allocations = (form.watch("allocations") ?? []) as FormAllocations;
 
   const current = sumBallot(allocations);
 
   const exceeds = current + sum - MAX_ALLOCATION_TOTAL;
-
   const isExceeding = exceeds > 0;
+
   return (
     <Banner className="mb-6" variant={isExceeding ? "warning" : "info"}>
       <div className={"flex justify-between font-semibold"}>
