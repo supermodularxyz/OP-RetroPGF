@@ -84,7 +84,8 @@ export function useLikes(listId: string) {
     () =>
       axios
         .get(`${backendUrl}/api/likes/${listId}`)
-        .then((r) => r.data[encodeURIComponent(listId)]),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+        .then((r) => r.data[encodeURIComponent(listId)] ?? []),
     { enabled: Boolean(listId) }
   );
 }
