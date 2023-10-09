@@ -2,12 +2,12 @@ import axios from "axios";
 import { useAccount, type Address } from "wagmi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
-import { allListsLikes } from "~/data/mock";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
 import { ListQuery, ListsQuery } from "~/graphql/queries";
 import { Aggregate, createQueryVariables, PAGE_SIZE } from "~/graphql/utils";
 import { Project } from "./useProjects";
+import { useAccessToken } from "./useAuth";
 
 export type List = {
   id: string;
@@ -47,10 +47,10 @@ export function useLists(filter: Filter = initialFilter) {
         variables: createQueryVariables(filter),
       })
       .then((r) => {
-        const { lists, listsAggregate } = r.data.data.retroPGF;
+        const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
 
-        const data = lists.edges.map((edge) => edge.node);
-        const { total, ...categories } = listsAggregate;
+        const data = lists?.edges.map((edge) => edge.node);
+        const { total, ...categories } = listsAggregate ?? {};
         const pages = Math.ceil(total / PAGE_SIZE);
 
         return { data, pages, categories };
@@ -79,17 +79,13 @@ export function useList(id: string) {
 }
 
 export function useLikes(listId: string) {
-  const queryClient = useQueryClient();
-  const { address } = useAccount();
   return useQuery<Address[]>(
     ["likes", listId],
-    () => {
-      // Call API
-      // axios.get(`/likes/${listId}`).then(r => r.data);
-      // Temp mock data (even numbers are liked)
-      return queryClient.getQueryData(["likes", listId]) ?? [];
-      // return Number(listId) % 2 == 0 && address ? [address] : [];
-    },
+    () =>
+      axios
+        .get(`${backendUrl}/api/likes/${listId}`)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+        .then((r) => r.data[encodeURIComponent(listId)] ?? []),
     { enabled: Boolean(listId) }
   );
 }
@@ -97,11 +93,13 @@ export function useLikes(listId: string) {
 export function useLikeList(listId: string) {
   const queryClient = useQueryClient();
   const { address } = useAccount();
+  const { data: token } = useAccessToken();
 
   return useMutation(
-    async () => {
-      // Call API
-      // axios.post(`/likes/${listId}/like`).then(r => r.data)
+    async (listId: string) => {
+      return axios.post(`${backendUrl}/api/likes/${listId}/like`, undefined, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
     },
     {
       // Optimistically update state
@@ -114,12 +112,23 @@ export function useLikeList(listId: string) {
         });
         return { listId };
       },
+
       // Refetch all likes so it's included in the counts everywhere.
-      onSettled: () => queryClient.invalidateQueries({ queryKey: ["likes"] }),
+      onSettled: () => queryClient.invalidateQueries(["likes"]),
     }
   );
 }
 
+type AllLikesResponse = {
+  likes: {
+    listId: Address[];
+  };
+};
+
 export function useAllLikes() {
-  return useQuery(["likes"], () => allListsLikes);
+  return useQuery<AllLikesResponse>(
+    ["likes"],
+    () => axios.get(`${backendUrl}/api/likes`),
+    {}
+  );
 }
