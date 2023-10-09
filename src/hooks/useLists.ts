@@ -47,10 +47,10 @@ export function useLists(filter: Filter = initialFilter) {
         variables: createQueryVariables(filter),
       })
       .then((r) => {
-        const { lists, listsAggregate } = r.data.data.retroPGF;
+        const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
 
-        const data = lists.edges.map((edge) => edge.node);
-        const { total, ...categories } = listsAggregate;
+        const data = lists?.edges.map((edge) => edge.node);
+        const { total, ...categories } = listsAggregate ?? {};
         const pages = Math.ceil(total / PAGE_SIZE);
 
         return { data, pages, categories };
@@ -81,7 +81,10 @@ export function useList(id: string) {
 export function useLikes(listId: string) {
   return useQuery<Address[]>(
     ["likes", listId],
-    () => axios.get(`${backendUrl}/api/likes/${listId}`),
+    () =>
+      axios
+        .get(`${backendUrl}/api/likes/${listId}`)
+        .then((r) => r.data[encodeURIComponent(listId)]),
     { enabled: Boolean(listId) }
   );
 }

@@ -105,6 +105,7 @@ export const ListListItem = ({
 export const LikeCount = ({ listId = "" }) => {
   const { address } = useAccount();
   const { data: likes } = useLikes(listId);
+
   const isLiked = () => !!(address && likes?.includes(address));
 
   return (
