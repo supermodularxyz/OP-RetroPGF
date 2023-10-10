@@ -7,7 +7,6 @@ import { DisplayAndSortFilter } from "~/components/DisplayAndSortFilter";
 import { useFilter, toURL, useUpdateFilterFromRouter } from "~/hooks/useFilter";
 import { Lists } from "~/components/Lists";
 import { useLists } from "~/hooks/useLists";
-import { CategoriesFilter } from "~/components/CategoriesFilter";
 import { Tag } from "~/components/ui/Tag";
 import { Button } from "~/components/ui/Button";
 import { Like } from "~/components/icons";
