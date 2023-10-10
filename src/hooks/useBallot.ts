@@ -47,7 +47,7 @@ export function useSaveBallot() {
         { votes: mapBallotForBackend(votes) },
         { headers: { Authorization: `Bearer ${token}` } }
       ),
-    { onSuccess: () => queryClient.invalidateQueries(["submitted-ballot"]) }
+    { onSuccess: () => queryClient.invalidateQueries(["ballot"]) }
   );
 }
 
@@ -85,7 +85,7 @@ export function useBallot() {
   const { address } = useAccount();
   const { data: token } = useAccessToken();
   return useQuery(
-    ["submitted-ballot", { address, token }],
+    ["ballot", { address, token }],
     () =>
       axios
         .get<Ballot>(`${backendUrl}/api/ballot/${address}`, {
