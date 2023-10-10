@@ -1,4 +1,4 @@
-export const truncate = (str: string, max = 20, sep = "...") => {
+export const truncate = (str: string = "", max = 20, sep = "...") => {
   const len = str.length;
   if (len > max) {
     const seplen = sep.length;

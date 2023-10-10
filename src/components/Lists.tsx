@@ -11,12 +11,12 @@ import { Divider } from "./ui/Divider";
 import { Like, Liked } from "~/components/icons";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import { truncate } from "~/utils/truncate";
+import { Skeleton } from "./ui/Skeleton";
 
-type Props = { filter?: Filter; lists?: List[] };
+type Props = { filter?: Filter; lists?: List[]; isLoading: boolean };
 
-export const Lists = ({ filter, lists }: Props) => {
+export const Lists = ({ filter, lists, isLoading }: Props) => {
   const isList = filter?.display === "list";
-
   return (
     <>
       {!lists ? null : (
@@ -26,46 +26,70 @@ export const Lists = ({ filter, lists }: Props) => {
             ["gap-6 divide-y divide-neutral-200"]: isList,
           })}
         >
-          {lists?.map((list) => (
-            <Link
-              href={`/lists/${list.id}`}
-              key={list.id}
-              className={clsx({
-                ["pt-6 first:pt-0"]: isList,
-              })}
-            >
-              {isList ? (
-                <ListListItem list={list} />
-              ) : (
-                <ListGridItem list={list} />
-              )}
-            </Link>
-          ))}
+          {isLoading
+            ? Array.from({ length: 12 }).map((_, i) =>
+                isList ? (
+                  <ListListItem key={i} isLoading />
+                ) : (
+                  <ListGridItem key={i} isLoading />
+                )
+              )
+            : lists?.map((list) => (
+                <Link
+                  href={`/lists/${list.id}`}
+                  key={list.id}
+                  className={clsx({
+                    ["pt-6 first:pt-0"]: isList,
+                  })}
+                >
+                  {isList ? (
+                    <ListListItem list={list} />
+                  ) : (
+                    <ListGridItem list={list} />
+                  )}
+                </Link>
+              ))}
         </div>
       )}
     </>
   );
 };
 
-export const ListGridItem = ({ list }: { list: List }) => {
+export const ListGridItem = ({
+  list,
+  isLoading,
+}: {
+  list?: List;
+  isLoading?: boolean;
+}) => {
   return (
-    <Card>
+    <Card className={clsx({ ["animate-pulse"]: isLoading })}>
       <div className="space-y-3 p-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{list.listName}</CardTitle>
-            <AvatarWithName address={list.author?.address} />
+            <CardTitle>
+              <Skeleton isLoading={isLoading} className="w-[140px]">
+                {list?.listName}
+              </Skeleton>
+            </CardTitle>
+            <Skeleton isLoading={isLoading} className="w-full">
+              <AvatarWithName address={list?.author?.address} />
+            </Skeleton>
           </div>
-          <LikeCount listId={list.id} />
+          <LikeCount listId={list?.id} />
         </div>
 
-        <ProjectsLogosCard projects={list.listContent} />
+        <ProjectsLogosCard projects={list?.listContent!} />
 
         <p className="line-clamp-2 text-sm text-neutral-700">
-          {list.listDescription}
+          <Skeleton isLoading={isLoading} className="w-full">
+            {list?.listDescription}
+          </Skeleton>
         </p>
 
-        <ImpactCategories tags={list.categories} />
+        <Skeleton isLoading={isLoading} className="w-[100px]">
+          <ImpactCategories tags={list?.categories} />
+        </Skeleton>
       </div>
     </Card>
   );
@@ -74,30 +98,42 @@ export const ListGridItem = ({ list }: { list: List }) => {
 export const ListListItem = ({
   list,
   allocation,
+  isLoading,
 }: {
   allocation?: string;
-  list: List;
+  list?: List;
+  isLoading?: boolean;
 }) => {
   return (
     <div className="cursor-pointer space-y-3">
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CardTitle>{list.listName}</CardTitle>
+            <CardTitle>
+              <Skeleton isLoading={isLoading} className="w-[140px]">
+                {list?.listName}
+              </Skeleton>
+            </CardTitle>
             <Divider orientation={"vertical"} />
-            <LikeCount listId={list.id} />
+            <LikeCount listId={list?.id} />
           </div>
           <div className="font-semibold">{allocation}</div>
         </div>
-        <AvatarWithName address={list?.author.address} />
+        <Skeleton isLoading={isLoading} className="w-full">
+          <AvatarWithName address={list?.author?.address} />
+        </Skeleton>
       </div>
-      <ProjectsLogosCard projects={list.listContent} />
+      <ProjectsLogosCard projects={list?.listContent!} />
 
       <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-        {list.listDescription}
+        <Skeleton isLoading={isLoading} className="w-full">
+          {list?.listDescription}
+        </Skeleton>
       </p>
 
-      <ImpactCategories tags={list.categories} />
+      <Skeleton isLoading={isLoading} className="w-[100px]">
+        <ImpactCategories tags={list?.categories} />
+      </Skeleton>
     </div>
   );
 };
@@ -120,7 +156,7 @@ export const LikeCount = ({ listId = "" }) => {
   );
 };
 
-export const AvatarWithName = ({ address }: { address: Address }) => {
+export const AvatarWithName = ({ address }: { address?: Address }) => {
   const ens = useEnsName({ address, chainId: 1, enabled: Boolean(address) });
   const name = ens.data;
   const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });

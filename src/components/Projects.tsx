@@ -20,9 +20,13 @@ export const Projects = ({ filter, projects, isLoading }: Props) => {
       })}
     >
       {isLoading
-        ? Array.from({ length: 12 }).map((_, i) => (
-            <ProjectGridItem key={i} isLoading={true} />
-          ))
+        ? Array.from({ length: 12 }).map((_, i) =>
+            isList ? (
+              <ProjectListItem key={i} isLoading />
+            ) : (
+              <ProjectGridItem key={i} isLoading />
+            )
+          )
         : projects?.map((project) => (
             <Link href={`/projects/${project.id}`} key={project.id}>
               {isList ? (
@@ -56,7 +60,7 @@ export const ProjectGridItem = ({
           <AvatarWithBorder src={project?.profile?.profileImageUrl} />
         </div>
         <CardTitle>
-          <Skeleton isLoading={isLoading} className="min-w-[140px]">
+          <Skeleton isLoading={isLoading} className="w-[140px]">
             {project?.displayName}
           </Skeleton>
         </CardTitle>
@@ -65,7 +69,7 @@ export const ProjectGridItem = ({
             {project?.bio}
           </Skeleton>
         </p>
-        <Skeleton isLoading={isLoading} className="min-w-[100px]">
+        <Skeleton isLoading={isLoading} className="w-[100px]">
           <ImpactCategories tags={project?.impactCategory} />
         </Skeleton>
       </div>
@@ -73,19 +77,30 @@ export const ProjectGridItem = ({
   );
 };
 
-export const ProjectListItem = ({ project }: { project: Project }) => {
+export const ProjectListItem = ({
+  project,
+  isLoading,
+}: {
+  project?: Project;
+  isLoading?: boolean;
+}) => {
   return (
     <div className="flex  cursor-pointer gap-6 pt-6">
       <div>
         <AvatarWithBorder src={project?.profile?.profileImageUrl} />
       </div>
       <div className="flex flex-1 flex-col gap-2">
-        <CardTitle>{project.displayName}</CardTitle>
+        <Skeleton isLoading={isLoading} className="w-[140px]">
+          {project?.displayName}
+        </Skeleton>
         <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-          {project.bio}
+          <Skeleton isLoading={isLoading} className="w-1/2">
+            {project?.bio}
+          </Skeleton>
         </p>
-
-        <ImpactCategories tags={project.impactCategory} />
+        <Skeleton isLoading={isLoading} className="w-[100px]">
+          <ImpactCategories tags={project?.impactCategory} />
+        </Skeleton>
       </div>
     </div>
   );

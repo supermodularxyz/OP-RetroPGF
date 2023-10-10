@@ -17,7 +17,7 @@ export default function ListsPage() {
   const query = router.query;
 
   const { data: filter } = useFilter("lists");
-  const { data: lists } = useLists(filter);
+  const { data: lists, isLoading } = useLists(filter);
   const currentPage = Number(filter?.page);
 
   // TODO: Move this to a shared FilterLayout?
@@ -54,7 +54,7 @@ export default function ListsPage() {
           </Tag>
         </div>
       </div>
-      <Lists filter={filter} lists={lists?.data} />
+      <Lists filter={filter} lists={lists?.data} isLoading={isLoading} />
       <Pagination
         currentPage={currentPage}
         pages={lists?.pages}
