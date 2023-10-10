@@ -55,7 +55,7 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
     >
       <fieldset disabled={isLoading}>
         <FormControl name="listName" label="List name" required>
-          <Input placeholder="Give your list a name..." />
+          <Input autoFocus placeholder="Give your list a name..." />
         </FormControl>
         <FormControl name="listDescription" label="Description">
           <Textarea rows={4} placeholder="What's this list about?" />
