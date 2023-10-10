@@ -138,9 +138,13 @@ export function sortAndFilter<
     desc: (arr: T[]) =>
       arr.sort((a: T, b: T) => b.displayName?.localeCompare(a.displayName)),
     ascOP: (arr: T[]) =>
-      arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? 1 : -1)),
+      arr.sort((a: T, b: T) =>
+        (Number(a.amount) ?? 0) > (Number(b.amount) ?? 0) ? 1 : -1
+      ),
     descOP: (arr: T[]) =>
-      arr.sort((a: T, b: T) => ((a.amount ?? 0) > (b.amount ?? 0) ? -1 : 1)),
+      arr.sort((a: T, b: T) =>
+        (Number(a.amount) ?? 0) > (Number(b.amount) ?? 0) ? -1 : 1
+      ),
     // TODO: sort by likes
     liked: (arr: T[]) => arr,
   }[sort];

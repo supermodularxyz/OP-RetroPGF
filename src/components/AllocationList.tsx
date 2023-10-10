@@ -75,8 +75,6 @@ export function AllocationForm({
     [fields, filter, mapProjectData]
   );
 
-  console.log(sortedFields, fields);
-
   return (
     <AllocationListWrapper>
       <Table>
