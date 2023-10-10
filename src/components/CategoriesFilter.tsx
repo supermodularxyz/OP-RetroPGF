@@ -5,19 +5,19 @@ import {
   type ImpactCategory,
   impactCategoryLabels,
   categoryMap,
+  useCategories,
 } from "~/hooks/useCategories";
 import { type Filter } from "~/hooks/useFilter";
 
 export const CategoriesFilter = ({
-  count,
   selected = [],
   onSelect,
   children,
 }: {
-  count?: Record<string, number>;
   selected?: Filter["categories"];
   onSelect: (categories: Filter["categories"]) => void;
 } & PropsWithChildren) => {
+  const { data: count } = useCategories();
   return (
     <div className="my-2 flex gap-2 overflow-x-auto py-1">
       {children}

@@ -97,6 +97,16 @@ export const ProjectsQuery = `
   }
 `;
 
+export const CategoriesQuery = `
+  query {
+    retroPGF {
+      projectsAggregate {
+        ${AGGREGATE_FRAGMENT}
+      }
+    }
+  }
+`;
+
 export const LIST_FRAGMENT = `
 id
 listName
