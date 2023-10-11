@@ -16,7 +16,13 @@ import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
 import { truncate } from "~/utils/truncate";
 
-export const ListDetails = ({ list }: { list: List }) => {
+export const ListDetails = ({
+  list,
+  isLoading,
+}: {
+  list: List;
+  isLoading?: boolean;
+}) => {
   const { address } = useAccount();
   const like = useLikeList(list?.id);
 
@@ -29,8 +35,10 @@ export const ListDetails = ({ list }: { list: List }) => {
   const allocatedOP = sumBallot(listProjects);
   return (
     <>
-      {!list ? (
+      {!list && !isLoading ? (
         <h3>List not found</h3>
+      ) : isLoading ? (
+        <div>...</div>
       ) : (
         <div className="grid gap-10">
           <div className="flex justify-between gap-4 sm:items-center">

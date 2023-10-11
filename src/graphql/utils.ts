@@ -33,3 +33,10 @@ export function createQueryVariables({
     category: categories.length ? categories : undefined,
   };
 }
+
+export function parseId(item: { id: string }) {
+  return {
+    ...item,
+    id: item.id.split("|")[1],
+  };
+}

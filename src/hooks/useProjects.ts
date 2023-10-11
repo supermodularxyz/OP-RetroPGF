@@ -4,7 +4,12 @@ import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
 import { type List } from "~/hooks/useLists";
 import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
-import { Aggregate, createQueryVariables, PAGE_SIZE } from "~/graphql/utils";
+import {
+  Aggregate,
+  createQueryVariables,
+  PAGE_SIZE,
+  parseId,
+} from "~/graphql/utils";
 
 export type Project = {
   id: string;
@@ -85,7 +90,7 @@ export function useProjects(filter: Filter = initialFilter) {
       .then((r) => {
         const { projects, projectsAggregate } = r.data.data.retroPGF;
 
-        const data = projects.edges.map((edge) => edge.node);
+        const data = projects.edges.map((edge) => mapProject(edge.node));
         const { total, ...categories } = projectsAggregate;
         const pages = Math.ceil(total / PAGE_SIZE);
 
@@ -107,14 +112,19 @@ export function useProject(id: string) {
           `${backendUrl}/graphql`,
           {
             query: ProjectQuery,
-            variables: {
-              id: id.split("|")[1],
-            },
+            variables: { id },
           }
         )
         .then((r) => r.data.data?.retroPGF.project ?? null),
     { enabled: Boolean(id) }
   );
+}
+
+function mapProject(project) {
+  return {
+    ...parseId(project),
+    lists: project.lists.map(parseId),
+  };
 }
 
 export function sortAndFilter<

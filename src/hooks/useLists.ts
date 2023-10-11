@@ -5,7 +5,12 @@ import { initialFilter, type Filter } from "./useFilter";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
 import { ListQuery, ListsQuery } from "~/graphql/queries";
-import { Aggregate, createQueryVariables, PAGE_SIZE } from "~/graphql/utils";
+import {
+  Aggregate,
+  createQueryVariables,
+  PAGE_SIZE,
+  parseId,
+} from "~/graphql/utils";
 import { Project } from "./useProjects";
 import { useAccessToken } from "./useAuth";
 
@@ -49,7 +54,7 @@ export function useLists(filter: Filter = initialFilter) {
       .then((r) => {
         const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
 
-        const data = lists?.edges.map((edge) => edge.node);
+        const data = lists?.edges.map((edge) => mapList(edge.node));
         const { total, ...categories } = listsAggregate ?? {};
         const pages = Math.ceil(total / PAGE_SIZE);
 
@@ -69,13 +74,21 @@ export function useList(id: string) {
       axios
         .post<{ data: { retroPGF: { list: List } } }>(`${backendUrl}/graphql`, {
           query: ListQuery,
-          variables: {
-            id: id.split("|")[1],
-          },
+          variables: { id },
         })
-        .then((r) => r.data.data?.retroPGF.list ?? null),
+        .then((r) => mapList(r.data.data?.retroPGF.list) ?? null),
     { enabled: Boolean(id) }
   );
+}
+
+function mapList(list) {
+  return {
+    ...parseId(list),
+    listContent: list.listContent.map((item) => ({
+      ...item,
+      project: parseId(item.project),
+    })),
+  };
 }
 
 export function useLikes(listId: string) {
