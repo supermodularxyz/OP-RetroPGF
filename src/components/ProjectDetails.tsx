@@ -63,13 +63,12 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         )}
       </div>
       <div ref={intersectionRef}>
-        <picture>
-          <img
-            alt={project?.profile?.name}
-            src={project?.profile?.bannerImageUrl}
-            className="h-32 rounded-xl border border-gray-200 bg-gray-100 md:h-[328px]"
-          />
-        </picture>
+        <div
+          className="h-32 rounded-xl border border-gray-200 bg-gray-100 bg-cover bg-center md:h-[328px]"
+          style={{
+            backgroundImage: `url(${project?.profile?.bannerImageUrl})`,
+          }}
+        />
         <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar
             size="lg"
