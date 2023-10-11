@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { type Project } from "./useProjects";
 import { useAccessToken } from "./useAuth";
+import { useBeforeUnload } from "react-use";
 
 export type Allocation = { projectId: string; amount: number };
 
@@ -40,7 +41,7 @@ export function useSaveBallot() {
   const queryClient = useQueryClient();
   const { data: token } = useAccessToken();
 
-  return useMutation(
+  const save = useMutation(
     async (votes: Allocation[]) =>
       axios.post(
         `${backendUrl}/api/ballot/save`,
@@ -49,6 +50,9 @@ export function useSaveBallot() {
       ),
     { onSuccess: () => queryClient.invalidateQueries(["ballot"]) }
   );
+  useBeforeUnload(save.isLoading, "You have unsaved changes, are you sure?");
+
+  return save;
 }
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
