@@ -23,6 +23,7 @@ export function createQueryVariables({
   search = "",
   seed,
   categories = [],
+  likedBy = "",
 }: Filter) {
   return {
     first: PAGE_SIZE,
@@ -31,6 +32,7 @@ export function createQueryVariables({
     search,
     seed,
     category: categories.length ? categories : undefined,
+    likedBy,
   };
 }
 

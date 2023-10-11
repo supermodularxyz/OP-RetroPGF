@@ -12,6 +12,7 @@ export type Filter = {
   search?: string;
   seed?: string;
   categories?: ImpactCategory[];
+  likedBy?: string;
 };
 
 export const defaultSortOptions = [

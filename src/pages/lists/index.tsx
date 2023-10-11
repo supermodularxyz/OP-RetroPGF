@@ -9,7 +9,8 @@ import { Lists } from "~/components/Lists";
 import { useLists } from "~/hooks/useLists";
 import { Tag } from "~/components/ui/Tag";
 import { Button } from "~/components/ui/Button";
-import { Like } from "~/components/icons";
+import { Like, Liked } from "~/components/icons";
+import { useAccount } from "wagmi";
 
 export default function ListsPage() {
   const router = useRouter();
@@ -39,19 +40,7 @@ export default function ListsPage() {
         </div>
       </div>
       <div className="no-scrollbar">
-        <div className="my-2 flex gap-2 overflow-x-auto py-1">
-          <Tag
-            size="lg"
-            as={Link}
-            scroll={false}
-            href={`/lists?${toURL(query, { categories: [] })}`}
-          >
-            All
-          </Tag>
-          <Tag size="lg" onClick={() => alert("not implemented yet")}>
-            <Like /> Liked
-          </Tag>
-        </div>
+        <LikedFilter />
       </div>
       <Lists filter={filter} lists={lists?.data} isLoading={isLoading} />
       <Pagination
@@ -62,3 +51,35 @@ export default function ListsPage() {
     </Layout>
   );
 }
+
+const LikedFilter = () => {
+  const { address } = useAccount();
+  const router = useRouter();
+  const query = router.query;
+
+  const { data: filter } = useFilter("lists");
+
+  const selected = filter?.likedBy === address;
+  return (
+    <div className="my-2 flex gap-2 overflow-x-auto py-1">
+      <Tag
+        size="lg"
+        as={Link}
+        scroll={false}
+        selected={!selected}
+        href={`/lists?${toURL(query, { likedBy: "" })}`}
+      >
+        All
+      </Tag>
+      <Tag
+        size="lg"
+        as={Link}
+        scroll={false}
+        selected={selected}
+        href={`/lists?${toURL(query, { likedBy: selected ? "" : address })}`}
+      >
+        {selected ? <Liked className="text-primary-600" /> : <Like />} Liked
+      </Tag>
+    </div>
+  );
+};

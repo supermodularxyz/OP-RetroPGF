@@ -137,9 +137,9 @@ export const ListQuery = `
   }
 `;
 export const ListsQuery = `
-  query Lists($first: Int!, $skip: Int!, $orderBy: ListOrder!, $category: [ProjectCategory!], $search: String, $seed: String) {
+  query Lists($first: Int!, $skip: Int!, $orderBy: ListOrder!, $category: [ProjectCategory!], $search: String, $seed: String, $likedBy: String) {
     retroPGF {
-      lists(first: $first, skip: $skip, orderBy: $orderBy, category: $category, search: $search, seed: $seed) {
+      lists(first: $first, skip: $skip, orderBy: $orderBy, category: $category, search: $search, seed: $seed, likedBy: $likedBy) {
         pageInfo {
           ${PAGEINFO_FRAGMENT}
         }
