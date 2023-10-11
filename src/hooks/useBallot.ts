@@ -64,7 +64,8 @@ export function useSubmitBallot({
   const { data: token } = useAccessToken();
 
   return useMutation(() => {
-    const message = "sign_ballot_message";
+    const votes = mapBallotForBackend(ballot?.votes);
+    const message = JSON.stringify(votes, null, 2);
     return sign.signMessageAsync({ message }).then((signature) =>
       axios
         .post(
@@ -72,7 +73,7 @@ export function useSubmitBallot({
           {
             address,
             signature,
-            votes: mapBallotForBackend(ballot?.votes),
+            votes,
           },
           { headers: { Authorization: `Bearer ${token}` } }
         )

@@ -115,7 +115,7 @@ export function useProject(id: string) {
             variables: { id },
           }
         )
-        .then((r) => r.data.data?.retroPGF.project ?? null),
+        .then((r) => mapProject(r.data.data?.retroPGF.project) ?? null),
     { enabled: Boolean(id) }
   );
 }
