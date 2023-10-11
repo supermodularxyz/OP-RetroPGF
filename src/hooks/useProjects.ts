@@ -120,11 +120,11 @@ export function useProject(id: string) {
   );
 }
 
-function mapProject(project) {
+function mapProject(project: Project) {
   return {
     ...parseId(project),
     lists: project.lists.map(parseId),
-  };
+  } as Project;
 }
 
 export function sortAndFilter<

@@ -81,14 +81,14 @@ export function useList(id: string) {
   );
 }
 
-function mapList(list) {
+function mapList(list: List) {
   return {
     ...parseId(list),
     listContent: list.listContent.map((item) => ({
       ...item,
       project: parseId(item.project),
     })),
-  };
+  } as List;
 }
 
 export function useLikes(listId: string) {
