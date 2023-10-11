@@ -63,7 +63,7 @@ export const ListGridItem = ({
   isLoading?: boolean;
 }) => {
   return (
-    <Card className={clsx({ ["animate-pulse"]: isLoading })}>
+    <Card className={clsx("h-full", { ["animate-pulse"]: isLoading })}>
       <div className="space-y-3 p-3">
         <div className="flex items-center justify-between">
           <div>

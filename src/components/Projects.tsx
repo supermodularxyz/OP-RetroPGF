@@ -48,7 +48,7 @@ export const ProjectGridItem = ({
   isLoading?: boolean;
 }) => {
   return (
-    <Card className={clsx({ ["animate-pulse"]: isLoading })}>
+    <Card className={clsx("h-full", { ["animate-pulse"]: isLoading })}>
       <div
         className="h-24 rounded-2xl bg-gray-200 bg-cover"
         style={{
