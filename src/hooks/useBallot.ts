@@ -69,7 +69,7 @@ export function useSubmitBallot({
 
   return useMutation(() => {
     const votes = mapBallotForBackend(ballot?.votes);
-    const message = JSON.stringify(votes, null, 2);
+    const message = JSON.stringify(votes);
     return sign.signMessageAsync({ message }).then((signature) =>
       axios
         .post(

@@ -64,7 +64,9 @@ export const BallotOverview = () => {
               <div>{formatNumber(MAX_ALLOCATION_TOTAL)} OP</div>
             </div>
           </BallotSection>
-          {canSubmit ? (
+          {ballot?.publishedAt ? (
+            <Button disabled>Submitted</Button>
+          ) : canSubmit ? (
             <SubmitBallotButton disabled={sum > MAX_ALLOCATION_TOTAL} />
           ) : allocations.length ? (
             <Button variant="outline" as={Link} href={"/ballot"}>
