@@ -7,11 +7,11 @@ import { ListDetails } from "~/components/ListDetails";
 export default function ViewListPage() {
   const router = useRouter();
   const id = router.query.id as string;
-  const { data: list } = useList(id);
+  const { data: list, isLoading } = useList(id);
 
   return (
     <Layout sidebar="left">
-      <ListDetails list={list!} />
+      <ListDetails list={list!} isLoading={isLoading} />
     </Layout>
   );
 }

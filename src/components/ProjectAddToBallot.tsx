@@ -1,33 +1,40 @@
+import { useState } from "react";
+import { z } from "zod";
+import clsx from "clsx";
+import { useAccount } from "wagmi";
+import { useFormContext } from "react-hook-form";
+
 import { Button, IconButton } from "~/components/ui/Button";
 import { AddBallot, Check } from "~/components/icons";
 import { type Project } from "~/hooks/useProjects";
 import {
+  ballotContains,
   useAddToBallot,
   useBallot,
   useRemoveFromBallot,
 } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
-import { useState } from "react";
 import { AllocationInput } from "./AllocationInput";
 import { Form } from "./ui/Form";
-import { useFormContext } from "react-hook-form";
-import { ballotToArray } from "~/hooks/useBallot";
 import { sumBallot } from "~/hooks/useBallot";
-import { OP_TO_ALLOCATE } from "./BallotOverview";
-import { z } from "zod";
-import clsx from "clsx";
+import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
+
+export const MAX_ALLOCATION_PROJECT = Number(
+  process.env.NEXT_PUBLIC_MAX_ALLOCATION_PROJECT!
+);
 
 export const ProjectAddToBallot = ({ project }: { project: Project }) => {
+  const { address } = useAccount();
   const [isOpen, setOpen] = useState(false);
   const add = useAddToBallot();
   const remove = useRemoveFromBallot();
   const { data: ballot } = useBallot();
 
   const { id } = project ?? {};
-  const inBallot = ballot?.[id];
-  const allocations = ballotToArray(ballot);
-  const sum = sumBallot(allocations.filter((p) => p.id !== project?.id));
+  const inBallot = ballotContains(id, ballot);
+  const allocations = ballot?.votes ?? [];
+  const sum = sumBallot(allocations.filter((p) => p.projectId !== project?.id));
 
   return (
     <div>
@@ -41,6 +48,7 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
         </IconButton>
       ) : (
         <IconButton
+          disabled={!address}
           onClick={() => setOpen(true)}
           variant="primary"
           icon={AddBallot}
@@ -54,12 +62,22 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
         onOpenChange={setOpen}
         title={`Vote for ${project?.displayName}`}
       >
-        <p className="pb-2">TEXT_DESCRIBING_VOTING_GUIDANCE</p>
+        <p className="pb-4 leading-relaxed">
+          How much OP should this Project receive to fill the gap between the
+          impact they generated for Optimism and the profit they received for
+          generating this impact
+        </p>
         <Form
           defaultValues={{ amount: inBallot?.amount }}
-          schema={z.object({ amount: z.number().max(OP_TO_ALLOCATE - sum) })}
+          schema={z.object({
+            amount: z
+              .number()
+              .max(
+                Math.min(MAX_ALLOCATION_PROJECT, MAX_ALLOCATION_TOTAL - sum)
+              ),
+          })}
           onSubmit={({ amount }) => {
-            add.mutate([{ ...project, amount }]);
+            add.mutate([{ projectId: project.id, amount }]);
             setOpen(false);
           }}
         >
@@ -91,19 +109,39 @@ const ProjectAllocation = ({
   const amount = formAmount
     ? parseFloat(String(formAmount).replace(/,/g, ""))
     : 0;
-  const isError = current + amount > OP_TO_ALLOCATE;
+  const total = amount + current;
 
+  const exceededProjectOP = amount > MAX_ALLOCATION_PROJECT;
+  const exceededMaxOP = total > MAX_ALLOCATION_TOTAL;
+
+  const isError = exceededProjectOP || exceededMaxOP;
   return (
     <div>
       <AllocationInput error={isError} name="amount" />
-      <div className="flex justify-end gap-2 pt-2 text-sm">
-        <span
-          className={clsx("font-semibold", { ["text-primary-500"]: isError })}
-        >
-          {formatNumber(current + amount)}
-        </span>
-        <span className="text-gray-600">/</span>
-        <span className="text-gray-600">{formatNumber(OP_TO_ALLOCATE)}</span>
+      <div className="flex justify-between gap-2 pt-2 text-sm">
+        <div className="flex gap-2">
+          <span className="text-gray-600">Total OP allocated:</span>
+          <span
+            className={clsx("font-semibold", {
+              ["text-primary-500"]: exceededMaxOP,
+            })}
+          >
+            {formatNumber(total)}
+          </span>
+        </div>
+        <div className="flex gap-2">
+          <span
+            className={clsx("font-semibold", {
+              ["text-primary-500"]: exceededProjectOP,
+            })}
+          >
+            {formatNumber(amount)}
+          </span>
+          <span className="text-gray-600">/</span>
+          <span className="text-gray-600">
+            {formatNumber(MAX_ALLOCATION_PROJECT)}
+          </span>
+        </div>
       </div>
       <div className="space-y-2 pt-2">
         <Button

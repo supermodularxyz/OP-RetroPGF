@@ -10,7 +10,9 @@ export type Filter = {
   display?: "grid" | "list";
   sort?: FilterSort;
   search?: string;
+  seed?: string;
   categories?: ImpactCategory[];
+  likedBy?: string;
 };
 
 export const defaultSortOptions = [
@@ -24,6 +26,7 @@ export const initialFilter: Filter = {
   display: "grid",
   sort: "shuffle",
   search: "",
+  seed: Date.now().toString(),
   categories: [],
 };
 

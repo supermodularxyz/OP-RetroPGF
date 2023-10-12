@@ -1,64 +1,104 @@
+import axios from "axios";
+import { useAccount, type Address } from "wagmi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
-import { sortAndFilter, paginate } from "./useProjects";
-import { allListsLikes } from "~/data/mock";
-import { useAccount, type Address } from "wagmi";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
+import { ListQuery, ListsQuery } from "~/graphql/queries";
+import {
+  Aggregate,
+  createQueryVariables,
+  PAGE_SIZE,
+  parseId,
+} from "~/graphql/utils";
+import { Project } from "./useProjects";
+import { useAccessToken } from "./useAuth";
 
 export type List = {
   id: string;
   listName: string;
-  displayName: string;
+  listDescription: string;
   owner: string;
-  bio: string;
-  impactCategory: ImpactCategory[];
-  impactEvaluation: string;
+  categories: ImpactCategory[];
+  impactEvaluationDescription: string;
   impactEvaluationLink: string;
   projects: Allocation[];
+  listContent: {
+    OPAmount: number;
+    project: Project;
+  }[];
+  author: {
+    address: Address;
+    resolvedName: {
+      name?: string;
+    };
+  };
 };
 
-export function useAllLists() {
-  return useQuery<List[]>(["lists", "all"], () =>
-    fetch("/api/lists").then((r) => r.json())
-  );
-}
-export function useLists(filter: Filter) {
-  const {
-    page = 1,
-    sort = "shuffle",
-    categories = [],
-    search = "",
-  } = filter ?? initialFilter;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-  // TODO: Call EAS attestations
-  const { data: lists, isLoading } = useAllLists();
-  return useQuery(
-    ["lists", { page, sort, categories, search }],
-    () => paginate(sortAndFilter(lists, filter), filter?.page),
-    { enabled: !isLoading }
-  );
-}
+export function useLists(filter: Filter = initialFilter) {
+  return useQuery(["lists", filter], () => {
+    return axios
+      .post<{
+        data: {
+          retroPGF: {
+            lists: { edges: { node: List }[] };
+            listsAggregate: Aggregate;
+          };
+        };
+      }>(`${backendUrl}/graphql`, {
+        query: ListsQuery,
+        variables: createQueryVariables(filter),
+      })
+      .then((r) => {
+        const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
 
-export function useList(id: string) {
-  const { data: lists, isLoading } = useAllLists();
-  return useQuery(["lists", id], async () => lists?.find((p) => p.id === id), {
-    enabled: Boolean(id && !isLoading),
+        const data = lists?.edges.map((edge) => mapList(edge.node));
+        const { total, ...categories } = listsAggregate ?? {};
+        const pages = Math.ceil(total / PAGE_SIZE);
+
+        return { data, pages, categories };
+      })
+      .catch((err) => {
+        console.log("err", err);
+        return { data: [], pages: 1, categories: {} };
+      });
   });
 }
 
+export function useList(id: string) {
+  return useQuery(
+    ["lists", id],
+    async () =>
+      axios
+        .post<{ data: { retroPGF: { list: List } } }>(`${backendUrl}/graphql`, {
+          query: ListQuery,
+          variables: { id },
+        })
+        .then((r) => mapList(r.data.data?.retroPGF.list) ?? null),
+    { enabled: Boolean(id) }
+  );
+}
+
+function mapList(list: List) {
+  return {
+    ...parseId(list),
+    listContent: list.listContent.map((item) => ({
+      ...item,
+      project: parseId(item.project),
+    })),
+  } as List;
+}
+
 export function useLikes(listId: string) {
-  const queryClient = useQueryClient();
-  const { address } = useAccount();
   return useQuery<Address[]>(
     ["likes", listId],
-    () => {
-      // Call API
-      // axios.get(`/likes/${listId}`).then(r => r.data);
-      // Temp mock data (even numbers are liked)
-      return queryClient.getQueryData(["likes", listId]) ?? [];
-      // return Number(listId) % 2 == 0 && address ? [address] : [];
-    },
+    () =>
+      axios
+        .get(`${backendUrl}/api/likes/${listId}`)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
+        .then((r) => r.data[encodeURIComponent(listId)] ?? []),
     { enabled: Boolean(listId) }
   );
 }
@@ -66,11 +106,13 @@ export function useLikes(listId: string) {
 export function useLikeList(listId: string) {
   const queryClient = useQueryClient();
   const { address } = useAccount();
+  const { data: token } = useAccessToken();
 
   return useMutation(
-    async () => {
-      // Call API
-      // axios.post(`/likes/${listId}/like`).then(r => r.data)
+    async (listId: string) => {
+      return axios.post(`${backendUrl}/api/likes/${listId}/like`, undefined, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
     },
     {
       // Optimistically update state
@@ -83,12 +125,23 @@ export function useLikeList(listId: string) {
         });
         return { listId };
       },
+
       // Refetch all likes so it's included in the counts everywhere.
-      onSettled: () => queryClient.invalidateQueries({ queryKey: ["likes"] }),
+      onSettled: () => queryClient.invalidateQueries(["likes"]),
     }
   );
 }
 
+type AllLikesResponse = {
+  likes: {
+    listId: Address[];
+  };
+};
+
 export function useAllLikes() {
-  return useQuery(["likes"], () => allListsLikes);
+  return useQuery<AllLikesResponse>(
+    ["likes"],
+    () => axios.get(`${backendUrl}/api/likes`),
+    {}
+  );
 }

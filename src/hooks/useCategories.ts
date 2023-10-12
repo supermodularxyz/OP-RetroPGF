@@ -1,6 +1,7 @@
-import { useMemo } from "react";
-import projects from "~/data/projects.json";
-import { type Project } from "./useProjects";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { CategoriesQuery } from "~/graphql/queries";
+import { Aggregate } from "~/graphql/utils";
 
 export type ImpactCategory =
   | "OP_STACK"
@@ -9,6 +10,13 @@ export type ImpactCategory =
   | "END_USER_EXPERIENCE_AND_ADOPTION";
 
 export type ListsOnlyTags = "ALL" | "LIKED";
+
+export const categoryMap = {
+  COLLECTIVE_GOVERNANCE: "collectiveGovernance",
+  DEVELOPER_ECOSYSTEM: "developerEcosystem",
+  END_USER_EXPERIENCE_AND_ADOPTION: "endUserExperienceAndAdoption",
+  OP_STACK: "opStack",
+} as const;
 
 export const impactCategoryLabels = {
   COLLECTIVE_GOVERNANCE: "Collective Governance",
@@ -28,17 +36,19 @@ export const impactCategoryDescriptions = {
     "Work that increased the efficiency, security, resilience and awareness of the OP Stack",
 };
 
-export const useCategories = () => {
-  return useMemo(() => {
-    // Set each category to 0 - { OP_STACK: 0, COLLECTIVE_GOVERNANCE: 0, ...}
-    const initialState = Object.keys(impactCategoryLabels).reduce(
-      (a, x) => ({ ...a, [x]: 0 }),
-      {}
-    );
-    return (projects as Project[]).reduce((acc, x) => {
-      console.log(x, x.impactCategory);
-      x.impactCategory?.forEach((category) => (acc[category] += 1));
-      return acc;
-    }, initialState as { [key in ImpactCategory]: number });
-  }, []);
-};
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
+
+export function useCategories() {
+  return useQuery(["categories"], () => {
+    return axios
+      .post<{
+        data: {
+          retroPGF: { projectsAggregate: Aggregate };
+        };
+      }>(`${backendUrl}/graphql`, { query: CategoriesQuery })
+      .then((r) => {
+        const { total, ...categories } = r.data.data.retroPGF.projectsAggregate;
+        return categories ?? null;
+      });
+  });
+}

@@ -7,13 +7,9 @@ import { Layout } from "~/components/Layout";
 import { SortByDropdown } from "~/components/SortByDropdown";
 import { Button } from "~/components/ui/Button";
 import { Form, SearchInput } from "~/components/ui/Form";
-import { arrayToBallot } from "~/hooks/useBallot";
-import {
-  ballotToArray,
-  sumBallot,
-  useBallot,
-  useSaveBallot,
-} from "~/hooks/useBallot";
+import { Spinner } from "~/components/ui/Spinner";
+import { useBallot } from "~/hooks/useBallot";
+import { sumBallot, useSaveBallot } from "~/hooks/useBallot";
 import { type Filter } from "~/hooks/useFilter";
 import { AllocationsSchema } from "~/schemas/allocation";
 import { formatNumber } from "~/utils/formatNumber";
@@ -32,16 +28,15 @@ export default function BallotPage() {
 
   const save = useSaveBallot();
   const { data: ballot, isLoading } = useBallot();
-  const allocations = ballotToArray(ballot);
+
+  const allocations = ballot?.votes ?? [];
 
   const filter = { search, sort };
 
-  function handleSaveBallot({
-    allocations,
-  }: {
+  function handleSaveBallot(form: {
     allocations: z.infer<typeof AllocationsSchema>["allocations"];
   }) {
-    save.mutate(arrayToBallot(allocations));
+    save.mutate(form.allocations);
   }
 
   return (
@@ -78,6 +73,9 @@ export default function BallotPage() {
                   <EmptyBallot />
                 )}
               </div>
+            </div>
+            <div className="flex h-12 justify-end p-2">
+              {save.isLoading ? <Spinner /> : " "}
             </div>
             <div className="flex justify-between rounded-b-2xl border-t border-gray-300 bg-[#EDF4FC] px-8 py-4 text-lg font-semibold">
               <div>Total OP in ballot</div>

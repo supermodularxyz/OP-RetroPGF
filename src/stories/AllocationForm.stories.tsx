@@ -45,7 +45,7 @@ export const ListAndBallot: Story = {
   args: {
     list: lists[0]?.listContent
       .slice(0, 4)
-      .map((p) => ({ id: p.RPGF3_Application_UID, amount: p.OPAmount })),
+      .map((p) => ({ projectId: p.RPGF3_Application_UID, amount: p.OPAmount })),
     header: (
       <Thead>
         <Tr>

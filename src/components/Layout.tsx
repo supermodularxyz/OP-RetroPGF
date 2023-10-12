@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Head from "next/head";
 import { useState, type PropsWithChildren, useEffect } from "react";
 import { useAccount } from "wagmi";
@@ -5,14 +6,10 @@ import { useAccount } from "wagmi";
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
-import clsx from "clsx";
-import { useAllProjects } from "~/hooks/useProjects";
 
 export const Layout = (
   props: { sidebar?: "left" | "right" } & PropsWithChildren
 ) => {
-  useAllProjects();
-
   const { address } = useAccount();
   const [isLoaded, setLoaded] = useState(false);
 
@@ -39,8 +36,6 @@ export const Layout = (
           <div
             className={clsx("min-w-0 flex-1 px-4 pb-24", {
               ["mx-auto max-w-5xl"]: !props.sidebar,
-              ["md:ml-8 md:pl-80"]: props.sidebar === "left",
-              ["md:mr-8"]: props.sidebar === "right",
             })}
           >
             {props.children}
@@ -58,8 +53,8 @@ const Sidebar = ({
 }: { side?: "left" | "right" } & PropsWithChildren) => (
   <div className="">
     <div
-      className={clsx("w-[336px] px-2 md:px-4", {
-        ["md:fixed"]: side === "left",
+      className={clsx("px-2 md:w-[336px] md:px-4", {
+        ["left-0 top-[2rem] md:sticky"]: side === "left",
       })}
       {...props}
     />
