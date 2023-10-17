@@ -85,11 +85,9 @@ export const ProjectListItem = ({
   isLoading?: boolean;
 }) => {
   return (
-    <div className="flex  cursor-pointer gap-6 pt-6">
-      <div>
-        <AvatarWithBorder src={project?.profile?.profileImageUrl} />
-      </div>
-      <div className="flex flex-1 flex-col gap-2">
+    <div className="flex cursor-pointer gap-6 pt-6">
+      <AvatarWithBorder src={project?.profile?.profileImageUrl} />
+      <div className="min-w-0 space-y-2">
         <Skeleton isLoading={isLoading} className="w-[140px]">
           {project?.displayName}
         </Skeleton>

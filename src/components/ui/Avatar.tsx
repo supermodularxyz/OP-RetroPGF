@@ -30,7 +30,7 @@ export const Avatar = createComponent(
 const AvatarBorder = createComponent(
   Image,
   tv({
-    base: "inline-flex border border-gray-200 bg-white",
+    base: "inline-flex border border-gray-200 bg-white flex-shrink-0",
     variants: {
       size: {
         sm: "rounded-md p-0.5 h-8 w-8",
