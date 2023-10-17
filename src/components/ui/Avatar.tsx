@@ -1,9 +1,15 @@
 import { tv } from "tailwind-variants";
 import { createComponent } from ".";
 import { type ComponentPropsWithRef, createElement } from "react";
+import clsx from "clsx";
 
 const Image = ({ src, className }: ComponentPropsWithRef<"img">) => {
-  return createElement(src ? "img" : "div", { src, className });
+  return createElement("div", {
+    style: {
+      backgroundImage: `url(${src})`,
+    },
+    className: clsx("bg-cover", className),
+  });
 };
 
 export const Avatar = createComponent(
