@@ -6,17 +6,27 @@ import { useAccount } from "wagmi";
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
+import { useRouter } from "next/router";
 
 export const Layout = (
-  props: { sidebar?: "left" | "right" } & PropsWithChildren
+  props: {
+    sidebar?: "left" | "right";
+    requireAuth?: boolean;
+  } & PropsWithChildren
 ) => {
-  const { address } = useAccount();
+  const router = useRouter();
+  const { address, isConnecting } = useAccount();
   const [isLoaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
   }, []);
   if (!isLoaded) return null;
+
+  if (props.requireAuth && !address && !isConnecting) {
+    router.push("/");
+    return null;
+  }
 
   const sidebar = (
     <Sidebar side={props.sidebar}>
