@@ -148,7 +148,7 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   const { chain: { id: chainId } = {} } = useNetwork();
   const { address } = useAccount();
   const { data: nonce } = useNonce();
-  const { data: session } = useSession();
+  const { data: session, isLoading } = useSession();
 
   async function handleSign() {
     if (nonce) {
@@ -165,8 +165,7 @@ const SignMessage = ({ children }: PropsWithChildren) => {
       verify.mutate({ signature, message, nonce });
     }
   }
-
-  if (session?.address) {
+  if (session?.address || isLoading) {
     return <>{children}</>;
   }
   return (
