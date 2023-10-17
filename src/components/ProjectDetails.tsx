@@ -221,7 +221,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                     </div>
                     <div className="">{fund.description}</div>
                   </div>
-                  <H4 className="font-mono">
+                  <H4 className="font-mono text-sm md:text-base">
                     {formatCurrency(fund.amount, fund.currency)}
                   </H4>
                 </div>
@@ -263,11 +263,17 @@ function sumListAllocation(list: List) {
   return list.listContent?.reduce((acc, x) => acc + x.OPAmount, 0);
 }
 
-const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
-const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));
+const H3 = createComponent(
+  "h3",
+  tv({ base: "text-xl md:text-2xl font-semibold" })
+);
+const H4 = createComponent(
+  "h4",
+  tv({ base: "text-lg md:text-xl font-semibold" })
+);
 const Card = createComponent(
   "div",
-  tv({ base: "flex flex-col gap-4 rounded-3xl border p-8" })
+  tv({ base: "flex flex-col gap-4 rounded-3xl border p-4 md:p-8" })
 );
 const ImpactCard = createComponent(
   "div",

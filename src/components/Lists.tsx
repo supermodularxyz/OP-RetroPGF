@@ -107,7 +107,7 @@ export const ListListItem = ({
   return (
     <div className="cursor-pointer space-y-3">
       <div>
-        <div className="flex items-center justify-between">
+        <div className="items-center justify-between md:flex">
           <div className="flex items-center gap-2">
             <CardTitle>
               <Skeleton isLoading={isLoading} className="w-[140px]">
@@ -117,7 +117,7 @@ export const ListListItem = ({
             <Divider orientation={"vertical"} />
             <LikeCount listId={list?.id} />
           </div>
-          <div className="font-semibold">{allocation}</div>
+          <div className="text-sm font-semibold md:text-base">{allocation}</div>
         </div>
         <Skeleton isLoading={isLoading} className="w-full">
           <AvatarWithName address={list?.author?.address} />
