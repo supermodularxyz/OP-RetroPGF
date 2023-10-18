@@ -24,7 +24,7 @@ export const Layout = (
   if (!isLoaded) return null;
 
   if (props.requireAuth && !address && !isConnecting) {
-    router.push("/");
+    void router.push("/");
     return null;
   }
 

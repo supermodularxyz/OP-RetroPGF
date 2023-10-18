@@ -165,7 +165,7 @@ const SignMessage = ({ children }: PropsWithChildren) => {
       verify.mutate({ signature, message, nonce });
     }
   }
-  if (session?.address || isLoading) {
+  if (session?.address ?? isLoading) {
     return <>{children}</>;
   }
   return (

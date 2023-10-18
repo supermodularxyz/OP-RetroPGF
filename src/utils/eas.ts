@@ -20,7 +20,7 @@ export async function createAttestation(
   if (!network?.chainId || !schemaUIDs.get(String(network.chainId))) {
     throw new Error(`No schema found for network: ${network?.name}`);
   }
-  const schema = schemaUIDs.get(String(network.chainId)) as string;
+  const schema = schemaUIDs.get(String(network.chainId))!;
   const eas = new EAS(EASContractAddress);
 
   console.log("Connecting signer to EAS...");

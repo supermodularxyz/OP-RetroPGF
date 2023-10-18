@@ -43,7 +43,7 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
         const { listName, ...list } = parseList(values);
         const listMetadataPtr = upload.data ?? (await upload.mutateAsync(list));
-
+        console.log(listName, list);
         create.mutate(
           {
             listName,
@@ -155,8 +155,8 @@ export default function CreateListPage() {
 function parseList({ allocations, ...list }: CreateList) {
   return {
     ...list,
-    listContent: allocations.map(({ id, amount }) => ({
-      RPGF3_Application_UID: id,
+    listContent: allocations.map(({ projectId, amount }) => ({
+      RPGF3_Application_UID: projectId,
       OPAmount: amount,
     })),
   };
