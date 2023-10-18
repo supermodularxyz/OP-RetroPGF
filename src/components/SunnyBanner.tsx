@@ -2,7 +2,7 @@ import { Sparkles, SunnyBackground, SunnyFace } from "./SunnySVG";
 import { ExternalLink } from "./ui/Link";
 
 export const SunnyBanner = () => (
-  <div className="relative mx-auto flex h-[572px] max-w-[320px] flex-col items-center px-2">
+  <div className="relative mx-auto mb-8 flex h-[572px] max-w-[320px] flex-col items-center px-2">
     <div className="absolute -z-10 overflow-hidden rounded-full">
       <SunnyBackground />
     </div>

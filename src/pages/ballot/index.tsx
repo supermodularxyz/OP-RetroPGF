@@ -40,7 +40,7 @@ export default function BallotPage() {
   }
 
   return (
-    <Layout sidebar="right">
+    <Layout sidebar="right" requireAuth>
       {isLoading ? null : (
         <Form
           schema={AllocationsSchema}

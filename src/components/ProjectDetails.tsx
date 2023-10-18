@@ -156,7 +156,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <DividerIcon icon={Contribution} className="my-4" />
           <H3>Contributions</H3>
           <p>{project?.contributionDescription}</p>
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             {project?.contributionLinks?.map((link) => {
               const Icon = {
                 GITHUB_REPO: LinkIcon,
@@ -167,10 +167,10 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
               return (
                 <Link key={link.url} href={link.url} target="_blank">
                   <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
-                    <div className="flex  items-center gap-4 rounded-xl border border-gray-200">
-                      <div className="h-20 w-20 rounded-l-xl bg-gray-100" />
+                    <div className="flex items-center gap-4 overflow-auto rounded-xl border border-gray-200">
+                      <div className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100" />
                       <div>
-                        <div className="mb-2 font-semibold text-gray-700">
+                        <div className="mb-2 overflow-auto font-semibold text-gray-700">
                           {link.description}
                         </div>
                         <div className="flex items-center gap-1 text-gray-700 hover:underline ">
@@ -221,7 +221,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                     </div>
                     <div className="">{fund.description}</div>
                   </div>
-                  <H4 className="font-mono">
+                  <H4 className="font-mono text-sm md:text-base">
                     {formatCurrency(fund.amount, fund.currency)}
                   </H4>
                 </div>
@@ -263,11 +263,17 @@ function sumListAllocation(list: List) {
   return list.listContent?.reduce((acc, x) => acc + x.OPAmount, 0);
 }
 
-const H3 = createComponent("h3", tv({ base: "text-2xl font-semibold" }));
-const H4 = createComponent("h4", tv({ base: "text-xl font-semibold" }));
+const H3 = createComponent(
+  "h3",
+  tv({ base: "text-xl md:text-2xl font-semibold" })
+);
+const H4 = createComponent(
+  "h4",
+  tv({ base: "text-lg md:text-xl font-semibold" })
+);
 const Card = createComponent(
   "div",
-  tv({ base: "flex flex-col gap-4 rounded-3xl border p-8" })
+  tv({ base: "flex flex-col gap-4 rounded-3xl border p-4 md:p-8" })
 );
 const ImpactCard = createComponent(
   "div",

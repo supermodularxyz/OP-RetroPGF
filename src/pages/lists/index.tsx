@@ -74,6 +74,7 @@ const LikedFilter = () => {
       <Tag
         size="lg"
         as={Link}
+        disabled={!address}
         scroll={false}
         selected={selected}
         href={`/lists?${toURL(query, { likedBy: selected ? "" : address })}`}

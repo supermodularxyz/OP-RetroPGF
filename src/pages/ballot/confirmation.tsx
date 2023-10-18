@@ -8,7 +8,7 @@ export default function BallotConfirmationPage() {
   if (!ballot) return null;
 
   return (
-    <Layout>
+    <Layout requireAuth>
       <BallotConfirmation allocations={ballot?.votes} />
     </Layout>
   );

@@ -4,15 +4,15 @@ import { MAX_ALLOCATION_TOTAL } from "~/components/BallotOverview";
 export const CreateListSchema = z.object({
   listName: z.string().min(1),
   listDescription: z.string().min(1),
-  impactEvaluationLink: z.string().url().nullish(),
-  impactEvaluationDescription: z.string(),
+  impactEvaluationLink: z.union([z.string().url(), z.literal("").default("")]),
+  impactEvaluationDescription: z.string().min(1),
   allocations: z
-    .array(z.object({ id: z.string(), amount: z.number().min(0) }))
+    .array(z.object({ projectId: z.string(), amount: z.number().min(0) }))
     .min(1)
     .refine(
       (val) => {
         const sum = val.reduce((acc, x) => acc + x.amount, 0);
-        return sum > 0 && sum <= MAX_ALLOCATION_TOTAL;
+        return sum >= 0 && sum <= MAX_ALLOCATION_TOTAL;
       },
       { message: "Total amount OP is more than maximum" }
     ),
