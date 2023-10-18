@@ -4,13 +4,23 @@ import { type SignerOrProvider } from "@ethereum-attestation-service/eas-sdk/dis
 import { type ListAttestation } from "~/hooks/useCreateList";
 
 const EASContractAddress = process.env.NEXT_PUBLIC_EAS_CONTRACT_ADDRESS!;
-const schemaUID = process.env.NEXT_PUBLIC_LISTS_SCHEMA!;
+
+const schemaUIDs = new Map([
+  ["10", process.env.NEXT_PUBLIC_LISTS_SCHEMA!],
+  ["420", process.env.NEXT_PUBLIC_LISTS_SCHEMA_STAGING!],
+]);
 
 export async function createAttestation(
   { owner, ...list }: ListAttestation,
   signer: SignerOrProvider
 ) {
   console.log("Creating EAS instance...");
+
+  const network = await signer.provider?.getNetwork();
+  if (!network?.chainId || !schemaUIDs.get(String(network.chainId))) {
+    throw new Error(`No schema found for network: ${network?.name}`);
+  }
+  const schema = schemaUIDs.get(String(network.chainId)) as string;
   const eas = new EAS(EASContractAddress);
 
   console.log("Connecting signer to EAS...");
@@ -21,7 +31,7 @@ export async function createAttestation(
 
   console.log("Creating attestation...");
   const tx = await eas.attest({
-    schema: schemaUID,
+    schema,
     data: { recipient: owner, expirationTime: 0n, revocable: true, data },
   });
   console.log("Transaction: ", tx);
