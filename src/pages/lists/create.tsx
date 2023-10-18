@@ -33,6 +33,8 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const error = create.error || upload.error;
   const isLoading = create.isLoading || upload.isLoading;
 
+  const canCreate = Boolean(address && !isLoading);
+
   return (
     <Form
       schema={CreateListSchema}
@@ -57,12 +59,13 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <FormControl name="listName" label="List name" required>
           <Input autoFocus placeholder="Give your list a name..." />
         </FormControl>
-        <FormControl name="listDescription" label="Description">
+        <FormControl name="listDescription" label="Description" required>
           <Textarea rows={4} placeholder="What's this list about?" />
         </FormControl>
         <FormControl
           name="impactEvaluationDescription"
           label="Impact evaluation"
+          required
         >
           <Textarea
             rows={4}
@@ -81,10 +84,7 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         </div>
 
         <div className="mb-4 flex justify-end">
-          <Button
-            disabled={create.isLoading || upload.isLoading}
-            variant="primary"
-          >
+          <Button disabled={!canCreate} variant="primary">
             Create list
           </Button>
         </div>
