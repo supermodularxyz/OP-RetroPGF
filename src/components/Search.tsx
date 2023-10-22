@@ -3,13 +3,14 @@ import clsx from "clsx";
 import { Command } from "cmdk";
 
 import { Chip } from "./ui/Chip";
-import { useProjects } from "~/hooks/useProjects";
+import { useProjects, type Project } from "~/hooks/useProjects";
 import { type Filter, useFilter } from "~/hooks/useFilter";
 import { IconButton } from "./ui/Button";
 import { ChevronLeft, Search as SearchIcon, X } from "./icons";
 import { useLists } from "~/hooks/useLists";
 import { useKey } from "react-use";
 import { SearchInput } from "./ui/Form";
+import { Avatar } from "./ui/Avatar";
 
 type Props = {
   onSelect: (path: string) => void;
@@ -114,7 +115,12 @@ export const Search = ({ onSelect }: Props) => {
                               onSelect(path);
                             }}
                           >
-                            <div className="h-6 w-6 bg-gray-200" />
+                            <Avatar
+                              className="h-6 w-6"
+                              src={
+                                (item as Project).profile?.profileImageUrl ?? ""
+                              }
+                            />
                             {item.displayName ?? item.listName}
                           </Command.Item>
                         )
