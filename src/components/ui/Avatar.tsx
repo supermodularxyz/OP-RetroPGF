@@ -3,7 +3,7 @@ import { createComponent } from ".";
 import { type ComponentPropsWithRef, createElement } from "react";
 import clsx from "clsx";
 
-const Image = ({ src, className }: ComponentPropsWithRef<"img">) => {
+export const Image = ({ src, className }: ComponentPropsWithRef<"img">) => {
   return createElement("div", {
     style: {
       backgroundImage: `url(${src})`,
