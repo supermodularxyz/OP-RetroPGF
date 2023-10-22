@@ -20,7 +20,7 @@ export function ProjectContribution({
         <div className="flex items-center gap-4 overflow-auto rounded-xl border border-gray-200">
           <Image
             className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100"
-            alt={metadata.data?.title}
+            title={metadata.data?.title}
             src={metadata.data?.image}
           />
           <div>
