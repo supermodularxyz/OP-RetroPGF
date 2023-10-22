@@ -33,6 +33,7 @@ import { IconBadge } from "./ui/Badge";
 import { ProjectAddToBallot } from "./ProjectAddToBallot";
 
 import { type List } from "~/hooks/useLists";
+import { ProjectContribution } from "./ProjectContribution";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
@@ -119,7 +120,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       </div>
       <Divider className="my-8" />
       <div>
-        <p className="">{project?.bio}</p>
+        <p className="whitespace-pre-wrap">{project?.bio}</p>
         <div className="my-8 flex flex-wrap gap-2">
           <Tag>
             <FaCheckToSlot className="text-gray-500" /> 56 ballots
@@ -138,7 +139,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             <SunnyMini className="text-primary-600" />
             <H3>Impact statement for RetroPGF 3</H3>
           </div>
-          <p className="">{project?.impactDescription}</p>
+          <p className="whitespace-pre-wrap">{project?.impactDescription}</p>
           <h6 className="mb-1 text-sm font-semibold text-gray-500">
             Categories of impact
           </h6>
@@ -155,41 +156,17 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           </div>
           <DividerIcon icon={Contribution} className="my-4" />
           <H3>Contributions</H3>
-          <p>{project?.contributionDescription}</p>
+          <p className="whitespace-pre-wrap">
+            {project?.contributionDescription}
+          </p>
           <div className="flex flex-col gap-2">
             {project?.contributionLinks?.map((link) => {
-              const Icon = {
-                GITHUB_REPO: LinkIcon,
-                CONTRACT_ADDRESS: Code,
-                OTHER: "div",
-              }[link.type];
-
-              return (
-                <Link key={link.url} href={link.url} target="_blank">
-                  <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
-                    <div className="flex items-center gap-4 overflow-auto rounded-xl border border-gray-200">
-                      <div className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100" />
-                      <div>
-                        <div className="mb-2 overflow-auto font-semibold text-gray-700">
-                          {link.description}
-                        </div>
-                        <div className="flex items-center gap-1 text-gray-700 hover:underline ">
-                          <LinkIcon />
-                          <span className="text-sm font-semibold ">
-                            {link.url}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <p>{link.description}</p>
-                  </div>
-                </Link>
-              );
+              return <ProjectContribution key={link.url} link={link} />;
             })}
           </div>
           <DividerIcon icon={Contribution} className="my-4" />
           <H3>Impact</H3>
-          <p>{project?.impactDescription}</p>
+          <p className="whitespace-pre-wrap">{project?.impactDescription}</p>
           <div className="grid gap-2 md:grid-cols-3">
             {project?.impactMetrics?.map((metric, i) => (
               <ImpactCard
@@ -219,9 +196,9 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                     <div className="text-lg md:w-64">
                       {fundingSourcesLabels[fund.type]}
                     </div>
-                    <div className="">{fund.description}</div>
+                    <div>{fund.description}</div>
                   </div>
-                  <H4 className="font-mono text-sm md:text-base">
+                  <H4 className="whitespace-nowrap font-mono text-sm md:text-base">
                     {formatCurrency(fund.amount, fund.currency)}
                   </H4>
                 </div>

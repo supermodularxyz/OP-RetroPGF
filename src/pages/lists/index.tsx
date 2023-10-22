@@ -17,8 +17,10 @@ export default function ListsPage() {
   const query = router.query;
 
   const { data: filter } = useFilter("lists");
-  const { data: lists, isLoading } = useLists(filter);
+  const { data: lists, isLoading, error } = useLists(filter);
   const currentPage = Number(filter?.page);
+
+  console.log("LISTS", lists, isLoading, error);
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");

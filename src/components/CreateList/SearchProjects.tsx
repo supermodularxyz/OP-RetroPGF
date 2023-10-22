@@ -6,6 +6,7 @@ import { useProjects } from "~/hooks/useProjects";
 import { type Filter, useFilter } from "~/hooks/useFilter";
 import { SearchInput } from "../ui/Form";
 import { useClickAway } from "react-use";
+import { Avatar } from "../ui/Avatar";
 
 type Props = {
   onSelect: (path: string) => void;
@@ -68,7 +69,10 @@ export const SearchProjects = ({ onSelect }: Props) => {
                   console.log(id);
                 }}
               >
-                <div className="h-6 w-6 bg-gray-200" />
+                <Avatar
+                  className="h-6 w-6"
+                  src={item.profile?.profileImageUrl ?? ""}
+                />
                 {item.displayName}
               </Command.Item>
             ))
