@@ -11,7 +11,9 @@ export function ProjectContribution({
   link: Project["contributionLinks"][number];
 }) {
   const metadata = useQuery(["metadata", link.url], () =>
-    axios.get(`/api/preview?url=${link.url}`).then((r) => r.data)
+    axios
+      .get<{ image: string; title: string }>(`/api/preview?url=${link.url}`)
+      .then((r) => r.data)
   );
 
   return (

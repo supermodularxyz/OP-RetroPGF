@@ -15,6 +15,7 @@ import { AllocationList } from "./AllocationList";
 
 const Card = createComponent("div", tv({ base: "rounded-3xl border p-8" }));
 
+const feedbackUrl = `https://optimism.deform.cc/RetroPGF3-Feedback`;
 export const BallotConfirmation = ({
   allocations,
 }: {
@@ -49,7 +50,7 @@ export const BallotConfirmation = ({
                 variant="outline"
                 as={Link}
                 target="_blank"
-                href={"www.example.com"}
+                href={feedbackUrl}
               >
                 Share your feedback
               </Button>
@@ -96,7 +97,7 @@ export const BallotConfirmation = ({
               variant="primary"
               as={Link}
               target="_blank"
-              href={"example.com"}
+              href={feedbackUrl}
             >
               Share your feedback
             </Button>
