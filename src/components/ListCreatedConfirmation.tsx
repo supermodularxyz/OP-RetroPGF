@@ -11,6 +11,8 @@ import { createComponent } from "./ui";
 
 const Card = createComponent("div", tv({ base: "rounded-3xl border p-8" }));
 
+const feedbackUrl = process.env.NEXT_PUBLIC_FEEDBACK_URL;
+
 export const ListCreatedConfirmation = ({ websiteUrl = "" }) => {
   const confettiProps: ConfettiProps = {
     force: 0.4,
@@ -62,7 +64,7 @@ export const ListCreatedConfirmation = ({ websiteUrl = "" }) => {
               variant="primary"
               as={Link}
               target="_blank"
-              href={"example.com"}
+              href={feedbackUrl}
             >
               Share your feedback
             </Button>
