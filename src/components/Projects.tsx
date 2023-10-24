@@ -47,17 +47,26 @@ export const ProjectGridItem = ({
   project?: Project;
   isLoading?: boolean;
 }) => {
+  const { bannerImageUrl, profileImageUrl } = project?.profile ?? {};
   return (
-    <Card className={clsx("h-full", { ["animate-pulse"]: isLoading })}>
-      <div
-        className="h-24 rounded-2xl bg-gray-200 bg-cover"
-        style={{
-          backgroundImage: `url(${project?.profile?.bannerImageUrl})`,
-        }}
-      />
-      <div className="space-y-2 px-4 pb-2">
+    <Card
+      className={clsx("h-full", {
+        ["animate-pulse"]: isLoading,
+      })}
+    >
+      <div className="overflow-hidden rounded-2xl ">
+        <div
+          className={clsx("h-24 bg-gray-200 bg-cover", {
+            ["blur-[40px]"]: !bannerImageUrl,
+          })}
+          style={{
+            backgroundImage: `url(${bannerImageUrl ?? profileImageUrl})`,
+          }}
+        />
+      </div>
+      <div className="relative z-10 space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
-          <AvatarWithBorder src={project?.profile?.profileImageUrl} />
+          <AvatarWithBorder src={profileImageUrl} />
         </div>
         <CardTitle>
           <Skeleton isLoading={isLoading} className="w-[140px]">
