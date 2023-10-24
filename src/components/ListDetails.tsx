@@ -15,7 +15,9 @@ import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
 import { truncate } from "~/utils/truncate";
+import { useRouter } from "next/router";
 
+const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
 export const ListDetails = ({
   list,
   isLoading,
@@ -23,6 +25,7 @@ export const ListDetails = ({
   list: List;
   isLoading?: boolean;
 }) => {
+  const router = useRouter();
   const { address } = useAccount();
   const like = useLikeList(list?.id);
 
@@ -76,7 +79,7 @@ export const ListDetails = ({
                   },
                   {
                     value: "report",
-                    onClick: () => alert("report"),
+                    onClick: () => window.open(reportUrl),
                     label: "Report",
                     icon: Flag,
                   },

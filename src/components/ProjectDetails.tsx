@@ -35,6 +35,8 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { type List } from "~/hooks/useLists";
 import { ProjectContribution } from "./ProjectContribution";
 
+const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
+
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
 
@@ -109,7 +111,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   {
                     value: "flag",
                     label: "Report",
-                    onClick: () => alert("Report"),
+                    onClick: () => window.open(reportUrl),
                   },
                 ]}
               />
