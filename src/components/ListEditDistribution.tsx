@@ -3,6 +3,7 @@ import { type z } from "zod";
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { useFormContext } from "react-hook-form";
+import { track } from "@vercel/analytics";
 
 import {
   AddBallot,
@@ -54,6 +55,7 @@ export const ListEditDistribution = ({
   );
 
   function handleAddToBallot(form: { allocations: FormAllocations }) {
+    track("AddListToBallotConfirm");
     add.mutate(form.allocations);
   }
 
@@ -67,7 +69,10 @@ export const ListEditDistribution = ({
     <div>
       <IconButton
         variant="primary"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          track("AddListToBallot");
+          setOpen(true);
+        }}
         icon={AddBallot}
         className="w-full md:w-auto"
         disabled={!address}
