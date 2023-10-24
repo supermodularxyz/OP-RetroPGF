@@ -18,7 +18,13 @@ import {
 } from "react-icons/fa6";
 import { FaExternalLinkSquareAlt } from "react-icons/fa";
 
-import { LuArrowDownUp, LuLayoutGrid, LuList, LuTrash } from "react-icons/lu";
+import {
+  LuArrowDownUp,
+  LuLayoutGrid,
+  LuList,
+  LuRefreshCw,
+  LuTrash,
+} from "react-icons/lu";
 
 import {
   HiCodeBracketSquare,
@@ -60,6 +66,7 @@ export const CircleCheck = FaRegCircleCheck;
 export const CircleExclamation = FaCircleExclamation;
 export const ArrowLeft = FiArrowLeft;
 export const ArrowRight = FiArrowRight;
+export const Refresh = LuRefreshCw;
 
 export const Contribution = (props: ComponentProps<typeof IconBase>) => (
   <IconBase {...props}>
