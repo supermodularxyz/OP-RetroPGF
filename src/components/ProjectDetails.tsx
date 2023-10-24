@@ -125,15 +125,12 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <p className="whitespace-pre-wrap">{project?.bio}</p>
         <div className="my-8 flex flex-wrap gap-2">
           <Tag>
-            <FaCheckToSlot className="text-gray-500" /> 56 ballots
+            <FaCheckToSlot className="text-gray-500" />
+            {`?`} ballots
           </Tag>
           <Tag>
             <LayoutList className="text-gray-500" /> {project?.lists?.length}{" "}
             voting lists
-          </Tag>
-          <Tag>
-            <Contribution className="text-gray-500" />
-            Round 2 contributor
           </Tag>
         </div>
         <Card>
