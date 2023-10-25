@@ -1,7 +1,11 @@
 import { SiweMessage } from "siwe";
 import Image from "next/image";
 import Link from "next/link";
-import { type PropsWithChildren, type ComponentPropsWithRef } from "react";
+import {
+  type PropsWithChildren,
+  type ComponentPropsWithRef,
+  useEffect,
+} from "react";
 import {
   type Address,
   useEnsAvatar,
@@ -9,16 +13,23 @@ import {
   useSignMessage,
   useAccount,
   useNetwork,
+  useConnect,
 } from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { createBreakpoint } from "react-use";
+import { watchAccount } from "@wagmi/core";
 
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
 import { AddBallot } from "./icons";
 import { useBallot } from "~/hooks/useBallot";
 import { EligibilityDialog } from "./EligibilityDialog";
-import { useNonce, useSession, useVerify } from "~/hooks/useAuth";
+import {
+  useNonce,
+  useSession,
+  useSetAccessToken,
+  useVerify,
+} from "~/hooks/useAuth";
 import { Dialog } from "./ui/Dialog";
 
 const useBreakpoint = createBreakpoint({ XL: 1280, L: 768, S: 350 });
@@ -149,6 +160,15 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   const { address } = useAccount();
   const { data: nonce } = useNonce();
   const { data: session, isLoading } = useSession();
+  const setToken = useSetAccessToken();
+
+  useEffect(() => {
+    const unwatch = watchAccount(() => {
+      setToken.mutate("");
+    });
+
+    return () => unwatch();
+  }, [setToken]);
 
   async function handleSign() {
     if (nonce) {
