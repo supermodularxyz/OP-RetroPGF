@@ -30,8 +30,13 @@ export default function ListsPage() {
       <div className="justify-between md:flex">
         <h1 className="text-2xl font-bold text-gray-900">Lists</h1>
 
-        <div className="flex items-center gap-2">
-          <Button variant="primary" as={Link} href="/lists/create">
+        <div className="items-center gap-2 md:flex">
+          <Button
+            variant="primary"
+            className="my-2 w-full md:my-0 md:w-auto"
+            as={Link}
+            href="/lists/create"
+          >
             New list
           </Button>
           <DisplayAndSortFilter

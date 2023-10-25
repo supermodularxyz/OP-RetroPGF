@@ -1,6 +1,8 @@
 import { type AppType } from "next/dist/shared/lib/utils";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { Analytics } from "@vercel/analytics/react";
+
 import {
   PersistQueryClientProvider,
   persistQueryClientSave,
@@ -30,7 +32,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     >
       <QueryClientProvider client={queryClient}>
         <Providers>
-          <Component {...pageProps} />
+          <>
+            <Component {...pageProps} />
+            <Analytics />
+          </>
         </Providers>
       </QueryClientProvider>
     </PersistQueryClientProvider>

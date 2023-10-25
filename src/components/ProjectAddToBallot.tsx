@@ -19,6 +19,7 @@ import { AllocationInput } from "./AllocationInput";
 import { Form } from "./ui/Form";
 import { sumBallot } from "~/hooks/useBallot";
 import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
+import { track } from "@vercel/analytics/react";
 
 export const MAX_ALLOCATION_PROJECT = Number(
   process.env.NEXT_PUBLIC_MAX_ALLOCATION_PROJECT!
@@ -49,7 +50,10 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
       ) : (
         <IconButton
           disabled={!address}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            track("AddProjectToBallot");
+            setOpen(true);
+          }}
           variant="primary"
           icon={AddBallot}
           className="w-full md:w-auto"
@@ -77,6 +81,7 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
               ),
           })}
           onSubmit={({ amount }) => {
+            track("AddProjectToBallotConfirm");
             add.mutate([{ projectId: project.id, amount }]);
             setOpen(false);
           }}
