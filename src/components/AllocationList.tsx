@@ -14,6 +14,7 @@ import { type Allocation } from "~/hooks/useBallot";
 import { useBallotProjectData } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { SearchProjects } from "./CreateList/SearchProjects";
+import clsx from "clsx";
 
 const AllocationListWrapper = createComponent(
   "div",
@@ -31,6 +32,7 @@ export const AllocationList = ({
           <Tr key={project.projectId}>
             <Td className={"w-full"}>
               <ProjectAvatarWithName
+                href={`/projects/${project?.projectId}`}
                 id={project.projectId}
                 subtitle="@project"
               />
@@ -90,7 +92,10 @@ export function AllocationForm({
             return (
               <Tr key={project.key}>
                 <Td className={"w-full"}>
-                  <ProjectAvatarWithName id={project.projectId} />
+                  <ProjectAvatarWithName
+                    href={`/projects/${project?.projectId}`}
+                    id={project.projectId}
+                  />
                 </Td>
                 <Td>
                   {listAllocation ? (
@@ -211,17 +216,21 @@ export function AllocationFormWithSearch({
 export const ProjectAvatarWithName = ({
   id,
   subtitle,
+  href = "",
 }: {
   id: string;
+  href?: string;
   subtitle?: string;
 }) => {
   const { data: project } = useProject(id);
-
+  const Component = href ? Link : "div";
   return (
-    <Link
+    <Component
       tabIndex={-1}
-      className="flex flex-1 items-center gap-2 py-1 hover:underline"
-      href={`/projects/${project?.id}`}
+      className={clsx("flex flex-1 items-center gap-2 py-1 ", {
+        ["hover:underline"]: href,
+      })}
+      href={href}
     >
       <Avatar size="sm" src={project?.profile?.profileImageUrl} />
       <div>
@@ -230,6 +239,6 @@ export const ProjectAvatarWithName = ({
         </div>
         <div className="text-muted">{subtitle}</div>
       </div>
-    </Link>
+    </Component>
   );
 };

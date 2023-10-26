@@ -13,10 +13,10 @@ import {
   useSignMessage,
   useAccount,
   useNetwork,
+  ConnectorData,
 } from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { createBreakpoint } from "react-use";
-import { watchAccount } from "@wagmi/core";
 
 import { Button } from "./ui/Button";
 import { Chip } from "./ui/Chip";
@@ -156,16 +156,21 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   const sign = useSignMessage();
   const verify = useVerify();
   const { chain: { id: chainId } = {} } = useNetwork();
+  const { connector } = useAccount();
+
   const { address } = useAccount();
   const { data: nonce } = useNonce();
   const { data: session, isLoading } = useSession();
   const setToken = useSetAccessToken();
 
+  // Invalidate token when changing account
   useEffect(() => {
-    const unwatch = watchAccount(() => setToken.mutate(""));
-
-    return () => unwatch();
-  }, [setToken]);
+    const handleConnectorUpdate = () => setToken.mutate("");
+    connector?.on("change", handleConnectorUpdate);
+    return () => {
+      connector?.off("change", handleConnectorUpdate);
+    };
+  }, [connector, setToken]);
 
   async function handleSign() {
     if (nonce) {
