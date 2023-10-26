@@ -13,7 +13,6 @@ import {
   useSignMessage,
   useAccount,
   useNetwork,
-  useConnect,
 } from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { createBreakpoint } from "react-use";
@@ -163,9 +162,7 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   const setToken = useSetAccessToken();
 
   useEffect(() => {
-    const unwatch = watchAccount(() => {
-      setToken.mutate("");
-    });
+    const unwatch = watchAccount(() => setToken.mutate(""));
 
     return () => unwatch();
   }, [setToken]);
