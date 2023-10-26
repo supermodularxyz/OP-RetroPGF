@@ -162,9 +162,8 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   const setToken = useSetAccessToken();
 
   useEffect(() => {
-    const unwatch = watchAccount(() => setToken.mutate(""));
-
-    return () => unwatch();
+    // const unwatch = watchAccount(() => setToken.mutate(""));
+    // return () => unwatch();
   }, [setToken]);
 
   async function handleSign() {
