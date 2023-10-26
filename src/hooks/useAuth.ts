@@ -51,7 +51,7 @@ export function useSession() {
 export function useAccessToken() {
   return useQuery(["accessToken"], () => localStorage.getItem("accessToken"));
 }
-function useSetAccessToken() {
+export function useSetAccessToken() {
   const queryClient = useQueryClient();
   return useMutation(async (token: string) => {
     localStorage.setItem("accessToken", token);
