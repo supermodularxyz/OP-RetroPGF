@@ -16,12 +16,6 @@ export const Layout = (
 ) => {
   const router = useRouter();
   const { address, isConnecting } = useAccount();
-  const [isLoaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-  if (!isLoaded) return null;
 
   if (props.requireAuth && !address && !isConnecting) {
     void router.push("/");
