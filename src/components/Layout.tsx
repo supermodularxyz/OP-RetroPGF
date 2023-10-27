@@ -8,12 +8,6 @@ import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
 import { useRouter } from "next/router";
 
-const metadata = {
-  title: "Retro PGF",
-  description: `Retroactive Public Goods Funding (RetroPGF) Round 3 will take place this fall and will distribute 30M OP to reward contributions that have supported the development and adoption of Optimism.`,
-  url: "https://round3.optimism.io",
-  image: "https://retro-pgf-staging.vercel.app/meta_image.png",
-};
 export const Layout = (
   props: {
     sidebar?: "left" | "right";
@@ -39,24 +33,46 @@ export const Layout = (
       {address ? <BallotOverview /> : <SunnyBanner />}
     </Sidebar>
   );
+
   return (
     <>
       <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
+        <title>{"Retro PGF"}</title>
+        <meta
+          name="description"
+          content={
+            "Retroactive Public Goods Funding (RetroPGF) Round 3 will take place this fall and will distribute 30M OP to reward contributions that have supported the development and adoption of Optimism."
+          }
+        />
 
-        <meta property="og:url" content={metadata.url} />
+        <meta property="og:url" content={"https://retro-pgf.vercel.app"} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        <meta property="og:image" content={metadata.image} />
+        <meta property="og:title" content={"Retro PGF"} />
+        <meta
+          property="og:description"
+          content={
+            "Retroactive Public Goods Funding (RetroPGF) Round 3 will take place this fall and will distribute 30M OP to reward contributions that have supported the development and adoption of Optimism."
+          }
+        />
+        <meta
+          property="og:image"
+          content={"https://retro-pgf.vercel.app/meta_image.png"}
+        />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="optimism.io" />
-        <meta property="twitter:url" content={metadata.url} />
-        <meta name="twitter:title" content={metadata.title} />
-        <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content={metadata.image} />
+        <meta property="twitter:url" content={"https://retro-pgf.vercel.app"} />
+        <meta name="twitter:title" content={"Retro PGF"} />
+        <meta
+          name="twitter:description"
+          content={
+            "Retroactive Public Goods Funding (RetroPGF) Round 3 will take place this fall and will distribute 30M OP to reward contributions that have supported the development and adoption of Optimism."
+          }
+        />
+        <meta
+          name="twitter:image"
+          content={"https://retro-pgf.vercel.app/meta_image.png"}
+        />
       </Head>
 
       <main className="text-gray-900">
