@@ -52,7 +52,7 @@ export default function BallotPage() {
             Once you have reviewed your OP allocation, you can submit your
             ballot.
           </p>
-          <div className="rounded-2xl border border-gray-300">
+          <div className="relative rounded-2xl border border-gray-300">
             <div className="p-8">
               <div className="mb-4 flex gap-3">
                 <SearchInput
@@ -74,7 +74,7 @@ export default function BallotPage() {
                 )}
               </div>
             </div>
-            <div className="flex h-12 justify-end p-2">
+            <div className="absolute bottom-16 right-2 pb-2">
               {save.isLoading ? <Spinner /> : " "}
             </div>
             <div className="flex justify-between rounded-b-2xl border-t border-gray-300 bg-[#EDF4FC] px-8 py-4 text-lg font-semibold">
