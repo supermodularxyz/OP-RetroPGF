@@ -1,11 +1,6 @@
 import { tv } from "tailwind-variants";
 import { useRouter } from "next/router";
-import {
-  Controller,
-  useController,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
+import { useController, useFormContext } from "react-hook-form";
 import { useAccount } from "wagmi";
 
 import { Layout } from "~/components/Layout";
@@ -37,13 +32,13 @@ import { Tag } from "~/components/ui/Tag";
 
 const ListTags = () => {
   const { control, watch } = useFormContext();
-  const { field } = useController({ name: "tags", control });
+  const { field } = useController({ name: "impactCategory", control });
 
-  const selected = (watch("tags") ?? []) as string[];
+  const selected = (watch("impactCategory") ?? []) as string[];
 
   return (
     <div className="mb-4">
-      <Label>List tags</Label>
+      <Label>Impact categories</Label>
       <div className="flex flex-wrap gap-1">
         {Object.entries(impactCategoryLabels).map(([value, label]) => {
           const isSelected = selected.includes(value);
@@ -53,10 +48,7 @@ const ListTags = () => {
               selected={isSelected}
               key={value}
               onClick={() => {
-                const tags = isSelected
-                  ? selected.filter((t) => t !== value)
-                  : [...selected, value];
-                field.onChange(tags);
+                field.onChange([value]);
               }}
             >
               {label}
@@ -68,6 +60,9 @@ const ListTags = () => {
   );
 };
 
+const createListErrors = {
+  ACTION_REJECTED: "User rejected transaction",
+};
 const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const create = useCreateList();
   const upload = useUploadMetadata();
@@ -79,8 +74,6 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const error = create.error || upload.error;
   const isLoading = create.isLoading || upload.isLoading;
-
-  const canCreate = Boolean(address && !isLoading);
 
   return (
     <Form
@@ -110,6 +103,7 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <FormControl name="listDescription" label="Description" required>
           <Textarea rows={4} placeholder="What's this list about?" />
         </FormControl>
+        <ListTags />
         <FormControl
           name="impactEvaluationDescription"
           label="Impact evaluation"
@@ -127,29 +121,15 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <Input placeholder="https://" />
         </FormControl>
 
-        <ListTags />
         <div className="mb-4 rounded-2xl border border-neutral-300 p-6">
           <AllocationFormWithSearch onSave={handleSaveDraft} />
           <TotalOP />
         </div>
 
         <div className="mb-4 flex justify-end">
-          <div className="flex items-center gap-4">
-            {!address && <div>You must connect wallet to create a list</div>}
-
-            <Button disabled={!canCreate} variant="primary">
-              Create list
-            </Button>
-          </div>
+          <CreateListButton isLoading={isLoading} error={error?.reason} />
         </div>
-        {error ? (
-          <Banner
-            variant="warning"
-            className="overflow-x-scroll whitespace-pre"
-          >
-            {JSON.stringify(error, null, 2)}
-          </Banner>
-        ) : null}
+
         <Dialog size="sm" isOpen={isLoading}>
           <FeedbackDialog variant="info" icon={Spinner}>
             <div className="font-semibold">Your list is being created...</div>
@@ -159,6 +139,23 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
     </Form>
   );
 };
+
+const CreateListButton = ({ isLoading = false, error = "" }) => {
+  const { address } = useAccount();
+  const { formState } = useFormContext();
+
+  const canCreate = Boolean(address && !isLoading && formState.isValid);
+  return (
+    <div className="flex items-center gap-4">
+      {!address && <div>You must connect wallet to create a list</div>}
+      {error && <Banner variant="warning">{error}</Banner>}
+      <Button type="submit" disabled={!canCreate} variant="primary">
+        Create list
+      </Button>
+    </div>
+  );
+};
+
 const TotalOP = () => {
   const form = useFormContext();
 
@@ -195,8 +192,13 @@ export default function CreateListPage() {
           methodology for allocating OP to each project Be sure to check out the
           guidelines on creating a list:
         </P>
-        <Link href={"#"} target="_blank">
-          [LINK]
+        <Link
+          href={
+            "https://plaid-cement-e44.notion.site/How-to-create-a-List-a543511a286b44cc83e4272431c96de3?pvs=4"
+          }
+          target="_blank"
+        >
+          📝 How to create a List
         </Link>
       </div>
       <CreateListForm
