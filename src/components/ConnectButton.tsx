@@ -14,6 +14,7 @@ import {
   useAccount,
   useNetwork,
   ConnectorData,
+  useDisconnect,
 } from "wagmi";
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
 import { createBreakpoint } from "react-use";
@@ -157,6 +158,7 @@ const SignMessage = ({ children }: PropsWithChildren) => {
   const verify = useVerify();
   const { chain: { id: chainId } = {} } = useNetwork();
   const { connector } = useAccount();
+  const { disconnect } = useDisconnect();
 
   const { address } = useAccount();
   const { data: nonce } = useNonce();
@@ -195,8 +197,17 @@ const SignMessage = ({ children }: PropsWithChildren) => {
       {children}
       <Dialog size="sm" title="Authenticate" isOpen>
         <p className="mb-4">Sign message to authenticate</p>
-        <div className="flex justify-center">
-          <Button onClick={handleSign}>Sign message</Button>
+        <div className="flex justify-between">
+          <Button variant="primary" className="w-full" onClick={handleSign}>
+            Sign message
+          </Button>
+          <Button
+            className="w-full"
+            variant="ghost"
+            onClick={() => disconnect?.()}
+          >
+            Disconnect wallet
+          </Button>
         </div>
       </Dialog>
     </>

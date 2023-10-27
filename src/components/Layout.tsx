@@ -8,6 +8,12 @@ import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
 import { useRouter } from "next/router";
 
+const metadata = {
+  title: "Retro PGF",
+  description: `Retroactive Public Goods Funding (RetroPGF) Round 3 will take place this fall and will distribute 30M OP to reward contributions that have supported the development and adoption of Optimism.`,
+  url: "https://round3.optimism.io",
+  image: "https://retro-pgf-staging.vercel.app/meta_image.png",
+};
 export const Layout = (
   props: {
     sidebar?: "left" | "right";
@@ -36,7 +42,21 @@ export const Layout = (
   return (
     <>
       <Head>
-        <title>Retro PGF</title>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+
+        <meta property="og:url" content={metadata.url} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Optimism" />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="optimism.io" />
+        <meta property="twitter:url" content={metadata.url} />
+        <meta name="twitter:title" content="Optimism" />
+        <meta name="twitter:description" content={metadata.description} />
+        <meta name="twitter:image" content={metadata.image} />
       </Head>
 
       <main className="text-gray-900">
