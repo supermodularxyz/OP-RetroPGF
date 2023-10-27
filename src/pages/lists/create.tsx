@@ -127,7 +127,10 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         </div>
 
         <div className="mb-4 flex justify-end">
-          <CreateListButton isLoading={isLoading} error={error?.reason} />
+          <CreateListButton
+            isLoading={isLoading}
+            error={(error as { reason?: string })?.reason}
+          />
         </div>
 
         <Dialog size="sm" isOpen={isLoading}>
