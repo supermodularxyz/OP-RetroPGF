@@ -9,7 +9,9 @@ export default function BallotConfirmationPage() {
 
   return (
     <Layout requireAuth>
-      <BallotConfirmation allocations={ballot?.votes} />
+      <BallotConfirmation
+        allocations={ballot?.votes.sort((a, b) => +b.amount - +a.amount)}
+      />
     </Layout>
   );
 }

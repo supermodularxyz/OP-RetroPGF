@@ -147,7 +147,6 @@ export function Form<S extends z.Schema>({
   const form = useForm({
     defaultValues,
     resolver: zodResolver(schema),
-
     mode: "onBlur",
   });
 

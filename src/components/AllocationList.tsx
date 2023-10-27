@@ -68,13 +68,17 @@ export function AllocationForm({
 
   const mapProjectData = useBallotProjectData();
 
-  // Map each id to the index so we can sort and filter
-  const indexes = new Map(fields.map(({ key }, index) => [key, index]));
+  // This contains the updated amounts
+  const allocations = form.watch("allocations") ?? [];
 
-  // TODO: Merge fields with data in QueryData(["projects", id])
+  // Map each id to the index so we can sort and filter
+  const indexes = new Map(
+    fields.map(({ projectId }, index) => [projectId, index])
+  );
+
   const sortedFields = useMemo(
-    () => sortAndFilter(mapProjectData(fields), filter),
-    [fields, filter, mapProjectData]
+    () => sortAndFilter(mapProjectData(allocations), filter),
+    [allocations, filter, mapProjectData, sortAndFilter]
   );
 
   return (
@@ -83,14 +87,14 @@ export function AllocationForm({
         {header}
         <Tbody>
           {sortedFields.map((project) => {
-            const idx = indexes.get(project.key)!;
+            const idx = indexes.get(project.projectId)!;
 
             // TODO: Get allocated amount from list
             const listAllocation =
               list?.find((p) => p.projectId === project.id)?.amount ?? 0;
 
             return (
-              <Tr key={project.key}>
+              <Tr key={project.projectId}>
                 <Td className={"w-full"}>
                   <ProjectAvatarWithName
                     href={`/projects/${project?.projectId}`}
