@@ -47,14 +47,14 @@ export const Layout = (
 
         <meta property="og:url" content={metadata.url} />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Optimism" />
+        <meta property="og:title" content={metadata.title} />
         <meta property="og:description" content={metadata.description} />
         <meta property="og:image" content={metadata.image} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content="optimism.io" />
         <meta property="twitter:url" content={metadata.url} />
-        <meta name="twitter:title" content="Optimism" />
+        <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
         <meta name="twitter:image" content={metadata.image} />
       </Head>
