@@ -14,6 +14,7 @@ export function ProjectContribution({
     axios
       .get<{ image: string; title: string }>(`/api/preview?url=${link.url}`)
       .then((r) => r.data)
+      .catch(console.log)
   );
 
   return (
