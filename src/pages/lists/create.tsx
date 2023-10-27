@@ -39,7 +39,7 @@ const ListTags = () => {
   const { control, watch } = useFormContext();
   const { field } = useController({ name: "tags", control });
 
-  const selected: string[] = watch("tags") ?? [];
+  const selected = (watch("tags") ?? []) as string[];
 
   return (
     <div className="mb-4">
