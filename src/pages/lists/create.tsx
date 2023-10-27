@@ -1,10 +1,21 @@
 import { tv } from "tailwind-variants";
 import { useRouter } from "next/router";
-import { useFormContext } from "react-hook-form";
+import {
+  Controller,
+  useController,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
 import { useAccount } from "wagmi";
 
 import { Layout } from "~/components/Layout";
-import { Form, FormControl, Input, Textarea } from "~/components/ui/Form";
+import {
+  Form,
+  FormControl,
+  Input,
+  Textarea,
+  Label,
+} from "~/components/ui/Form";
 import { Button } from "~/components/ui/Button";
 import { AllocationFormWithSearch } from "~/components/AllocationList";
 import { Banner } from "~/components/ui/Banner";
@@ -20,6 +31,42 @@ import { Link } from "~/components/ui/Link";
 import { Dialog } from "~/components/ui/Dialog";
 import { FeedbackDialog } from "~/components/FeedbackDialog";
 import { Spinner } from "~/components/ui/Spinner";
+
+import { impactCategoryLabels } from "~/hooks/useCategories";
+import { Tag } from "~/components/ui/Tag";
+
+const ListTags = () => {
+  const { control, watch } = useFormContext();
+  const { field } = useController({ name: "tags", control });
+
+  const selected: string[] = watch("tags") ?? [];
+
+  return (
+    <div className="mb-4">
+      <Label>List tags</Label>
+      <div className="flex flex-wrap gap-1">
+        {Object.entries(impactCategoryLabels).map(([value, label]) => {
+          const isSelected = selected.includes(value);
+          return (
+            <Tag
+              size="lg"
+              selected={isSelected}
+              key={value}
+              onClick={() => {
+                const tags = isSelected
+                  ? selected.filter((t) => t !== value)
+                  : [...selected, value];
+                field.onChange(tags);
+              }}
+            >
+              {label}
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
 
 const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const create = useCreateList();
@@ -42,6 +89,7 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         console.log(values);
 
         const { listName, ...list } = parseList(values);
+
         const listMetadataPtr = upload.data ?? (await upload.mutateAsync(list));
         console.log(listName, list);
         create.mutate(
@@ -78,15 +126,21 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         >
           <Input placeholder="https://" />
         </FormControl>
+
+        <ListTags />
         <div className="mb-4 rounded-2xl border border-neutral-300 p-6">
           <AllocationFormWithSearch onSave={handleSaveDraft} />
           <TotalOP />
         </div>
 
         <div className="mb-4 flex justify-end">
-          <Button disabled={!canCreate} variant="primary">
-            Create list
-          </Button>
+          <div className="flex items-center gap-4">
+            {!address && <div>You must connect wallet to create a list</div>}
+
+            <Button disabled={!canCreate} variant="primary">
+              Create list
+            </Button>
+          </div>
         </div>
         {error ? (
           <Banner

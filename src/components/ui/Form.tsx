@@ -22,7 +22,6 @@ import clsx from "clsx";
 
 const inputBase = [
   "flex",
-
   "w-full",
   "rounded-xl",
   "border",
@@ -151,6 +150,8 @@ export function Form<S extends z.Schema>({
 
     mode: "onBlur",
   });
+
+  console.log(form.formState.errors);
   // Pass the form methods to a FormProvider. This lets us access the form from components without passing props.
   return (
     <FormProvider {...form}>

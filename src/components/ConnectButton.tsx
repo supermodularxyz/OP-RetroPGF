@@ -198,7 +198,7 @@ const SignMessage = ({ children }: PropsWithChildren) => {
       <Dialog size="sm" title="Authenticate" isOpen>
         <p className="mb-4">Sign message to authenticate</p>
         <div className="flex justify-between">
-          <Button className="w-full" onClick={handleSign}>
+          <Button variant="primary" className="w-full" onClick={handleSign}>
             Sign message
           </Button>
           <Button
