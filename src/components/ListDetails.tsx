@@ -16,6 +16,7 @@ import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
 import { truncate } from "~/utils/truncate";
 import { useRouter } from "next/router";
+import { track } from "@vercel/analytics/react";
 
 const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
 export const ListDetails = ({
@@ -64,7 +65,10 @@ export const ListDetails = ({
                 variant={"outline"}
                 type="button"
                 className="text-gray-600"
-                onClick={(e) => like.mutate(list.id)}
+                onClick={(e) => {
+                  like.mutate(list.id);
+                  track("LikeList", { id: list.id });
+                }}
               >
                 <LikeCount listId={list.id} />
               </Button>
