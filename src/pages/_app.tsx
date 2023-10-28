@@ -34,7 +34,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <Providers>
           <>
             <Component {...pageProps} />
-            <Analytics />
+            <Analytics mode={"production"} />
           </>
         </Providers>
       </QueryClientProvider>
