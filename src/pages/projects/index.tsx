@@ -6,6 +6,9 @@ import { DisplayAndSortFilter } from "~/components/DisplayAndSortFilter";
 import { useFilter, toURL, useUpdateFilterFromRouter } from "~/hooks/useFilter";
 import { useProjects } from "~/hooks/useProjects";
 import { LoadMore } from "~/components/LoadMore";
+import { Banner } from "~/components/ui/Banner";
+import { Button } from "~/components/ui/Button";
+import Link from "next/link";
 
 export default function ProjectsPage() {
   const router = useRouter();
@@ -14,14 +17,17 @@ export default function ProjectsPage() {
   const { data: filter } = useFilter("projects");
   const {
     data: projects,
+    error,
     isLoading,
     isFetching,
+    refetch,
     fetchNextPage,
   } = useProjects(filter);
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("projects");
 
+  console.log("error", error);
   return (
     <Layout sidebar="left">
       <div className="justify-between md:flex">
@@ -38,6 +44,19 @@ export default function ProjectsPage() {
           onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
         />
       </div>
+
+      {error ? (
+        <Banner variant="warning" title={"Error fetching projects"}>
+          <Button
+            as={Link}
+            className="w-48"
+            variant="primary"
+            href="/projects?seed=0"
+          >
+            Retry
+          </Button>
+        </Banner>
+      ) : null}
 
       <Projects filter={filter} projects={projects} isLoading={isLoading} />
       <LoadMore isFetching={isFetching} onInView={fetchNextPage} />

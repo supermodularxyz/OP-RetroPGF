@@ -93,30 +93,23 @@ export function useProjects(
               projectsAggregate: Aggregate;
             };
           };
+          errors?: { message: string }[];
         }>(`${backendUrl}/graphql`, {
           query: ProjectsQuery,
           variables: createQueryVariables({ ...filter, after: pageParam }),
         })
         .then((r) => {
           const { projects, projectsAggregate } = r.data.data?.retroPGF ?? {};
-
+          if (r.data?.errors?.length) {
+            throw r.data.errors?.[0]?.message;
+          }
           const data = projects?.edges.map((edge) => mapProject(edge.node));
           const { total = 0, ...categories } = projectsAggregate ?? {};
 
           return { data, categories, pageInfo: projects?.pageInfo };
-        })
-        .catch((err) => {
-          console.log("err", err);
-          return {
-            data: [],
-            categories: {},
-            pageInfo: { endCursor: null },
-          };
         });
     },
-    getNextPageParam: (lastPage) => {
-      return lastPage.pageInfo?.endCursor;
-    },
+    getNextPageParam: (lastPage) => lastPage.pageInfo?.endCursor,
   });
   return {
     ...query,

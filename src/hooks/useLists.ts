@@ -57,34 +57,25 @@ export function useLists(
               listsAggregate: Aggregate;
             };
           };
+          errors?: { message: string }[];
         }>(`${backendUrl}/graphql`, {
           query: ListsQuery,
           variables: createQueryVariables({ ...filter, after: pageParam }),
         })
         .then((r) => {
           const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
-
+          if (r.data?.errors?.length) {
+            throw r.data.errors?.[0]?.message;
+          }
           const data = lists?.edges.map((edge) => mapList(edge.node));
           const { total, ...categories } = listsAggregate ?? {};
 
           return { data, categories, pageInfo: lists?.pageInfo };
-        })
-        .catch((err) => {
-          console.log("err", err);
-          return {
-            data: [],
-            categories: {},
-            pageInfo: { endCursor: null },
-          };
         });
     },
-    getNextPageParam: (lastPage) => {
-      // console.log("cursor", lastPage.pageInfo?.endCursor);
-      return lastPage.pageInfo?.endCursor;
-    },
+    getNextPageParam: (lastPage) => lastPage.pageInfo?.endCursor,
   });
 
-  // console.log("query", query.data, query.hasNextPage);
   return {
     ...query,
     data: query.data?.pages?.flatMap((p) => p.data).filter(Boolean),

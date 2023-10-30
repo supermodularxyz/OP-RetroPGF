@@ -11,14 +11,15 @@ import { Button } from "~/components/ui/Button";
 import { Like, Liked } from "~/components/icons";
 import { useAccount } from "wagmi";
 import { LoadMore } from "~/components/LoadMore";
+import { Banner } from "~/components/ui/Banner";
 
 export default function ListsPage() {
   const router = useRouter();
-  const query = router.query;
 
   const { data: filter } = useFilter("lists");
   const {
     data: lists,
+    error,
     isLoading,
     isFetching,
     fetchNextPage,
@@ -51,6 +52,19 @@ export default function ListsPage() {
       <div className="no-scrollbar">
         <LikedFilter />
       </div>
+      {error ? (
+        <Banner variant="warning" title={"Error fetching lists"}>
+          <Button
+            as={Link}
+            className="w-48"
+            variant="primary"
+            href="/lists?seed=0"
+          >
+            Retry
+          </Button>
+        </Banner>
+      ) : null}
+
       <Lists filter={filter} lists={lists} isLoading={isLoading} />
 
       <LoadMore isFetching={isFetching} onInView={fetchNextPage} />
