@@ -71,7 +71,7 @@ export const Layout = (
 
       <main className="text-gray-900">
         <Header />
-        <div className="mx-auto pt-12  2xl:container md:flex">
+        <div className="mx-auto pt-12  2xl:container lg:flex">
           {props.sidebar === "left" ? sidebar : null}
           <div
             className={clsx("min-w-0 flex-1 px-4 pb-24", {
@@ -93,8 +93,8 @@ const Sidebar = ({
 }: { side?: "left" | "right" } & PropsWithChildren) => (
   <div className="">
     <div
-      className={clsx("px-2 md:w-[336px] md:px-4", {
-        ["left-0 top-[2rem] md:sticky"]: side === "left",
+      className={clsx("px-2 lg:w-[336px] lg:px-4", {
+        ["left-0 top-[2rem] lg:sticky"]: side === "left",
       })}
       {...props}
     />

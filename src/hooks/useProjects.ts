@@ -1,15 +1,14 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
-import { type List } from "~/hooks/useLists";
+import { mapList, type List } from "~/hooks/useLists";
 import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
-import {
-  Aggregate,
-  createQueryVariables,
-  PAGE_SIZE,
-  parseId,
-} from "~/graphql/utils";
+import { Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
 
 export type Project = {
   id: string;
@@ -73,34 +72,59 @@ export const fundingSourcesLabels = {
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-export function useProjects(filter: Filter = initialFilter) {
-  return useQuery(["projects", filter], () => {
-    return axios
-      .post<{
-        data: {
-          retroPGF: {
-            projects: { edges: { node: Project }[] };
-            projectsAggregate: Aggregate;
+export function useProjects(
+  filter: Filter = initialFilter,
+  opts?: { enabled?: boolean }
+) {
+  const queryClient = useQueryClient();
+  const query = useInfiniteQuery({
+    enabled: opts?.enabled,
+    queryKey: ["projects", filter],
+    queryFn: ({ pageParam }: { pageParam?: string }) => {
+      console.log("Fetching projects", pageParam);
+      return axios
+        .post<{
+          data: {
+            retroPGF: {
+              projects: {
+                edges: { node: Project }[];
+                pageInfo: { hasNextPage: boolean; endCursor?: string };
+              };
+              projectsAggregate: Aggregate;
+            };
           };
-        };
-      }>(`${backendUrl}/graphql`, {
-        query: ProjectsQuery,
-        variables: createQueryVariables(filter),
-      })
-      .then((r) => {
-        const { projects, projectsAggregate } = r.data.data.retroPGF;
+          errors?: { message: string }[];
+        }>(`${backendUrl}/graphql`, {
+          query: ProjectsQuery,
+          variables: createQueryVariables({ ...filter, after: pageParam }),
+        })
+        .then((r) => {
+          const { projects, projectsAggregate } = r.data.data?.retroPGF ?? {};
+          if (r.data?.errors?.length) {
+            throw r.data.errors?.[0]?.message;
+          }
+          const data = projects?.edges.map((edge) => mapProject(edge.node));
+          const { total = 0, ...categories } = projectsAggregate ?? {};
 
-        const data = projects.edges.map((edge) => mapProject(edge.node));
-        const { total, ...categories } = projectsAggregate;
-        const pages = Math.ceil(total / PAGE_SIZE);
-
-        return { data, pages, categories };
-      })
-      .catch((err) => {
-        console.log("err", err);
-        return { data: [], pages: 1, categories: {} };
-      });
+          return { data, categories, pageInfo: projects?.pageInfo };
+        });
+    },
+    getNextPageParam: (lastPage) => lastPage.pageInfo?.endCursor,
   });
+  return {
+    ...query,
+    data: query.data?.pages?.flatMap((p) => p.data).filter(Boolean),
+    fetchNextPage: () => {
+      return (
+        query.hasNextPage &&
+        query.fetchNextPage({
+          pageParam:
+            query.data?.pages?.[query.data?.pages?.length - 1]?.pageInfo
+              .endCursor,
+        })
+      );
+    },
+  };
 }
 
 export function useProject(id: string) {
@@ -110,10 +134,7 @@ export function useProject(id: string) {
       axios
         .post<{ data: { retroPGF: { project: Project } } }>(
           `${backendUrl}/graphql`,
-          {
-            query: ProjectQuery,
-            variables: { id },
-          }
+          { query: ProjectQuery, variables: { id } }
         )
         .then((r) => mapProject(r.data.data?.retroPGF.project) ?? null),
     { enabled: Boolean(id) }
@@ -123,7 +144,7 @@ export function useProject(id: string) {
 function mapProject(project: Project) {
   return {
     ...parseId(project),
-    lists: project.lists.map(parseId),
+    lists: project.lists.map(mapList),
   } as Project;
 }
 
@@ -166,17 +187,4 @@ export function sortAndFilter<
         ? p.displayName?.toLowerCase().includes(search.toLowerCase())
         : true
     );
-}
-
-export function paginate<T>(collection: T[], page = 1) {
-  const pageSize = 12;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-
-  const pages = Math.ceil(collection.length / pageSize);
-
-  return {
-    data: collection.slice(start, end),
-    pages,
-  };
 }

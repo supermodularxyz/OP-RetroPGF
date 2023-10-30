@@ -36,16 +36,21 @@ export const Search = ({ onSelect }: Props) => {
 
   // Search does not use pagination, categories and always sorts A to Z
   const filter = {
-    page: 1,
     sort: "asc",
     categories: [],
     search,
   } as Partial<Filter>;
-  const projects = useProjects({ ...useFilter("projects").data, ...filter });
-  const lists = useLists({ ...useFilter("lists").data, ...filter });
+  const projects = useProjects(
+    { ...useFilter("projects").data, ...filter },
+    { enabled: search.length > 0 }
+  );
+  const lists = useLists(
+    { ...useFilter("lists").data, ...filter },
+    { enabled: search.length > 0 }
+  );
 
-  const projectsData = projects.data?.data ?? [];
-  const listsData = lists.data?.data ?? [];
+  const projectsData = projects.data ?? [];
+  const listsData = lists.data ?? [];
 
   const results = { projects: projectsData, lists: listsData } as const;
 

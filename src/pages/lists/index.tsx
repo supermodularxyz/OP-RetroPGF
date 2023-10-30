@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Layout } from "~/components/Layout";
-import { Pagination } from "~/components/Pagination";
 import { DisplayAndSortFilter } from "~/components/DisplayAndSortFilter";
 import { useFilter, toURL, useUpdateFilterFromRouter } from "~/hooks/useFilter";
 import { Lists } from "~/components/Lists";
@@ -11,16 +10,20 @@ import { Tag } from "~/components/ui/Tag";
 import { Button } from "~/components/ui/Button";
 import { Like, Liked } from "~/components/icons";
 import { useAccount } from "wagmi";
+import { LoadMore } from "~/components/LoadMore";
+import { Banner } from "~/components/ui/Banner";
 
 export default function ListsPage() {
   const router = useRouter();
-  const query = router.query;
 
   const { data: filter } = useFilter("lists");
-  const { data: lists, isLoading, error } = useLists(filter);
-  const currentPage = Number(filter?.page);
-
-  console.log("LISTS", lists, isLoading, error);
+  const {
+    data: lists,
+    error,
+    isLoading,
+    isFetching,
+    fetchNextPage,
+  } = useLists(filter);
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
@@ -49,18 +52,32 @@ export default function ListsPage() {
       <div className="no-scrollbar">
         <LikedFilter />
       </div>
-      <Lists filter={filter} lists={lists?.data} isLoading={isLoading} />
-      <Pagination
-        currentPage={currentPage}
-        pages={lists?.pages}
-        onNavigate={(page) => `/lists?${toURL(query, { page })}`}
-      />
+
+      {error ? (
+        <Banner variant="warning">
+          <div className="flex flex-col items-center gap-4">
+            <div>There was an error fetching the lists</div>
+            <Button
+              as={Link}
+              className="w-48"
+              variant="primary"
+              href="/lists?seed=0"
+            >
+              Retry
+            </Button>
+          </div>
+        </Banner>
+      ) : null}
+
+      <Lists filter={filter} lists={lists} isLoading={isLoading} />
+
+      <LoadMore isFetching={isFetching} onInView={fetchNextPage} />
     </Layout>
   );
 }
 
 const LikedFilter = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const router = useRouter();
   const query = router.query;
 
@@ -80,11 +97,14 @@ const LikedFilter = () => {
       </Tag>
       <Tag
         size="lg"
-        as={Link}
-        disabled={!address}
+        disabled={!address || !isConnected}
         scroll={false}
         selected={selected}
-        href={`/lists?${toURL(query, { likedBy: selected ? "" : address })}`}
+        onClick={() =>
+          router.push(
+            `/lists?${toURL(query, { likedBy: selected ? "" : address })}`
+          )
+        }
       >
         {selected ? <Liked className="text-primary-600" /> : <Like />} Liked
       </Tag>

@@ -4,7 +4,7 @@ import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
 
 import { type Filter } from "~/hooks/useFilter";
 import { useProject } from "~/hooks/useProjects";
-import { type List, useLikes } from "~/hooks/useLists";
+import { type List, useLikes, useLikeList } from "~/hooks/useLists";
 import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
@@ -12,6 +12,7 @@ import { Like, Liked } from "~/components/icons";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import { truncate } from "~/utils/truncate";
 import { Skeleton } from "./ui/Skeleton";
+import { track } from "@vercel/analytics/react";
 
 type Props = { filter?: Filter; lists?: List[]; isLoading: boolean };
 
@@ -19,38 +20,36 @@ export const Lists = ({ filter, lists, isLoading }: Props) => {
   const isList = filter?.display === "list";
   return (
     <>
-      {!lists ? null : (
-        <div
-          className={clsx("mb-8 flex flex-col gap-4 md:grid", {
-            ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
-            ["gap-6 divide-y divide-neutral-200"]: isList,
-          })}
-        >
-          {isLoading
-            ? Array.from({ length: 12 }).map((_, i) =>
-                isList ? (
-                  <ListListItem key={i} isLoading />
-                ) : (
-                  <ListGridItem key={i} isLoading />
-                )
+      <div
+        className={clsx("mb-8 flex flex-col gap-4 md:grid", {
+          ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
+          ["gap-6 divide-y divide-neutral-200"]: isList,
+        })}
+      >
+        {isLoading
+          ? Array.from({ length: 12 }).map((_, i) =>
+              isList ? (
+                <ListListItem key={i} isLoading />
+              ) : (
+                <ListGridItem key={i} isLoading />
               )
-            : lists?.map((list) => (
-                <Link
-                  href={`/lists/${list.id}`}
-                  key={list.id}
-                  className={clsx({
-                    ["pt-6 first:pt-0"]: isList,
-                  })}
-                >
-                  {isList ? (
-                    <ListListItem list={list} />
-                  ) : (
-                    <ListGridItem list={list} />
-                  )}
-                </Link>
-              ))}
-        </div>
-      )}
+            )
+          : lists?.map((list) => (
+              <Link
+                href={`/lists/${list.id}`}
+                key={list.id}
+                className={clsx({
+                  ["pt-6 first:pt-0"]: isList,
+                })}
+              >
+                {isList ? (
+                  <ListListItem list={list} />
+                ) : (
+                  <ListGridItem list={list} />
+                )}
+              </Link>
+            ))}
+      </div>
     </>
   );
 };
@@ -139,13 +138,24 @@ export const ListListItem = ({
 };
 
 export const LikeCount = ({ listId = "" }) => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { data: likes } = useLikes(listId);
+  const like = useLikeList(listId);
 
   const isLiked = () => !!(address && likes?.includes(address));
 
   return (
-    <div className="flex">
+    <div
+      className="flex"
+      onClick={(e) => {
+        e.preventDefault();
+        if (address && isConnected) {
+          console.log("like", listId);
+          like.mutate(listId);
+          track("LikeList", { id: listId });
+        }
+      }}
+    >
       <span className="text-xs">{likes?.length ?? 0}</span>
       {isLiked() ? (
         <Liked className="ml-2 h-4 w-4 text-primary-600" />
@@ -160,11 +170,12 @@ export const AvatarWithName = ({ address }: { address?: Address }) => {
   const ens = useEnsName({ address, chainId: 1, enabled: Boolean(address) });
   const name = ens.data;
   const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });
-
+  const avatarSrc =
+    avatar.data ?? `https://source.boringavatars.com/marble/16/${address}`;
   return (
     <div className="flex items-center gap-2">
-      <Avatar src={avatar.data} size="xs" rounded="full" />
-      <p className="text-sm font-semibold">{name ?? truncate(address)} </p>
+      <Avatar src={avatarSrc} size="xs" rounded="full" />
+      <p className="text-sm font-semibold">{name ?? truncate(address, 13)} </p>
     </div>
   );
 };
@@ -190,7 +201,6 @@ export const ProjectsLogosCard = ({
 
 const ProjectAvatar = ({ id }: { id: string }) => {
   const { data: project } = useProject(id);
-
   return (
     <AvatarWithBorder
       src={project?.profile?.profileImageUrl}

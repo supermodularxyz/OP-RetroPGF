@@ -8,12 +8,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { useCopyToClipboard } from "react-use";
 
 import { createComponent } from "~/components/ui";
-import {
-  Code,
-  Contribution,
-  LayoutList,
-  Link as LinkIcon,
-} from "~/components/icons";
+import { Contribution, LayoutList, Link as LinkIcon } from "~/components/icons";
 import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
@@ -34,6 +29,7 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 
 import { type List } from "~/hooks/useLists";
 import { ProjectContribution } from "./ProjectContribution";
+import { BlurredBannerImage } from "./ui/BlurredBannerImage";
 
 const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
 
@@ -47,11 +43,12 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     threshold: 0,
   });
 
+  const { bannerImageUrl, profileImageUrl } = project?.profile ?? {};
   return (
     <>
       <div
         className={clsx(
-          "sticky left-0 top-0 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex",
+          "sticky left-0 top-0 z-10 mb-8 hidden items-center justify-between border-b border-gray-200 bg-white py-4 md:flex",
           {
             ["flex-row-reverse"]: !intersection?.isIntersecting,
           }
@@ -59,20 +56,19 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
       >
         {!intersection?.isIntersecting ? (
           <ProjectAddToBallot project={project} />
-        ) : (
-          <h1 className="text-xl font-semibold">
-            {project?.displayName}&apos;s Round application
-          </h1>
-        )}
+        ) : null}
+        <h1 className="flex h-12 items-center text-xl font-semibold">
+          {project?.displayName}&apos;s Round application
+        </h1>
       </div>
       <div ref={intersectionRef}>
-        <div
-          className="h-32 rounded-xl border border-gray-200 bg-gray-100 bg-cover bg-center md:h-[328px]"
-          style={{
-            backgroundImage: `url(${project?.profile?.bannerImageUrl})`,
-          }}
+        <BlurredBannerImage
+          className="h-32 md:h-[328px]"
+          src={bannerImageUrl}
+          fallbackSrc={profileImageUrl}
         />
-        <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
+
+        <div className="relative -mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar
             size="lg"
             alt={project?.profile?.name}
@@ -80,7 +76,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           />
           <div className="flex-1 items-center justify-between md:flex">
             <div>
-              <h3 className="mb-2 text-2xl font-bold">
+              <h3 className="mb-2 truncate text-2xl font-bold">
                 {project?.displayName}
               </h3>
               <div>
@@ -94,7 +90,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 </IconBadge>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-1 gap-2">
               <MoreDropdown
                 align="start"
                 options={[
@@ -103,11 +99,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                     label: "Copy address",
                     onClick: () => copy(project.payoutAddress),
                   },
-                  {
-                    value: "profile",
-                    label: "View Optimist Profile",
-                    onClick: () => alert("View Optimist Profile"),
-                  },
+                  // {
+                  //   value: "profile",
+                  //   label: "View Optimist Profile",
+                  //   onClick: () => alert("View Optimist Profile"),
+                  // },
                   {
                     value: "flag",
                     label: "Report",
@@ -209,22 +205,31 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <H3>Included in the following lists</H3>
           <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
             {project?.lists.length ? (
-              project?.lists?.map((list) => (
-                <Link
-                  key={list.id}
-                  href={`/lists/${list.id}`}
-                  className="pt-6 first:pt-0"
-                >
-                  <ListListItem
-                    list={list}
-                    allocation={formatCurrency(
-                      sumListAllocation(list),
-                      "OP",
-                      false
-                    )}
-                  />
-                </Link>
-              ))
+              project?.lists
+                ?.map((list) => ({
+                  ...list,
+                  // Get the allocation for this project
+                  projectAmount: findAllocationForProject(project.id, list),
+                }))
+                .sort((a, b) => b.projectAmount - a.projectAmount)
+                .map((list) => {
+                  return (
+                    <Link
+                      key={list.id}
+                      href={`/lists/${list.id}`}
+                      className="pt-6 first:pt-0"
+                    >
+                      <ListListItem
+                        list={list}
+                        allocation={formatCurrency(
+                          list.projectAmount,
+                          "OP",
+                          false
+                        )}
+                      />
+                    </Link>
+                  );
+                })
             ) : (
               <div>This project is not included in any lists.</div>
             )}
@@ -235,8 +240,10 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
   );
 };
 
-function sumListAllocation(list: List) {
-  return list.listContent?.reduce((acc, x) => acc + x.OPAmount, 0);
+function findAllocationForProject(projectId: string, list: List) {
+  return (
+    list.listContent.find((p) => p.project.id === projectId)?.OPAmount ?? 0
+  );
 }
 
 const H3 = createComponent(

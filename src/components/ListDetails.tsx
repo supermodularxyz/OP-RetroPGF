@@ -31,10 +31,12 @@ export const ListDetails = ({
   const like = useLikeList(list?.id);
 
   const listProjects =
-    list?.listContent.map((p) => ({
-      projectId: p.project.id,
-      amount: p.OPAmount,
-    })) ?? [];
+    list?.listContent
+      .map((p) => ({
+        projectId: p.project.id,
+        amount: p.OPAmount,
+      }))
+      .sort((a, b) => Number(b.amount) - Number(a.amount)) ?? [];
 
   const allocatedOP = sumBallot(listProjects);
   return (
@@ -75,12 +77,12 @@ export const ListDetails = ({
               <MoreDropdown
                 align="end"
                 options={[
-                  {
-                    value: "share",
-                    onClick: () => alert("share"),
-                    label: "Share",
-                    icon: Share,
-                  },
+                  // {
+                  //   value: "share",
+                  //   onClick: () => alert("share"),
+                  //   label: "Share",
+                  //   icon: Share,
+                  // },
                   {
                     value: "report",
                     onClick: () => window.open(reportUrl),

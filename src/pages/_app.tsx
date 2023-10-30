@@ -28,13 +28,16 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister }}
+      persistOptions={{
+        persister,
+        buster: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? "hash",
+      }}
     >
       <QueryClientProvider client={queryClient}>
         <Providers>
           <>
             <Component {...pageProps} />
-            <Analytics />
+            <Analytics mode={"production"} />
           </>
         </Providers>
       </QueryClientProvider>

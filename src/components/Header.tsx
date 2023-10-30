@@ -54,12 +54,14 @@ export const Header = () => {
           <IconButton
             icon={isOpen ? X : Menu}
             variant="ghost"
-            className="mr-1 font-mono text-gray-600 md:hidden"
+            className="mr-1 font-mono text-gray-600 lg:hidden"
             onClick={() => setOpen(!isOpen)}
           />
-          <OptimismLogo />
+          <Link href={"/projects"} className="py-4">
+            <OptimismLogo />
+          </Link>
         </div>
-        <div className="hidden h-full items-center gap-4 md:flex">
+        <div className="hidden h-full items-center gap-4 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               isActive={asPath.startsWith(link.href)}
@@ -73,10 +75,10 @@ export const Header = () => {
             </NavLink>
           ))}
         </div>
-        <div className="flex-1 md:ml-8">
+        <div className="flex-1 lg:ml-8">
           <Search onSelect={(path) => void push(path)} />
         </div>
-        <div className="ml-4 flex gap-4 md:ml-8 xl:ml-32">
+        <div className="ml-4 flex gap-4 lg:ml-8 xl:ml-32">
           <ConnectButton />
         </div>
         <MobileMenu isOpen={isOpen} />

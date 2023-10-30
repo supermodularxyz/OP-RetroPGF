@@ -30,6 +30,7 @@ import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
 import { FeedbackDialog } from "./FeedbackDialog";
+import { Td, Thead, Tr } from "./ui/Table";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
 
@@ -59,11 +60,19 @@ export const ListEditDistribution = ({
     add.mutate(form.allocations);
   }
 
-  const allocations = listProjects.map((p) => ({
-    ...p,
-    // Find existing allocations from ballot
-    amount: Number(ballotContains(p.projectId, ballot)?.amount ?? p.amount),
-  }));
+  const allocations = listProjects
+    .map((p) => {
+      const ballotAmount = ballotContains(p.projectId, ballot)?.amount;
+      return {
+        ...p,
+        // Find existing allocations from ballot
+        amount: Number(ballotAmount ?? p.amount),
+        ballotAmount,
+      };
+    })
+    // Sort to display projects in ballot first
+    .sort((a, b) => Number(b.ballotAmount ?? 0) - Number(a.ballotAmount ?? 0));
+
   const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
     <div>
@@ -75,9 +84,9 @@ export const ListEditDistribution = ({
         }}
         icon={AddBallot}
         className="w-full md:w-auto"
-        disabled={!address}
+        disabled={!address || add.isSuccess}
       >
-        Add to ballot
+        {add.isSuccess ? "List added" : "Add to ballot"}
       </IconButton>
       <Dialog
         title={showDialogTitle ? `Edit distribution` : null}
@@ -85,15 +94,31 @@ export const ListEditDistribution = ({
         isOpen={isOpen}
         onOpenChange={() => {
           setOpen(false);
-          add.reset(); // This is needed to reset add.isSuccess and show the allocations again
+          // add.reset(); // This is needed to reset add.isSuccess and show the allocations again
         }}
       >
         {add.isSuccess ? (
           <FeedbackDialog variant="success" icon={CircleCheck}>
-            <div className="font-semibold">List added to ballot</div>
-            <Button as={Link} href={"/ballot"}>
-              View ballot
-            </Button>
+            <div className="font-semibold">
+              List added to ballot successfully!
+            </div>
+            <div className="space-y-2">
+              <Button
+                variant="primary"
+                className="w-full"
+                as={Link}
+                href={"/ballot"}
+              >
+                View ballot
+              </Button>
+              <Button
+                className="w-full"
+                variant="ghost"
+                onClick={() => setOpen(false)}
+              >
+                Continue adding projects
+              </Button>
+            </div>
           </FeedbackDialog>
         ) : add.isLoading ? (
           <FeedbackDialog variant="info" icon={Spinner}>
@@ -122,6 +147,17 @@ export const ListEditDistribution = ({
             />
             <div className="max-h-[480px] overflow-y-scroll">
               <AllocationForm
+                header={
+                  <Thead>
+                    <Tr>
+                      <Td></Td>
+                      <Td className="text-neutral-600">
+                        {alreadyInBallot.length ? "List amount" : null}
+                      </Td>
+                      <Td className="text-neutral-600">Ballot amount</Td>
+                    </Tr>
+                  </Thead>
+                }
                 filter={{}}
                 list={alreadyInBallot}
                 onSave={({ allocations }) =>

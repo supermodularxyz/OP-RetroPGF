@@ -2,7 +2,7 @@ import { type PropsWithChildren } from "react";
 import { Inter } from "next/font/google";
 
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, mainnet, WagmiConfig } from "wagmi";
 import { optimism, optimismGoerli } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
@@ -13,7 +13,8 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const activeChains: Chain[] = [optimism];
+// Mainnet is needed to resolve the ENS name and avatar properly
+const activeChains: Chain[] = [optimism, mainnet];
 if (process.env.NEXT_PUBLIC_SKIP_BADGEHOLDER_CHECK) {
   activeChains.push(optimismGoerli);
 }

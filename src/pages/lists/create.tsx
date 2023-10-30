@@ -84,7 +84,8 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
         const { listName, ...list } = parseList(values);
 
         const listMetadataPtr = upload.data ?? (await upload.mutateAsync(list));
-        console.log(listName, list);
+        console.log(listName, list, listMetadataPtr);
+
         create.mutate(
           {
             listName,
