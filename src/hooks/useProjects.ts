@@ -1,5 +1,9 @@
 import axios from "axios";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
 import { mapList, type List } from "~/hooks/useLists";
@@ -72,6 +76,7 @@ export function useProjects(
   filter: Filter = initialFilter,
   opts?: { enabled?: boolean }
 ) {
+  const queryClient = useQueryClient();
   const query = useInfiniteQuery({
     enabled: opts?.enabled,
     queryKey: ["projects", filter],
@@ -113,6 +118,11 @@ export function useProjects(
       return lastPage.pageInfo?.endCursor;
     },
   });
+
+  if (!isNaN(query.data?.pages)) {
+    queryClient.invalidateQueries();
+    window.location.reload();
+  }
 
   return {
     ...query,
