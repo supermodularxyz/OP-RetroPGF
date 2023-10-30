@@ -4,7 +4,7 @@ import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
 
 import { type Filter } from "~/hooks/useFilter";
 import { useProject } from "~/hooks/useProjects";
-import { type List, useLikes } from "~/hooks/useLists";
+import { type List, useLikes, useLikeList } from "~/hooks/useLists";
 import { Card, CardTitle } from "./ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { Divider } from "./ui/Divider";
@@ -12,6 +12,7 @@ import { Like, Liked } from "~/components/icons";
 import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import { truncate } from "~/utils/truncate";
 import { Skeleton } from "./ui/Skeleton";
+import { track } from "@vercel/analytics/react";
 
 type Props = { filter?: Filter; lists?: List[]; isLoading: boolean };
 
@@ -137,13 +138,24 @@ export const ListListItem = ({
 };
 
 export const LikeCount = ({ listId = "" }) => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { data: likes } = useLikes(listId);
+  const like = useLikeList(listId);
 
   const isLiked = () => !!(address && likes?.includes(address));
 
   return (
-    <div className="flex">
+    <div
+      className="flex"
+      onClick={(e) => {
+        e.preventDefault();
+        if (address && isConnected) {
+          console.log("like", listId);
+          like.mutate(listId);
+          track("LikeList", { id: listId });
+        }
+      }}
+    >
       <span className="text-xs">{likes?.length ?? 0}</span>
       {isLiked() ? (
         <Liked className="ml-2 h-4 w-4 text-primary-600" />
