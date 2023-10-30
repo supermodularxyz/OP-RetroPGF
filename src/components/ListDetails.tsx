@@ -31,10 +31,12 @@ export const ListDetails = ({
   const like = useLikeList(list?.id);
 
   const listProjects =
-    list?.listContent.map((p) => ({
-      projectId: p.project.id,
-      amount: p.OPAmount,
-    })) ?? [];
+    list?.listContent
+      .map((p) => ({
+        projectId: p.project.id,
+        amount: p.OPAmount,
+      }))
+      .sort((a, b) => Number(b.amount) - Number(a.amount)) ?? [];
 
   const allocatedOP = sumBallot(listProjects);
   return (

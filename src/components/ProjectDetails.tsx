@@ -204,22 +204,31 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <H3>Included in the following lists</H3>
           <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
             {project?.lists.length ? (
-              project?.lists?.map((list) => {
-                // Get the allocation for this project
-                const allocation = findAllocationForProject(project.id, list);
-                return (
-                  <Link
-                    key={list.id}
-                    href={`/lists/${list.id}`}
-                    className="pt-6 first:pt-0"
-                  >
-                    <ListListItem
-                      list={list}
-                      allocation={formatCurrency(allocation, "OP", false)}
-                    />
-                  </Link>
-                );
-              })
+              project?.lists
+                ?.map((list) => ({
+                  ...list,
+                  // Get the allocation for this project
+                  projectAmount: findAllocationForProject(project.id, list),
+                }))
+                .sort((a, b) => b.projectAmount - a.projectAmount)
+                .map((list) => {
+                  return (
+                    <Link
+                      key={list.id}
+                      href={`/lists/${list.id}`}
+                      className="pt-6 first:pt-0"
+                    >
+                      <ListListItem
+                        list={list}
+                        allocation={formatCurrency(
+                          list.projectAmount,
+                          "OP",
+                          false
+                        )}
+                      />
+                    </Link>
+                  );
+                })
             ) : (
               <div>This project is not included in any lists.</div>
             )}
