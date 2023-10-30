@@ -80,6 +80,7 @@ const RefreshButton = ({
       title="Refresh"
       icon={Refresh}
       as={Link}
+      scroll={false}
       href={`${baseUrl}?${toURL(filter, { seed: Date.now().toString() })}`}
       variant={"ghost"}
     />
