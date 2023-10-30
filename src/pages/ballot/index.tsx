@@ -74,12 +74,12 @@ export default function BallotPage() {
                 )}
               </div>
             </div>
-            <div className="absolute bottom-16 right-2 pb-2">
-              {save.isLoading ? <Spinner /> : " "}
-            </div>
-            <div className="flex justify-between rounded-b-2xl border-t border-gray-300 bg-[#EDF4FC] px-8 py-4 text-lg font-semibold">
+            <div className="flex h-16 items-center justify-between rounded-b-2xl border-t border-gray-300 bg-[#EDF4FC] px-8 py-4 text-lg font-semibold">
               <div>Total OP in ballot</div>
-              <TotalOP />
+              <div className="flex items-center gap-2">
+                {save.isLoading && <Spinner />}
+                <TotalOP />
+              </div>
             </div>
           </div>
         </Form>
