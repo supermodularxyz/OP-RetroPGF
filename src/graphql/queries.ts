@@ -77,9 +77,9 @@ export const ProjectQuery = `
   }
 `;
 export const ProjectsQuery = `
-  query Projects($first: Int!, $skip: Int!, $orderBy: ProjectOrder!, $category: [ProjectCategory!], $search: String, $seed: String) {
+  query Projects($after: String, $first: Int!, $orderBy: ProjectOrder!, $category: [ProjectCategory!], $search: String, $seed: String) {
     retroPGF {
-      projects(first: $first, skip: $skip, orderBy: $orderBy, category: $category, search: $search, seed: $seed) {
+      projects(after: $after, first: $first, orderBy: $orderBy, category: $category, search: $search, seed: $seed) {
         pageInfo {
           ${PAGEINFO_FRAGMENT}
         }
@@ -137,9 +137,9 @@ export const ListQuery = `
   }
 `;
 export const ListsQuery = `
-  query Lists($first: Int!, $skip: Int!, $orderBy: ListOrder!, $category: [ProjectCategory!], $search: String, $seed: String, $likedBy: String) {
+  query Lists($after: String, $first: Int!, $orderBy: ListOrder!, $category: [ProjectCategory!], $search: String, $seed: String, $likedBy: String) {
     retroPGF {
-      lists(first: $first, skip: $skip, orderBy: $orderBy, category: $category, search: $search, seed: $seed, likedBy: $likedBy) {
+      lists(after: $after, first: $first, orderBy: $orderBy, category: $category, search: $search, seed: $seed, likedBy: $likedBy) {
         pageInfo {
           ${PAGEINFO_FRAGMENT}
         }

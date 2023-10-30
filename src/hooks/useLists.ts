@@ -1,16 +1,16 @@
 import axios from "axios";
 import { useAccount, type Address } from "wagmi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
 import { ListQuery, ListsQuery } from "~/graphql/queries";
-import {
-  Aggregate,
-  createQueryVariables,
-  PAGE_SIZE,
-  parseId,
-} from "~/graphql/utils";
+import { Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
 import { Project } from "./useProjects";
 import { useAccessToken } from "./useAuth";
 
@@ -37,34 +37,65 @@ export type List = {
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-export function useLists(filter: Filter = initialFilter) {
-  return useQuery(["lists", filter], () => {
-    return axios
-      .post<{
-        data: {
-          retroPGF: {
-            lists: { edges: { node: List }[] };
-            listsAggregate: Aggregate;
+export function useLists(
+  filter: Filter = initialFilter,
+  opts?: { enabled?: boolean }
+) {
+  const query = useInfiniteQuery({
+    enabled: opts?.enabled,
+    queryKey: ["lists", filter],
+    queryFn: ({ pageParam }: { pageParam?: string }) => {
+      console.log("Fetching lists", pageParam);
+      return axios
+        .post<{
+          data: {
+            retroPGF: {
+              lists: {
+                edges: { node: List }[];
+                pageInfo: { hasNextPage: boolean; endCursor?: string };
+              };
+              listsAggregate: Aggregate;
+            };
           };
-        };
-      }>(`${backendUrl}/graphql`, {
-        query: ListsQuery,
-        variables: createQueryVariables(filter),
-      })
-      .then((r) => {
-        const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
+        }>(`${backendUrl}/graphql`, {
+          query: ListsQuery,
+          variables: createQueryVariables({ ...filter, after: pageParam }),
+        })
+        .then((r) => {
+          const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};
 
-        const data = lists?.edges.map((edge) => mapList(edge.node));
-        const { total, ...categories } = listsAggregate ?? {};
-        const pages = Math.ceil(total / PAGE_SIZE);
+          const data = lists?.edges.map((edge) => mapList(edge.node));
+          const { total, ...categories } = listsAggregate ?? {};
 
-        return { data, pages, categories };
-      })
-      .catch((err) => {
-        console.log("err", err);
-        return { data: [], pages: 1, categories: {} };
-      });
+          return { data, categories, pageInfo: lists?.pageInfo };
+        })
+        .catch((err) => {
+          console.log("err", err);
+          return {
+            data: [],
+            categories: {},
+            pageInfo: { endCursor: null },
+          };
+        });
+    },
+    getNextPageParam: (lastPage) => {
+      // console.log("cursor", lastPage.pageInfo?.endCursor);
+      return lastPage.pageInfo?.endCursor;
+    },
   });
+
+  // console.log("query", query.data, query.hasNextPage);
+  return {
+    ...query,
+    data: query.data?.pages?.flatMap((p) => p.data).filter(Boolean),
+    fetchNextPage: () =>
+      query.hasNextPage &&
+      query.fetchNextPage({
+        pageParam:
+          query.data?.pages?.[query.data?.pages?.length - 1]?.pageInfo
+            .endCursor,
+      }),
+  };
 }
 
 export function useList(id: string) {

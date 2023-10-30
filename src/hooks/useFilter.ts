@@ -6,7 +6,7 @@ import { type ParsedUrlQuery } from "querystring";
 
 type FilterSort = "shuffle" | "asc" | "desc" | "liked" | "ascOP" | "descOP";
 export type Filter = {
-  page?: number;
+  after?: string;
   display?: "grid" | "list";
   sort?: FilterSort;
   search?: string;
@@ -22,7 +22,7 @@ export const defaultSortOptions = [
 ] as Filter["sort"][];
 
 export const initialFilter: Filter = {
-  page: 1,
+  after: undefined,
   display: "grid",
   sort: "shuffle",
   search: "",

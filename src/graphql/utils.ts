@@ -18,7 +18,7 @@ export const sortMap = {
 };
 
 export function createQueryVariables({
-  page = 1,
+  after,
   sort = "shuffle",
   search = "",
   seed,
@@ -26,8 +26,8 @@ export function createQueryVariables({
   likedBy = "",
 }: Filter) {
   return {
+    after,
     first: PAGE_SIZE,
-    skip: (page - 1) * PAGE_SIZE,
     orderBy: sortMap[sort as keyof typeof sortMap] ?? sort,
     search,
     seed,

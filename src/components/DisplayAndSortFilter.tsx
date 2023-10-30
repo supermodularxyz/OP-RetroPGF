@@ -32,11 +32,9 @@ export const DisplayAndSortFilter = ({
         options={sortOptions}
         value={filter?.sort}
         onChange={(sort) =>
-          void router.push(
-            `${baseUrl}?${toURL(query, { sort, page: 1 })}`,
-            undefined,
-            { scroll: false }
-          )
+          void router.push(`${baseUrl}?${toURL(query, { sort })}`, undefined, {
+            scroll: false,
+          })
         }
       />
     </div>

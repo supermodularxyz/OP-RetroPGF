@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { Layout } from "~/components/Layout";
-import { Pagination } from "~/components/Pagination";
 import { DisplayAndSortFilter } from "~/components/DisplayAndSortFilter";
 import { useFilter, toURL, useUpdateFilterFromRouter } from "~/hooks/useFilter";
 import { Lists } from "~/components/Lists";
@@ -11,14 +10,19 @@ import { Tag } from "~/components/ui/Tag";
 import { Button } from "~/components/ui/Button";
 import { Like, Liked } from "~/components/icons";
 import { useAccount } from "wagmi";
+import { LoadMore } from "~/components/LoadMore";
 
 export default function ListsPage() {
   const router = useRouter();
   const query = router.query;
 
   const { data: filter } = useFilter("lists");
-  const { data: lists, isLoading, error } = useLists(filter);
-  const currentPage = Number(filter?.page);
+  const {
+    data: lists,
+    isLoading,
+    isFetching,
+    fetchNextPage,
+  } = useLists(filter);
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
@@ -47,12 +51,9 @@ export default function ListsPage() {
       <div className="no-scrollbar">
         <LikedFilter />
       </div>
-      <Lists filter={filter} lists={lists?.data} isLoading={isLoading} />
-      <Pagination
-        currentPage={currentPage}
-        pages={lists?.pages}
-        onNavigate={(page) => `/lists?${toURL(query, { page })}`}
-      />
+      <Lists filter={filter} lists={lists} isLoading={isLoading} />
+
+      <LoadMore isFetching={isFetching} onInView={fetchNextPage} />
     </Layout>
   );
 }
