@@ -99,11 +99,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                     label: "Copy address",
                     onClick: () => copy(project.payoutAddress),
                   },
-                  {
-                    value: "profile",
-                    label: "View Optimist Profile",
-                    onClick: () => alert("View Optimist Profile"),
-                  },
+                  // {
+                  //   value: "profile",
+                  //   label: "View Optimist Profile",
+                  //   onClick: () => alert("View Optimist Profile"),
+                  // },
                   {
                     value: "flag",
                     label: "Report",

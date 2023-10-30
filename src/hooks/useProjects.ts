@@ -1,15 +1,10 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
 import { mapList, type List } from "~/hooks/useLists";
 import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
-import {
-  Aggregate,
-  createQueryVariables,
-  PAGE_SIZE,
-  parseId,
-} from "~/graphql/utils";
+import { Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
 
 export type Project = {
   id: string;
@@ -73,34 +68,66 @@ export const fundingSourcesLabels = {
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API!;
 
-export function useProjects(filter: Filter = initialFilter) {
-  return useQuery(["projects", filter], () => {
-    return axios
-      .post<{
-        data: {
-          retroPGF: {
-            projects: { edges: { node: Project }[] };
-            projectsAggregate: Aggregate;
+export function useProjects(
+  filter: Filter = initialFilter,
+  opts?: { enabled?: boolean }
+) {
+  const query = useInfiniteQuery({
+    enabled: opts?.enabled,
+    queryKey: ["projects", filter],
+    queryFn: ({ pageParam }: { pageParam?: string }) => {
+      console.log("Fetching projects", pageParam);
+      return axios
+        .post<{
+          data: {
+            retroPGF: {
+              projects: {
+                edges: { node: Project }[];
+                pageInfo: { hasNextPage: boolean; endCursor?: string };
+              };
+              projectsAggregate: Aggregate;
+            };
           };
-        };
-      }>(`${backendUrl}/graphql`, {
-        query: ProjectsQuery,
-        variables: createQueryVariables(filter),
-      })
-      .then((r) => {
-        const { projects, projectsAggregate } = r.data.data?.retroPGF ?? {};
+        }>(`${backendUrl}/graphql`, {
+          query: ProjectsQuery,
+          variables: createQueryVariables({ ...filter, after: pageParam }),
+        })
+        .then((r) => {
+          const { projects, projectsAggregate } = r.data.data?.retroPGF ?? {};
 
-        const data = projects?.edges.map((edge) => mapProject(edge.node));
-        const { total = 0, ...categories } = projectsAggregate ?? {};
-        const pages = Math.ceil(total / PAGE_SIZE);
+          const data = projects?.edges.map((edge) => mapProject(edge.node));
+          const { total = 0, ...categories } = projectsAggregate ?? {};
 
-        return { data, pages, categories };
-      })
-      .catch((err) => {
-        console.log("err", err);
-        return { data: [], pages: 1, categories: {} };
-      });
+          return { data, categories, pageInfo: projects?.pageInfo };
+        })
+        .catch((err) => {
+          console.log("err", err);
+          return {
+            data: [],
+            categories: {},
+            pageInfo: { endCursor: null },
+          };
+        });
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.pageInfo?.endCursor;
+    },
   });
+
+  return {
+    ...query,
+    data: query.data?.pages?.flatMap((p) => p.data).filter(Boolean),
+    fetchNextPage: () => {
+      return (
+        query.hasNextPage &&
+        query.fetchNextPage({
+          pageParam:
+            query.data?.pages?.[query.data?.pages?.length - 1]?.pageInfo
+              .endCursor,
+        })
+      );
+    },
+  };
 }
 
 export function useProject(id: string) {
@@ -163,17 +190,4 @@ export function sortAndFilter<
         ? p.displayName?.toLowerCase().includes(search.toLowerCase())
         : true
     );
-}
-
-export function paginate<T>(collection: T[], page = 1) {
-  const pageSize = 12;
-  const start = (page - 1) * pageSize;
-  const end = start + pageSize;
-
-  const pages = Math.ceil(collection.length / pageSize);
-
-  return {
-    data: collection.slice(start, end),
-    pages,
-  };
 }

@@ -77,12 +77,12 @@ export const ListDetails = ({
               <MoreDropdown
                 align="end"
                 options={[
-                  {
-                    value: "share",
-                    onClick: () => alert("share"),
-                    label: "Share",
-                    icon: Share,
-                  },
+                  // {
+                  //   value: "share",
+                  //   onClick: () => alert("share"),
+                  //   label: "Share",
+                  //   icon: Share,
+                  // },
                   {
                     value: "report",
                     onClick: () => window.open(reportUrl),

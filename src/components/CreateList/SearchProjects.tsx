@@ -20,14 +20,13 @@ export const SearchProjects = ({ onSelect }: Props) => {
 
   // Search does not use pagination, categories and always sorts A to Z
   const filter = {
-    page: 1,
     sort: "asc",
     categories: [],
     search,
   } as Partial<Filter>;
   const projects = useProjects({ ...useFilter("projects").data, ...filter });
 
-  const projectsData = projects.data?.data ?? [];
+  const projectsData = projects.data ?? [];
 
   return (
     <div className="flex-1">
