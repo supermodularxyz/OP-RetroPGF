@@ -6,6 +6,7 @@ import { Card, CardTitle } from "~/components/ui/Card";
 import { ImpactCategories } from "./ImpactCategories";
 import { AvatarWithBorder } from "./ui/Avatar";
 import { Skeleton } from "./ui/Skeleton";
+import { BlurredBannerImage } from "./ui/BlurredBannerImage";
 
 type Props = { filter?: Filter; projects?: Project[]; isLoading?: boolean };
 
@@ -54,16 +55,11 @@ export const ProjectGridItem = ({
         ["animate-pulse"]: isLoading,
       })}
     >
-      <div className="overflow-hidden rounded-2xl ">
-        <div
-          className={clsx("h-24 bg-gray-200 bg-cover", {
-            ["blur-[40px]"]: !bannerImageUrl,
-          })}
-          style={{
-            backgroundImage: `url(${bannerImageUrl ?? profileImageUrl})`,
-          }}
-        />
-      </div>
+      <BlurredBannerImage
+        className="h-24"
+        src={bannerImageUrl}
+        fallbackSrc={profileImageUrl}
+      />
       <div className="relative z-10 space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
           <AvatarWithBorder src={profileImageUrl} />

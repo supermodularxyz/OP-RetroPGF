@@ -29,6 +29,7 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 
 import { type List } from "~/hooks/useLists";
 import { ProjectContribution } from "./ProjectContribution";
+import { BlurredBannerImage } from "./ui/BlurredBannerImage";
 
 const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
 
@@ -42,6 +43,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     threshold: 0,
   });
 
+  const { bannerImageUrl, profileImageUrl } = project?.profile ?? {};
   return (
     <>
       <div
@@ -61,13 +63,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         )}
       </div>
       <div ref={intersectionRef}>
-        <div
-          className="h-32 rounded-xl border border-gray-200 bg-gray-100 bg-cover bg-center md:h-[328px]"
-          style={{
-            backgroundImage: `url(${project?.profile?.bannerImageUrl})`,
-          }}
+        <BlurredBannerImage
+          className="h-32 md:h-[328px]"
+          src={bannerImageUrl}
+          fallbackSrc={profileImageUrl}
         />
-        <div className="-mt-20 items-end gap-6 md:ml-8 md:flex">
+
+        <div className="relative -mt-20 items-end gap-6 md:ml-8 md:flex">
           <Avatar
             size="lg"
             alt={project?.profile?.name}
