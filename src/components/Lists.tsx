@@ -19,38 +19,36 @@ export const Lists = ({ filter, lists, isLoading }: Props) => {
   const isList = filter?.display === "list";
   return (
     <>
-      {!lists ? null : (
-        <div
-          className={clsx("mb-8 flex flex-col gap-4 md:grid", {
-            ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
-            ["gap-6 divide-y divide-neutral-200"]: isList,
-          })}
-        >
-          {isLoading
-            ? Array.from({ length: 12 }).map((_, i) =>
-                isList ? (
-                  <ListListItem key={i} isLoading />
-                ) : (
-                  <ListGridItem key={i} isLoading />
-                )
+      <div
+        className={clsx("mb-8 flex flex-col gap-4 md:grid", {
+          ["md:grid-cols-2 lg:grid-cols-3"]: !isList,
+          ["gap-6 divide-y divide-neutral-200"]: isList,
+        })}
+      >
+        {isLoading
+          ? Array.from({ length: 12 }).map((_, i) =>
+              isList ? (
+                <ListListItem key={i} isLoading />
+              ) : (
+                <ListGridItem key={i} isLoading />
               )
-            : lists?.map((list) => (
-                <Link
-                  href={`/lists/${list.id}`}
-                  key={list.id}
-                  className={clsx({
-                    ["pt-6 first:pt-0"]: isList,
-                  })}
-                >
-                  {isList ? (
-                    <ListListItem list={list} />
-                  ) : (
-                    <ListGridItem list={list} />
-                  )}
-                </Link>
-              ))}
-        </div>
-      )}
+            )
+          : lists?.map((list) => (
+              <Link
+                href={`/lists/${list.id}`}
+                key={list.id}
+                className={clsx({
+                  ["pt-6 first:pt-0"]: isList,
+                })}
+              >
+                {isList ? (
+                  <ListListItem list={list} />
+                ) : (
+                  <ListGridItem list={list} />
+                )}
+              </Link>
+            ))}
+      </div>
     </>
   );
 };
