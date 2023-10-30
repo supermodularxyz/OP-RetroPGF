@@ -88,10 +88,10 @@ export function useProjects(filter: Filter = initialFilter) {
         variables: createQueryVariables(filter),
       })
       .then((r) => {
-        const { projects, projectsAggregate } = r.data.data.retroPGF;
+        const { projects, projectsAggregate } = r.data.data?.retroPGF ?? {};
 
-        const data = projects.edges.map((edge) => mapProject(edge.node));
-        const { total, ...categories } = projectsAggregate;
+        const data = projects?.edges.map((edge) => mapProject(edge.node));
+        const { total = 0, ...categories } = projectsAggregate ?? {};
         const pages = Math.ceil(total / PAGE_SIZE);
 
         return { data, pages, categories };
