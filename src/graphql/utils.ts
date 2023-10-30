@@ -14,7 +14,7 @@ export const sortMap = {
   shuffle: "shuffle",
   asc: "alphabeticalAZ",
   desc: "alphabeticalZA",
-  liked: "byIncludedInBallots",
+  liked: "byLikes",
 };
 
 export function createQueryVariables({
