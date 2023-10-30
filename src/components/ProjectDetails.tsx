@@ -76,7 +76,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           />
           <div className="flex-1 items-center justify-between md:flex">
             <div>
-              <h3 className="mb-2 text-2xl font-bold">
+              <h3 className="mb-2 truncate text-2xl font-bold">
                 {project?.displayName}
               </h3>
               <div>
@@ -90,7 +90,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 </IconBadge>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-1 gap-2">
               <MoreDropdown
                 align="start"
                 options={[

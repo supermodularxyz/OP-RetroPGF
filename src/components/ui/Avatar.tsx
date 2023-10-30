@@ -15,7 +15,7 @@ export const Image = ({ src, className }: ComponentPropsWithRef<"img">) => {
 export const Avatar = createComponent(
   Image,
   tv({
-    base: "bg-gray-200 border border-gray-200",
+    base: "bg-gray-200 border border-gray-200 flex-shrink-0",
     variants: {
       size: {
         xs: "w-5 h-5 rounded-xs",
