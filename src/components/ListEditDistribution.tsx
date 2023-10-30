@@ -30,6 +30,7 @@ import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
 import { FeedbackDialog } from "./FeedbackDialog";
+import { Td, Thead, Tr } from "./ui/Table";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
 
@@ -59,7 +60,6 @@ export const ListEditDistribution = ({
     add.mutate(form.allocations);
   }
 
-  // TODO: Sort existing projects on top
   const allocations = listProjects
     .map((p) => {
       const ballotAmount = ballotContains(p.projectId, ballot)?.amount;
@@ -84,9 +84,9 @@ export const ListEditDistribution = ({
         }}
         icon={AddBallot}
         className="w-full md:w-auto"
-        disabled={!address}
+        disabled={!address || add.isSuccess}
       >
-        Add to ballot
+        {add.isSuccess ? "List added" : "Add to ballot"}
       </IconButton>
       <Dialog
         title={showDialogTitle ? `Edit distribution` : null}
@@ -94,7 +94,7 @@ export const ListEditDistribution = ({
         isOpen={isOpen}
         onOpenChange={() => {
           setOpen(false);
-          add.reset(); // This is needed to reset add.isSuccess and show the allocations again
+          // add.reset(); // This is needed to reset add.isSuccess and show the allocations again
         }}
       >
         {add.isSuccess ? (
@@ -131,6 +131,17 @@ export const ListEditDistribution = ({
             />
             <div className="max-h-[480px] overflow-y-scroll">
               <AllocationForm
+                header={
+                  <Thead>
+                    <Tr>
+                      <Td></Td>
+                      <Td className="text-neutral-600">
+                        {alreadyInBallot.length ? "List amount" : null}
+                      </Td>
+                      <Td className="text-neutral-600">Ballot amount</Td>
+                    </Tr>
+                  </Thead>
+                }
                 filter={{}}
                 list={alreadyInBallot}
                 onSave={({ allocations }) =>
