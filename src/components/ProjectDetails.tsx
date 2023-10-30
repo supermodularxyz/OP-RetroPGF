@@ -8,6 +8,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { useCopyToClipboard } from "react-use";
 
 import { createComponent } from "~/components/ui";
+import { parseId } from "~/graphql/utils";
 import {
   Code,
   Contribution,
@@ -209,22 +210,22 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <H3>Included in the following lists</H3>
           <Card className="max-h-[680px] space-y-4 divide-y divide-gray-200 overflow-y-scroll">
             {project?.lists.length ? (
-              project?.lists?.map((list) => (
-                <Link
-                  key={list.id}
-                  href={`/lists/${list.id}`}
-                  className="pt-6 first:pt-0"
-                >
-                  <ListListItem
-                    list={list}
-                    allocation={formatCurrency(
-                      sumListAllocation(list),
-                      "OP",
-                      false
-                    )}
-                  />
-                </Link>
-              ))
+              project?.lists?.map((list) => {
+                // Get the allocation for this project
+                const allocation = findAllocationForProject(project.id, list);
+                return (
+                  <Link
+                    key={list.id}
+                    href={`/lists/${list.id}`}
+                    className="pt-6 first:pt-0"
+                  >
+                    <ListListItem
+                      list={list}
+                      allocation={formatCurrency(allocation, "OP", false)}
+                    />
+                  </Link>
+                );
+              })
             ) : (
               <div>This project is not included in any lists.</div>
             )}
@@ -235,8 +236,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
   );
 };
 
-function sumListAllocation(list: List) {
-  return list.listContent?.reduce((acc, x) => acc + x.OPAmount, 0);
+function findAllocationForProject(projectId: string, list: List) {
+  return (
+    list.listContent.find((p) => parseId(p.project).id === projectId)
+      ?.OPAmount ?? 0
+  );
 }
 
 const H3 = createComponent(
