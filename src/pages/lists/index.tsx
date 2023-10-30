@@ -58,7 +58,7 @@ export default function ListsPage() {
 }
 
 const LikedFilter = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const router = useRouter();
   const query = router.query;
 
@@ -78,11 +78,14 @@ const LikedFilter = () => {
       </Tag>
       <Tag
         size="lg"
-        as={Link}
-        disabled={!address}
+        disabled={!address || !isConnected}
         scroll={false}
         selected={selected}
-        href={`/lists?${toURL(query, { likedBy: selected ? "" : address })}`}
+        onClick={() =>
+          router.push(
+            `/lists?${toURL(query, { likedBy: selected ? "" : address })}`
+          )
+        }
       >
         {selected ? <Liked className="text-primary-600" /> : <Like />} Liked
       </Tag>
