@@ -119,9 +119,10 @@ export function useProjects(
     },
   });
 
-  if (!isNaN(query.data?.pages)) {
-    queryClient.invalidateQueries();
-    window.location.reload();
+  if (!isNaN(query.data?.pages as unknown as number)) {
+    queryClient.invalidateQueries().then(() => {
+      window.location.reload();
+    });
   }
 
   return {
