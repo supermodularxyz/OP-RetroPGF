@@ -57,7 +57,9 @@ export const Header = () => {
             className="mr-1 font-mono text-gray-600 lg:hidden"
             onClick={() => setOpen(!isOpen)}
           />
-          <OptimismLogo />
+          <Link href={"/projects"} className="py-4">
+            <OptimismLogo />
+          </Link>
         </div>
         <div className="hidden h-full items-center gap-4 lg:flex">
           {navLinks.map((link) => (

@@ -8,5 +8,5 @@ export default function LandingPage() {
     void router.push("/projects");
   }, [router]);
 
-  return <Layout>redirecting...</Layout>;
+  return <Layout></Layout>;
 }
