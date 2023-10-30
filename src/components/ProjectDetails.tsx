@@ -54,15 +54,12 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           }
         )}
       >
-        <div className="h-12">
-          {!intersection?.isIntersecting ? (
-            <ProjectAddToBallot project={project} />
-          ) : (
-            <h1 className="text-xl font-semibold">
-              {project?.displayName}&apos;s Round application
-            </h1>
-          )}
-        </div>
+        {!intersection?.isIntersecting ? (
+          <ProjectAddToBallot project={project} />
+        ) : null}
+        <h1 className="flex h-12 items-center text-xl font-semibold">
+          {project?.displayName}&apos;s Round application
+        </h1>
       </div>
       <div ref={intersectionRef}>
         <BlurredBannerImage
