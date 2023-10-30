@@ -160,11 +160,12 @@ export const AvatarWithName = ({ address }: { address?: Address }) => {
   const ens = useEnsName({ address, chainId: 1, enabled: Boolean(address) });
   const name = ens.data;
   const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });
-
+  const avatarSrc =
+    avatar.data ?? `https://source.boringavatars.com/marble/16/${address}`;
   return (
     <div className="flex items-center gap-2">
-      <Avatar src={avatar.data} size="xs" rounded="full" />
-      <p className="text-sm font-semibold">{name ?? truncate(address)} </p>
+      <Avatar src={avatarSrc} size="xs" rounded="full" />
+      <p className="text-sm font-semibold">{name ?? truncate(address, 13)} </p>
     </div>
   );
 };

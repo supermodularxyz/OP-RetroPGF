@@ -20,8 +20,6 @@ export default function ListsPage() {
   const { data: lists, isLoading, error } = useLists(filter);
   const currentPage = Number(filter?.page);
 
-  console.log("LISTS", lists, isLoading, error);
-
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
 
