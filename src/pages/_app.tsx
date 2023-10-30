@@ -28,7 +28,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister }}
+      persistOptions={{ persister, buster: "1" }}
     >
       <QueryClientProvider client={queryClient}>
         <Providers>

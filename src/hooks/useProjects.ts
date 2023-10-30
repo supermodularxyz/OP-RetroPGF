@@ -118,12 +118,6 @@ export function useProjects(
       return lastPage.pageInfo?.endCursor;
     },
   });
-
-  if (!isNaN(query.data?.pages as unknown as number)) {
-    queryClient.clear();
-    window.location.reload();
-  }
-
   return {
     ...query,
     data: query.data?.pages?.flatMap((p) => p.data).filter(Boolean),
