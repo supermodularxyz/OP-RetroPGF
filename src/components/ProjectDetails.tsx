@@ -8,13 +8,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import { useCopyToClipboard } from "react-use";
 
 import { createComponent } from "~/components/ui";
-import { parseId } from "~/graphql/utils";
-import {
-  Code,
-  Contribution,
-  LayoutList,
-  Link as LinkIcon,
-} from "~/components/icons";
+import { Contribution, LayoutList, Link as LinkIcon } from "~/components/icons";
 import { type Project, fundingSourcesLabels } from "~/hooks/useProjects";
 import { Divider, DividerIcon } from "~/components/ui/Divider";
 import { Tag } from "~/components/ui/Tag";
@@ -238,8 +232,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
 
 function findAllocationForProject(projectId: string, list: List) {
   return (
-    list.listContent.find((p) => parseId(p.project).id === projectId)
-      ?.OPAmount ?? 0
+    list.listContent.find((p) => p.project.id === projectId)?.OPAmount ?? 0
   );
 }
 

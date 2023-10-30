@@ -190,7 +190,6 @@ export const ProjectsLogosCard = ({
 
 const ProjectAvatar = ({ id }: { id: string }) => {
   const { data: project } = useProject(id);
-
   return (
     <AvatarWithBorder
       src={project?.profile?.profileImageUrl}

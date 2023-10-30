@@ -81,7 +81,7 @@ export function useList(id: string) {
   );
 }
 
-function mapList(list: List) {
+export function mapList(list: List) {
   return {
     ...parseId(list),
     listContent: list.listContent.map((item) => ({

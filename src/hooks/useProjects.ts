@@ -2,7 +2,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
-import { type List } from "~/hooks/useLists";
+import { mapList, type List } from "~/hooks/useLists";
 import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
 import {
   Aggregate,
@@ -110,10 +110,7 @@ export function useProject(id: string) {
       axios
         .post<{ data: { retroPGF: { project: Project } } }>(
           `${backendUrl}/graphql`,
-          {
-            query: ProjectQuery,
-            variables: { id },
-          }
+          { query: ProjectQuery, variables: { id } }
         )
         .then((r) => mapProject(r.data.data?.retroPGF.project) ?? null),
     { enabled: Boolean(id) }
@@ -123,7 +120,7 @@ export function useProject(id: string) {
 function mapProject(project: Project) {
   return {
     ...parseId(project),
-    lists: project.lists.map(parseId),
+    lists: project.lists.map(mapList),
   } as Project;
 }
 
