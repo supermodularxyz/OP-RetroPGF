@@ -120,7 +120,7 @@ export function useProjects(
   });
 
   if (!isNaN(query.data?.pages as unknown as number)) {
-    queryClient.invalidateQueries().then(() => {
+    void queryClient.invalidateQueries().then(() => {
       window.location.reload();
     });
   }
