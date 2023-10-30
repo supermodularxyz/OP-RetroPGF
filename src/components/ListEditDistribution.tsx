@@ -59,11 +59,20 @@ export const ListEditDistribution = ({
     add.mutate(form.allocations);
   }
 
-  const allocations = listProjects.map((p) => ({
-    ...p,
-    // Find existing allocations from ballot
-    amount: Number(ballotContains(p.projectId, ballot)?.amount ?? p.amount),
-  }));
+  // TODO: Sort existing projects on top
+  const allocations = listProjects
+    .map((p) => {
+      const ballotAmount = ballotContains(p.projectId, ballot)?.amount;
+      return {
+        ...p,
+        // Find existing allocations from ballot
+        amount: Number(ballotAmount ?? p.amount),
+        ballotAmount,
+      };
+    })
+    // Sort to display projects in ballot first
+    .sort((a, b) => Number(b.ballotAmount ?? 0) - Number(a.ballotAmount ?? 0));
+
   const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
     <div>
