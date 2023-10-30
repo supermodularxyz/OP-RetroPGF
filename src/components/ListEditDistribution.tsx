@@ -99,10 +99,26 @@ export const ListEditDistribution = ({
       >
         {add.isSuccess ? (
           <FeedbackDialog variant="success" icon={CircleCheck}>
-            <div className="font-semibold">List added to ballot</div>
-            <Button as={Link} href={"/ballot"}>
-              View ballot
-            </Button>
+            <div className="font-semibold">
+              List added to ballot successfully!
+            </div>
+            <div className="space-y-2">
+              <Button
+                variant="primary"
+                className="w-full"
+                as={Link}
+                href={"/ballot"}
+              >
+                View ballot
+              </Button>
+              <Button
+                className="w-full"
+                variant="ghost"
+                onClick={() => setOpen(false)}
+              >
+                Continue adding projects
+              </Button>
+            </div>
           </FeedbackDialog>
         ) : add.isLoading ? (
           <FeedbackDialog variant="info" icon={Spinner}>
