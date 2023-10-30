@@ -52,16 +52,20 @@ export default function ListsPage() {
       <div className="no-scrollbar">
         <LikedFilter />
       </div>
+
       {error ? (
-        <Banner variant="warning" title={"Error fetching lists"}>
-          <Button
-            as={Link}
-            className="w-48"
-            variant="primary"
-            href="/lists?seed=0"
-          >
-            Retry
-          </Button>
+        <Banner variant="warning">
+          <div className="flex flex-col items-center gap-4">
+            <div>There was an error fetching the lists</div>
+            <Button
+              as={Link}
+              className="w-48"
+              variant="primary"
+              href="/lists?seed=0"
+            >
+              Retry
+            </Button>
+          </div>
         </Banner>
       ) : null}
 
