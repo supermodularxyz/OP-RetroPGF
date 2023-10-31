@@ -64,7 +64,7 @@ export const ListGridItem = ({
 }) => {
   return (
     <Card className={clsx("h-full", { ["animate-pulse"]: isLoading })}>
-      <div className="space-y-3 p-3">
+      <div className="flex h-full flex-col gap-3 p-3">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>
@@ -81,7 +81,7 @@ export const ListGridItem = ({
 
         <ProjectsLogosCard projects={list?.listContent} />
 
-        <p className="line-clamp-2 text-sm text-neutral-700">
+        <p className="line-clamp-2 h-full text-sm text-neutral-700">
           <Skeleton isLoading={isLoading} className="w-full">
             {list?.listDescription}
           </Skeleton>
