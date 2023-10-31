@@ -38,6 +38,7 @@ export const Lists = ({ filter, lists, isLoading }: Props) => {
               <Link
                 href={`/lists/${list.id}`}
                 key={list.id}
+                target="_blank"
                 className={clsx({
                   ["pt-6 first:pt-0"]: isList,
                 })}
