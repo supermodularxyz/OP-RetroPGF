@@ -60,7 +60,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           <ProjectAddToBallot project={project} />
         ) : null}
         <h1 className="flex h-12 items-center text-xl font-semibold">
-          {project?.displayName}&apos;s Round application
+          {project?.displayName}&apos;s Application
         </h1>
       </div>
       <div ref={intersectionRef}>
