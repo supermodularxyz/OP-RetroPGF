@@ -74,8 +74,8 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             alt={project?.profile?.name}
             src={project?.profile?.profileImageUrl}
           />
-          <div className="flex-1 items-center justify-between md:flex">
-            <div>
+          <div className="flex-1 items-center  justify-between md:flex">
+            <div className="flex-1">
               <h3 className="mb-2 truncate text-2xl font-bold">
                 {project?.displayName}
               </h3>
@@ -90,7 +90,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                 </IconBadge>
               </div>
             </div>
-            <div className="flex flex-1 gap-2">
+            <div className="flex gap-2">
               <MoreDropdown
                 align="start"
                 options={[
