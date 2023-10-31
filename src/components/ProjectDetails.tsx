@@ -261,7 +261,6 @@ const ImpactCard = createComponent(
 const ImpactCategories = ({ project }: { project: Project }) => {
   const { data: count } = useCategories();
 
-  console.log("count", count);
   return (
     <div className="flex flex-wrap gap-1">
       {project?.impactCategory?.map((category) => {
