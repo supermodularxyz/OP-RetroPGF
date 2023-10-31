@@ -15,8 +15,10 @@ import { Tag } from "~/components/ui/Tag";
 import { SunnyMini } from "~/components/SunnySVG";
 import { ListListItem } from "~/components/Lists";
 import {
+  categoryMap,
   impactCategoryDescriptions,
   impactCategoryLabels,
+  useCategories,
 } from "~/hooks/useCategories";
 import { LuArrowUpRight } from "react-icons/lu";
 import { suffixNumber } from "~/utils/suffixNumber";
@@ -134,24 +136,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
             <SunnyMini className="text-primary-600" />
             <H3>Impact statement for RetroPGF 3</H3>
           </div>
-          <p className="whitespace-pre-wrap">{project?.impactDescription}</p>
           <h6 className="mb-1 text-sm font-semibold text-gray-500">
             Categories of impact
           </h6>
-          <div className="flex flex-wrap gap-1">
-            {project?.impactCategory?.map((category) => (
-              <HoverTagCard
-                key={category}
-                tag={impactCategoryLabels[category]}
-                description={impactCategoryDescriptions[category]}
-                includedProjectsNumber={1}
-                totalProjectsNumber={150}
-              />
-            ))}
-          </div>
+          <ImpactCategories project={project} />
           <DividerIcon icon={Contribution} className="my-4" />
           <H3>Contributions</H3>
-          <p className="whitespace-pre-wrap">
+          <p className="whitespace-pre-wrap leading-relaxed">
             {project?.contributionDescription}
           </p>
           <div className="flex flex-col gap-2">
@@ -161,7 +152,9 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           </div>
           <DividerIcon icon={Contribution} className="my-4" />
           <H3>Impact</H3>
-          <p className="whitespace-pre-wrap">{project?.impactDescription}</p>
+          <p className="whitespace-pre-wrap leading-relaxed">
+            {project?.impactDescription}
+          </p>
           <div className="grid gap-2 md:grid-cols-3">
             {project?.impactMetrics?.map((metric, i) => (
               <ImpactCard
@@ -265,6 +258,26 @@ const ImpactCard = createComponent(
   })
 );
 
+const ImpactCategories = ({ project }: { project: Project }) => {
+  const { data: count } = useCategories();
+
+  console.log("count", count);
+  return (
+    <div className="flex flex-wrap gap-1">
+      {project?.impactCategory?.map((category) => {
+        return (
+          <HoverTagCard
+            key={category}
+            tag={impactCategoryLabels[category]}
+            description={impactCategoryDescriptions[category]}
+            includedProjectsNumber={count?.[categoryMap[category]]}
+            totalProjectsNumber={count?.total}
+          />
+        );
+      })}
+    </div>
+  );
+};
 export const HoverTagCard = ({
   tag,
   description,
@@ -273,8 +286,8 @@ export const HoverTagCard = ({
 }: {
   tag: string;
   description: string;
-  includedProjectsNumber: number;
-  totalProjectsNumber: number;
+  includedProjectsNumber?: number;
+  totalProjectsNumber?: number;
 }) => {
   return (
     <HoverCard.Root>

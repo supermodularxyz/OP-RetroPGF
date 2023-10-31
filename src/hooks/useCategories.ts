@@ -46,9 +46,6 @@ export function useCategories() {
           retroPGF: { projectsAggregate: Aggregate };
         };
       }>(`${backendUrl}/graphql`, { query: CategoriesQuery })
-      .then((r) => {
-        const { total, ...categories } = r.data.data.retroPGF.projectsAggregate;
-        return categories ?? null;
-      });
+      .then((r) => r.data.data?.retroPGF?.projectsAggregate ?? null);
   });
 }
