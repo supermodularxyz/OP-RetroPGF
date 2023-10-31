@@ -74,23 +74,6 @@ export const ListDetails = ({
               >
                 <LikeCount listId={list.id} />
               </Button>
-              <MoreDropdown
-                align="end"
-                options={[
-                  // {
-                  //   value: "share",
-                  //   onClick: () => alert("share"),
-                  //   label: "Share",
-                  //   icon: Share,
-                  // },
-                  {
-                    value: "report",
-                    onClick: () => window.open(reportUrl),
-                    label: "Report",
-                    icon: Flag,
-                  },
-                ]}
-              />
             </div>
           </div>
           <div className="flex flex-col gap-3">

@@ -104,11 +104,11 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   //   label: "View Optimist Profile",
                   //   onClick: () => alert("View Optimist Profile"),
                   // },
-                  {
-                    value: "flag",
-                    label: "Report",
-                    onClick: () => window.open(reportUrl),
-                  },
+                  // {
+                  //   value: "flag",
+                  //   label: "Report",
+                  //   onClick: () => window.open(reportUrl),
+                  // },
                 ]}
               />
               <ProjectAddToBallot project={project} />
