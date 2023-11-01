@@ -133,12 +133,14 @@ export const FormControl = ({
 
 export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];
+  values?: UseFormProps<z.infer<S>>["values"];
   schema: S;
   onSubmit: (values: z.infer<S>) => void;
 }
 
 export function Form<S extends z.Schema>({
   defaultValues,
+  values,
   schema,
   children,
   onSubmit,
@@ -146,6 +148,7 @@ export function Form<S extends z.Schema>({
   // Initialize the form with defaultValues and schema for validation
   const form = useForm({
     defaultValues,
+    values,
     resolver: zodResolver(schema),
     mode: "onBlur",
   });

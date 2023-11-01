@@ -66,7 +66,7 @@ export default function BallotPage() {
                   options={options}
                 />
               </div>
-              <div className="relative flex min-h-[360px] flex-col">
+              <div className="relative flex max-h-[500px] min-h-[360px] flex-col overflow-auto">
                 {allocations.length ? (
                   <AllocationForm filter={filter} onSave={handleSaveBallot} />
                 ) : (

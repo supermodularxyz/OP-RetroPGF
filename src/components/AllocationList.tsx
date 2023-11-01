@@ -72,7 +72,7 @@ export function AllocationForm({
 
   // Map each id to the index so we can sort and filter
   const indexes = new Map(
-    fields.map(({ projectId }, index) => [projectId, index])
+    allocations.map(({ projectId }, index) => [projectId, index])
   );
 
   const sortedFields = useMemo(
@@ -87,7 +87,6 @@ export function AllocationForm({
         <Tbody>
           {sortedFields.map((project) => {
             const idx = indexes.get(project.projectId)!;
-
             // TODO: Get allocated amount from list
             const listAllocation =
               list?.find((p) => p.projectId === project.id)?.amount ?? 0;
@@ -103,7 +102,7 @@ export function AllocationForm({
                 <Td>
                   {listAllocation ? (
                     <AllocationInput
-                      name="amount"
+                      name="compareAmount"
                       defaultValue={listAllocation}
                       disabled={true}
                     />
@@ -235,6 +234,7 @@ export const ProjectAvatarWithName = ({
         ["hover:underline"]: href,
       })}
       href={href}
+      target="_blank"
     >
       <Avatar size="sm" src={project?.profile?.profileImageUrl} />
       <div>
