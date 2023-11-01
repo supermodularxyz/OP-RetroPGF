@@ -7,12 +7,14 @@ import { type Filter, useFilter } from "~/hooks/useFilter";
 import { SearchInput } from "../ui/Form";
 import { useClickAway } from "react-use";
 import { Avatar } from "../ui/Avatar";
+import { Allocation } from "~/hooks/useBallot";
 
 type Props = {
+  addedProjects: Allocation[];
   onSelect: (path: string) => void;
 };
 
-export const SearchProjects = ({ onSelect }: Props) => {
+export const SearchProjects = ({ addedProjects, onSelect }: Props) => {
   const searchRef = useRef(null);
   const [isOpen, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -26,7 +28,10 @@ export const SearchProjects = ({ onSelect }: Props) => {
   } as Partial<Filter>;
   const projects = useProjects({ ...useFilter("projects").data, ...filter });
 
-  const projectsData = projects.data ?? [];
+  const projectsData =
+    projects.data?.filter(
+      (project) => !addedProjects.find((p) => p.projectId === project.id)
+    ) ?? [];
 
   return (
     <div className="flex-1">

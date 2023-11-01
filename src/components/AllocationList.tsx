@@ -155,7 +155,7 @@ export function AllocationFormWithSearch({
 
   return (
     <AllocationListWrapper>
-      <SearchProjects
+      <SearchProjects addedProjects={fields}
         onSelect={(projectId) => append({ projectId, amount: 0 })}
       />
       <Table>
