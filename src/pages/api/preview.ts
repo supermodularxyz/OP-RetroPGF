@@ -8,9 +8,8 @@ export default async function handler(
 ) {
   try {
     const url = req.query.url as string;
-    const r = await axios.get(url);
+    const r = await axios.get(decodeURIComponent(url));
     const $ = cheerio.load(r?.data as string);
-
     const title = $("title").text();
     const description = $('meta[name="description"]').attr("content");
     const image = $('meta[property="og:image"]').attr("content");
