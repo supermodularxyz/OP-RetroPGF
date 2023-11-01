@@ -34,7 +34,6 @@ export const AllocationList = ({
               <ProjectAvatarWithName
                 href={`/projects/${project?.projectId}`}
                 id={project.projectId}
-                subtitle="@project"
               />
             </Td>
             <Td className="whitespace-nowrap text-right">
@@ -155,7 +154,8 @@ export function AllocationFormWithSearch({
 
   return (
     <AllocationListWrapper>
-      <SearchProjects addedProjects={fields}
+      <SearchProjects
+        addedProjects={fields}
         onSelect={(projectId) => append({ projectId, amount: 0 })}
       />
       <Table>
