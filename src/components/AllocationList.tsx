@@ -72,12 +72,12 @@ export function AllocationForm({
 
   // Map each id to the index so we can sort and filter
   const indexes = new Map(
-    allocations.map(({ projectId }, index) => [projectId, index])
+    fields.map(({ projectId }, index) => [projectId, index])
   );
 
   const sortedFields = useMemo(
-    () => sortAndFilter(mapProjectData(allocations), filter),
-    [allocations, filter, mapProjectData, sortAndFilter]
+    () => sortAndFilter(mapProjectData(fields), filter),
+    [fields, filter, mapProjectData, sortAndFilter]
   );
 
   return (
