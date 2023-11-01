@@ -147,17 +147,6 @@ export const ListEditDistribution = ({
             />
             <div className="max-h-[480px] overflow-y-scroll">
               <AllocationForm
-                header={
-                  <Thead>
-                    <Tr>
-                      <Td></Td>
-                      <Td className="text-neutral-600">
-                        {alreadyInBallot.length ? "List amount" : null}
-                      </Td>
-                      <Td className="text-neutral-600">Ballot amount</Td>
-                    </Tr>
-                  </Thead>
-                }
                 filter={{}}
                 list={alreadyInBallot}
                 onSave={({ allocations }) =>
@@ -212,7 +201,7 @@ const TotalOPBanner = () => {
             ? `Total exceeds by ${formatNumber(exceeds)} OP`
             : "Total"}
         </div>
-        <div>{formatNumber(current + sum)} OP</div>
+        <div>{formatNumber(current)} OP</div>
       </div>
     </Banner>
   );
