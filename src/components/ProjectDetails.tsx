@@ -70,17 +70,30 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           fallbackSrc={profileImageUrl}
         />
 
-        <div className="relative -mt-20 items-end gap-6 md:ml-8 md:flex">
+        <div className="relative -mt-20 items-end gap-6 md:flex lg:ml-8">
           <Avatar
             size="lg"
             alt={project?.profile?.name}
             src={project?.profile?.profileImageUrl}
           />
-          <div className="flex-1 items-center  justify-between md:flex">
+          <div className="flex-1 items-center justify-between md:flex">
             <div className="flex-1">
-              <h3 className="mb-2 truncate text-2xl font-bold">
-                {project?.displayName}
-              </h3>
+              <div className="items-center justify-between md:flex">
+                <h3 className="text-2xl font-bold">{project?.displayName}</h3>
+                <div className="flex items-center justify-end gap-2">
+                  <MoreDropdown
+                    align="start"
+                    options={[
+                      {
+                        value: "copy",
+                        label: "Copy address",
+                        onClick: () => copy(project.payoutAddress),
+                      },
+                    ]}
+                  />
+                  <ProjectAddToBallot project={project} />
+                </div>
+              </div>
               <div>
                 <IconBadge
                   icon={LinkIcon}
@@ -91,29 +104,6 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
                   Website
                 </IconBadge>
               </div>
-            </div>
-            <div className="flex gap-2">
-              <MoreDropdown
-                align="start"
-                options={[
-                  {
-                    value: "copy",
-                    label: "Copy address",
-                    onClick: () => copy(project.payoutAddress),
-                  },
-                  // {
-                  //   value: "profile",
-                  //   label: "View Optimist Profile",
-                  //   onClick: () => alert("View Optimist Profile"),
-                  // },
-                  // {
-                  //   value: "flag",
-                  //   label: "Report",
-                  //   onClick: () => window.open(reportUrl),
-                  // },
-                ]}
-              />
-              <ProjectAddToBallot project={project} />
             </div>
           </div>
         </div>

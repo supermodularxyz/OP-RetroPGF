@@ -238,9 +238,7 @@ export const ProjectAvatarWithName = ({
     >
       <Avatar size="sm" src={project?.profile?.profileImageUrl} />
       <div>
-        <div className="whitespace-nowrap font-bold">
-          {project?.displayName}
-        </div>
+        <div className="font-bold">{project?.displayName}</div>
         <div className="text-muted">{subtitle}</div>
       </div>
     </Component>

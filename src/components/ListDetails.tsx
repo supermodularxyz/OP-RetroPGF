@@ -85,7 +85,7 @@ export const ListDetails = ({
               <ExternalLinkOutline className="text-neutral-600" />
             </Button>
           </div>
-          <Card>
+          <Card className="border-0 p-0 md:border-2 md:p-6">
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-2">
                 <p className="font-bold">{listProjects.length} projects</p>
