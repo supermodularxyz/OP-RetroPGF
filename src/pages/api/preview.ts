@@ -9,12 +9,14 @@ export default async function handler(
 ) {
   try {
     const url = req.query.url as string;
-    const r = await axios.get(`${previewBaseUrl}?url=${url}`);
+    const r = await axios.get<{
+      result?: { title: string; description: string; ["og:image"]: string };
+    }>(`${previewBaseUrl}?url=${url}`);
 
-    const { result } = r?.data ?? {};
-    const title = result.title;
-    const description = result.description;
-    const image = result["og:image"];
+    const result = r?.data?.result;
+    const title = result?.title;
+    const description = result?.description;
+    const image = result?.["og:image"];
     return res.json({ title, description, image });
   } catch (error) {
     console.error("Error fetching link metadata", error);
