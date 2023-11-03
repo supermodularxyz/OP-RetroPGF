@@ -12,7 +12,9 @@ export function ProjectContribution({
 }) {
   const metadata = useQuery(["metadata", link.url], () =>
     axios
-      .get<{ image: string; title: string }>(`/api/preview?url=${link.url}`)
+      .get<{ image: string; title: string }>(
+        `/api/preview?url=${encodeURIComponent(link.url)}`
+      )
       .then((r) => r.data)
       .catch(console.log)
   );

@@ -76,9 +76,9 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
           schema={z.object({
             amount: z
               .number()
-              .max(
-                Math.min(MAX_ALLOCATION_PROJECT, MAX_ALLOCATION_TOTAL - sum)
-              ),
+              .min(0)
+              .max(Math.min(MAX_ALLOCATION_PROJECT, MAX_ALLOCATION_TOTAL - sum))
+              .default(0),
           })}
           onSubmit={({ amount }) => {
             track("AddProjectToBallotConfirm");
@@ -153,7 +153,7 @@ const ProjectAllocation = ({
           variant="primary"
           type="submit"
           className="w-full"
-          disabled={isError || !amount}
+          disabled={isError}
         >
           {inBallot ? "Update" : "Add"} votes
         </Button>

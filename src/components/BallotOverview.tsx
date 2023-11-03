@@ -86,7 +86,10 @@ export const BallotOverview = () => {
         rewarded with profit to the individual.`}
           </p>
           <div>
-            <ExternalLink href="/" target="_blank">
+            <ExternalLink
+              href="https://www.optimism.io/badgeholder-manual"
+              target="_blank"
+            >
               Badgeholder Manual
             </ExternalLink>
           </div>

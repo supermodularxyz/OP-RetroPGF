@@ -29,7 +29,11 @@ export const Projects = ({ filter, projects, isLoading }: Props) => {
             )
           )
         : projects?.map((project) => (
-            <Link href={`/projects/${project.id}`} key={project.id}>
+            <Link
+              href={`/projects/${project.id}`}
+              target="_blank"
+              key={project.id}
+            >
               {isList ? (
                 <ProjectListItem project={project} />
               ) : (

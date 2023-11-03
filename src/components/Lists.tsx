@@ -13,6 +13,7 @@ import { Avatar, AvatarWithBorder } from "./ui/Avatar";
 import { truncate } from "~/utils/truncate";
 import { Skeleton } from "./ui/Skeleton";
 import { track } from "@vercel/analytics/react";
+import { useAvatar } from "~/hooks/useAvatar";
 
 type Props = { filter?: Filter; lists?: List[]; isLoading: boolean };
 
@@ -38,6 +39,7 @@ export const Lists = ({ filter, lists, isLoading }: Props) => {
               <Link
                 href={`/lists/${list.id}`}
                 key={list.id}
+                target="_blank"
                 className={clsx({
                   ["pt-6 first:pt-0"]: isList,
                 })}
@@ -63,7 +65,7 @@ export const ListGridItem = ({
 }) => {
   return (
     <Card className={clsx("h-full", { ["animate-pulse"]: isLoading })}>
-      <div className="space-y-3 p-3">
+      <div className="flex h-full flex-col gap-3 p-3">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>
@@ -80,7 +82,7 @@ export const ListGridItem = ({
 
         <ProjectsLogosCard projects={list?.listContent} />
 
-        <p className="line-clamp-2 text-sm text-neutral-700">
+        <p className="line-clamp-2 h-full text-sm text-neutral-700">
           <Skeleton isLoading={isLoading} className="w-full">
             {list?.listDescription}
           </Skeleton>
@@ -167,15 +169,13 @@ export const LikeCount = ({ listId = "" }) => {
 };
 
 export const AvatarWithName = ({ address }: { address?: Address }) => {
-  const ens = useEnsName({ address, chainId: 1, enabled: Boolean(address) });
-  const name = ens.data;
-  const avatar = useEnsAvatar({ name, chainId: 1, enabled: Boolean(name) });
-  const avatarSrc =
-    avatar.data ?? `https://source.boringavatars.com/marble/16/${address}`;
+  const { data } = useAvatar(address);
   return (
     <div className="flex items-center gap-2">
-      <Avatar src={avatarSrc} size="xs" rounded="full" />
-      <p className="text-sm font-semibold">{name ?? truncate(address, 13)} </p>
+      <Avatar src={data?.avatar} size="xs" rounded="full" />
+      <p className="text-sm font-semibold">
+        {data?.name ?? truncate(address, 13)}{" "}
+      </p>
     </div>
   );
 };

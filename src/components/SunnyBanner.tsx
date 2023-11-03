@@ -17,7 +17,10 @@ export const SunnyBanner = () => (
           receive retroactive public goods funding.
         </p>
         <div>
-          <ExternalLink href="/" target="_blank">
+          <ExternalLink
+            href="https://community.optimism.io/docs/governance/retropgf-3/"
+            target="_blank"
+          >
             View docs
           </ExternalLink>
         </div>

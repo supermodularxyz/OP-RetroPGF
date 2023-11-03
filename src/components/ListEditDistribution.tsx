@@ -21,7 +21,6 @@ import { Banner } from "./ui/Banner";
 import { formatNumber } from "~/utils/formatNumber";
 import {
   Allocation,
-  Ballot,
   ballotContains,
   sumBallot,
   useBallot,
@@ -30,7 +29,6 @@ import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { useAddToBallot } from "~/hooks/useBallot";
 import { Spinner } from "./ui/Spinner";
 import { FeedbackDialog } from "./FeedbackDialog";
-import { Td, Thead, Tr } from "./ui/Table";
 
 type FormAllocations = z.infer<typeof AllocationsSchema>["allocations"];
 
@@ -61,17 +59,26 @@ export const ListEditDistribution = ({
   }
 
   const allocations = listProjects
-    .map((p) => {
-      const ballotAmount = ballotContains(p.projectId, ballot)?.amount;
+    .map((project) => {
+      const inBallot = ballotContains(project.projectId, ballot);
+      const ballotAmount = ballotContains(project.projectId, ballot)?.amount;
       return {
-        ...p,
+        ...project,
         // Find existing allocations from ballot
-        amount: Number(ballotAmount ?? p.amount),
-        ballotAmount,
+        amount: Number(ballotAmount ?? project.amount),
+        // Always show projects in ballot first, next highest in ballot, finally in list
+        sortAmount: inBallot
+          ? Number.MAX_SAFE_INTEGER
+          : ballotAmount ?? project.amount,
       };
     })
-    // Sort to display projects in ballot first
-    .sort((a, b) => Number(b.ballotAmount ?? 0) - Number(a.ballotAmount ?? 0));
+    .sort((a, b) => b.sortAmount - a.sortAmount);
+
+  function handleOpenChange() {
+    setOpen(false);
+    updateInBallot(itemsInBallot(listProjects));
+    add.reset(); // This is needed to reset add.isSuccess and show the allocations again
+  }
 
   const showDialogTitle = !(add.isLoading || add.isSuccess);
   return (
@@ -92,10 +99,7 @@ export const ListEditDistribution = ({
         title={showDialogTitle ? `Edit distribution` : null}
         size={add.isSuccess ? "sm" : "md"}
         isOpen={isOpen}
-        onOpenChange={() => {
-          setOpen(false);
-          // add.reset(); // This is needed to reset add.isSuccess and show the allocations again
-        }}
+        onOpenChange={handleOpenChange}
       >
         {add.isSuccess ? (
           <FeedbackDialog variant="success" icon={CircleCheck}>
@@ -114,7 +118,7 @@ export const ListEditDistribution = ({
               <Button
                 className="w-full"
                 variant="ghost"
-                onClick={() => setOpen(false)}
+                onClick={handleOpenChange}
               >
                 Continue adding projects
               </Button>
@@ -146,24 +150,7 @@ export const ListEditDistribution = ({
               onReset={() => updateInBallot(itemsInBallot(listProjects))}
             />
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationForm
-                header={
-                  <Thead>
-                    <Tr>
-                      <Td></Td>
-                      <Td className="text-neutral-600">
-                        {alreadyInBallot.length ? "List amount" : null}
-                      </Td>
-                      <Td className="text-neutral-600">Ballot amount</Td>
-                    </Tr>
-                  </Thead>
-                }
-                filter={{}}
-                list={alreadyInBallot}
-                onSave={({ allocations }) =>
-                  updateInBallot(itemsInBallot(allocations))
-                }
-              />
+              <AllocationForm filter={{}} list={alreadyInBallot} />
             </div>
             <TotalOPBanner />
             <div className="flex gap-2">
@@ -171,7 +158,7 @@ export const ListEditDistribution = ({
                 type="button"
                 variant="outline"
                 className={"w-full"}
-                onClick={() => setOpen(false)}
+                onClick={handleOpenChange}
               >
                 Cancel
               </Button>
@@ -212,7 +199,7 @@ const TotalOPBanner = () => {
             ? `Total exceeds by ${formatNumber(exceeds)} OP`
             : "Total"}
         </div>
-        <div>{formatNumber(current + sum)} OP</div>
+        <div>{formatNumber(current)} OP</div>
       </div>
     </Banner>
   );
@@ -229,6 +216,8 @@ const ResetDistribution = ({ onReset }: { onReset: () => void }) => {
       type="button"
       onClick={() => {
         form.reset();
+        // This is weird, but it needs a second reset. Might be something with the indexes.
+        setTimeout(() => form.reset(), 50);
         onReset();
       }}
     >

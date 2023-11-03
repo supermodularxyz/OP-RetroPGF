@@ -7,10 +7,11 @@ import { useProjects, type Project } from "~/hooks/useProjects";
 import { type Filter, useFilter } from "~/hooks/useFilter";
 import { IconButton } from "./ui/Button";
 import { ChevronLeft, Search as SearchIcon, X } from "./icons";
-import { useLists } from "~/hooks/useLists";
+import { useLists, type List } from "~/hooks/useLists";
 import { useKey } from "react-use";
 import { SearchInput } from "./ui/Form";
 import { Avatar } from "./ui/Avatar";
+import { EnsAvatar } from "./EnsAvatar";
 
 type Props = {
   onSelect: (path: string) => void;
@@ -120,12 +121,19 @@ export const Search = ({ onSelect }: Props) => {
                               onSelect(path);
                             }}
                           >
-                            <Avatar
-                              className="h-6 w-6"
-                              src={
-                                (item as Project).profile?.profileImageUrl ?? ""
-                              }
-                            />
+                            {type === "projects" ? (
+                              <Avatar
+                                className="h-6 w-6"
+                                src={
+                                  (item as Project).profile?.profileImageUrl ??
+                                  ""
+                                }
+                              />
+                            ) : (
+                              <EnsAvatar
+                                address={(item as List)?.author?.address}
+                              />
+                            )}
                             {item.displayName ?? item.listName}
                           </Command.Item>
                         )

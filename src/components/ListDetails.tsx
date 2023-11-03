@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { useAccount } from "wagmi";
+import { Address, useAccount } from "wagmi";
 import { tv } from "tailwind-variants";
 
 import { useLikeList, type List } from "~/hooks/useLists";
+import { useAvatar } from "~/hooks/useAvatar";
 import { Button } from "~/components/ui/Button";
-import { ExternalLinkOutline, Document, Share, Flag } from "~/components/icons";
+import { ExternalLinkOutline, Document } from "~/components/icons";
 import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
@@ -14,7 +15,6 @@ import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
-import { truncate } from "~/utils/truncate";
 import { useRouter } from "next/router";
 import { track } from "@vercel/analytics/react";
 
@@ -50,16 +50,7 @@ export const ListDetails = ({
           <div className="flex justify-between gap-4 sm:items-center">
             <div>
               <h3 className="mb-2 text-2xl font-bold">{list?.listName}</h3>
-              <div className="flex items-center gap-1">
-                <Avatar size="xs" rounded="full" />
-                <div className="flex items-center">
-                  <div className="text-sm font-semibold">
-                    {list.author?.resolvedName.name ??
-                      truncate(list.author?.address)}
-                  </div>
-                  <CopyButton value={list.author?.address} />
-                </div>
-              </div>
+              <UserDetails address={list?.author?.address} />
             </div>
             <div className="flex h-fit gap-3">
               <Button
@@ -74,23 +65,6 @@ export const ListDetails = ({
               >
                 <LikeCount listId={list.id} />
               </Button>
-              <MoreDropdown
-                align="end"
-                options={[
-                  // {
-                  //   value: "share",
-                  //   onClick: () => alert("share"),
-                  //   label: "Share",
-                  //   icon: Share,
-                  // },
-                  {
-                    value: "report",
-                    onClick: () => window.open(reportUrl),
-                    label: "Report",
-                    icon: Flag,
-                  },
-                ]}
-              />
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -111,7 +85,7 @@ export const ListDetails = ({
               <ExternalLinkOutline className="text-neutral-600" />
             </Button>
           </div>
-          <Card>
+          <Card className="border-0 p-0 md:border-2 md:p-6">
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-2">
                 <p className="font-bold">{listProjects.length} projects</p>
@@ -131,6 +105,20 @@ export const ListDetails = ({
     </>
   );
 };
+
+function UserDetails({ address }: { address: Address }) {
+  const { data } = useAvatar(address);
+
+  return (
+    <div className="flex items-center gap-1">
+      <Avatar src={data?.avatar} size="xs" rounded="full" />
+      <div className="flex items-center">
+        <div className="text-sm font-semibold">{data?.name}</div>
+        <CopyButton value={address} />
+      </div>
+    </div>
+  );
+}
 
 const Card = createComponent(
   "div",

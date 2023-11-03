@@ -34,7 +34,6 @@ export const AllocationList = ({
               <ProjectAvatarWithName
                 href={`/projects/${project?.projectId}`}
                 id={project.projectId}
-                subtitle="@project"
               />
             </Td>
             <Td className="whitespace-nowrap text-right">
@@ -77,8 +76,8 @@ export function AllocationForm({
   );
 
   const sortedFields = useMemo(
-    () => sortAndFilter(mapProjectData(allocations), filter),
-    [allocations, filter, mapProjectData, sortAndFilter]
+    () => sortAndFilter(mapProjectData(fields), filter),
+    [fields, filter, mapProjectData, sortAndFilter]
   );
 
   return (
@@ -88,7 +87,6 @@ export function AllocationForm({
         <Tbody>
           {sortedFields.map((project) => {
             const idx = indexes.get(project.projectId)!;
-
             // TODO: Get allocated amount from list
             const listAllocation =
               list?.find((p) => p.projectId === project.id)?.amount ?? 0;
@@ -104,7 +102,7 @@ export function AllocationForm({
                 <Td>
                   {listAllocation ? (
                     <AllocationInput
-                      name="amount"
+                      name="compareAmount"
                       defaultValue={listAllocation}
                       disabled={true}
                     />
@@ -156,6 +154,7 @@ export function AllocationFormWithSearch({
   return (
     <AllocationListWrapper>
       <SearchProjects
+        addedProjects={fields}
         onSelect={(projectId) => append({ projectId, amount: 0 })}
       />
       <Table>
@@ -235,12 +234,11 @@ export const ProjectAvatarWithName = ({
         ["hover:underline"]: href,
       })}
       href={href}
+      target="_blank"
     >
       <Avatar size="sm" src={project?.profile?.profileImageUrl} />
       <div>
-        <div className="whitespace-nowrap font-bold">
-          {project?.displayName}
-        </div>
+        <div className="font-bold">{project?.displayName}</div>
         <div className="text-muted">{subtitle}</div>
       </div>
     </Component>

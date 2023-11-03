@@ -8,7 +8,7 @@ import { SortByDropdown } from "~/components/SortByDropdown";
 import { Button } from "~/components/ui/Button";
 import { Form, SearchInput } from "~/components/ui/Form";
 import { Spinner } from "~/components/ui/Spinner";
-import { useBallot } from "~/hooks/useBallot";
+import { Allocation, useBallot } from "~/hooks/useBallot";
 import { sumBallot, useSaveBallot } from "~/hooks/useBallot";
 import { type Filter } from "~/hooks/useFilter";
 import { AllocationsSchema } from "~/schemas/allocation";
@@ -23,21 +23,9 @@ const options = [
 ] as Filter["sort"][];
 
 export default function BallotPage() {
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState(options[4]);
-
-  const save = useSaveBallot();
   const { data: ballot, isLoading } = useBallot();
 
   const allocations = ballot?.votes ?? [];
-
-  const filter = { search, sort };
-
-  function handleSaveBallot(form: {
-    allocations: z.infer<typeof AllocationsSchema>["allocations"];
-  }) {
-    save.mutate(form.allocations);
-  }
 
   return (
     <Layout sidebar="right" requireAuth>
@@ -45,47 +33,69 @@ export default function BallotPage() {
         <Form
           schema={AllocationsSchema}
           defaultValues={{ allocations }}
-          onSubmit={handleSaveBallot}
+          onSubmit={console.log}
         >
           <h1 className="mb-2 text-2xl font-bold">Review your ballot</h1>
           <p className="mb-6">
             Once you have reviewed your OP allocation, you can submit your
             ballot.
           </p>
-          <div className="relative rounded-2xl border border-gray-300">
-            <div className="p-8">
-              <div className="mb-4 flex gap-3">
-                <SearchInput
-                  placeholder="Search projects..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <SortByDropdown
-                  value={sort}
-                  onChange={setSort}
-                  options={options}
-                />
-              </div>
-              <div className="relative flex min-h-[360px] flex-col">
-                {allocations.length ? (
-                  <AllocationForm filter={filter} onSave={handleSaveBallot} />
-                ) : (
-                  <EmptyBallot />
-                )}
-              </div>
-            </div>
-            <div className="flex h-16 items-center justify-between rounded-b-2xl border-t border-gray-300 bg-[#EDF4FC] px-8 py-4 text-lg font-semibold">
-              <div>Total OP in ballot</div>
-              <div className="flex items-center gap-2">
-                {save.isLoading && <Spinner />}
-                <TotalOP />
-              </div>
-            </div>
-          </div>
+
+          <BallotAllocationForm allocations={allocations} />
         </Form>
       )}
       <div className="py-8" />
     </Layout>
+  );
+}
+
+function BallotAllocationForm({ allocations }: { allocations: Allocation[] }) {
+  const form = useFormContext();
+
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState(options[4]);
+
+  const save = useSaveBallot();
+
+  function handleSaveBallot({
+    allocations,
+  }: {
+    allocations: z.infer<typeof AllocationsSchema>["allocations"];
+  }) {
+    form.reset({ allocations });
+    save.mutate(allocations);
+  }
+
+  const filter = { search, sort };
+
+  return (
+    <div className="relative rounded-2xl border border-gray-300">
+      <div className="p-8">
+        <div className="mb-4 flex gap-3">
+          <SearchInput
+            placeholder="Search projects..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <SortByDropdown value={sort} onChange={setSort} options={options} />
+        </div>
+        <div className="relative flex max-h-[500px] min-h-[360px] flex-col overflow-auto">
+          {allocations.length ? (
+            <AllocationForm filter={filter} onSave={handleSaveBallot} />
+          ) : (
+            <EmptyBallot />
+          )}
+        </div>
+      </div>
+
+      <div className="flex h-16 items-center justify-between rounded-b-2xl border-t border-gray-300 bg-[#EDF4FC] px-8 py-4 text-lg font-semibold">
+        <div>Total OP in ballot</div>
+        <div className="flex items-center gap-2">
+          {save.isLoading && <Spinner />}
+          <TotalOP />
+        </div>
+      </div>
+    </div>
   );
 }
 
