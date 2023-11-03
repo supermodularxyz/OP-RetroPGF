@@ -24,7 +24,7 @@ export function ProjectContribution({
       <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
         <div className="flex items-center gap-4 overflow-auto rounded-xl border border-gray-200">
           <Image
-            className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100"
+            className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100 bg-cover bg-center"
             title={metadata.data?.title}
             src={metadata.data?.image}
           />
