@@ -12,9 +12,12 @@ import { Like, Liked } from "~/components/icons";
 import { useAccount } from "wagmi";
 import { LoadMore } from "~/components/LoadMore";
 import { Banner } from "~/components/ui/Banner";
+import { CategoriesFilter } from "~/components/CategoriesFilter";
+import { Divider } from "~/components/ui/Divider";
 
 export default function ListsPage() {
   const router = useRouter();
+  const query = router.query;
 
   const { data: filter } = useFilter("lists");
   const {
@@ -49,8 +52,15 @@ export default function ListsPage() {
           />
         </div>
       </div>
-      <div className="no-scrollbar">
+      <div className="no-scrollbar flex gap-2">
         <LikedFilter />
+        <div className="flex py-4">
+          <Divider orientation={"vertical"} />
+        </div>
+        <CategoriesFilter
+          selected={filter?.categories}
+          onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
+        />
       </div>
 
       {error ? (
@@ -85,7 +95,7 @@ const LikedFilter = () => {
 
   const selected = filter?.likedBy === address;
   return (
-    <div className="my-2 flex gap-2 overflow-x-auto py-1">
+    <div className="my-2 flex gap-2 py-1">
       <Tag
         size="lg"
         as={Link}
