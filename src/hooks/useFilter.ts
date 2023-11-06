@@ -37,6 +37,7 @@ export const sortLabels: { [key in FilterSort]: string } = {
   ascOP: "Smallest OP",
   descOP: "Highest OP",
   liked: "Most liked",
+  byIncludedInBallots: "Included in ballots",
 };
 
 type FilterType = "projects" | "lists";

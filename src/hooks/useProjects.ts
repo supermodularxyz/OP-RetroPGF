@@ -23,6 +23,7 @@ export type Project = {
     url: string;
     description: string;
   }[];
+  includedInBallots: number;
   impactCategory: ImpactCategory[];
   impactDescription: string;
   impactMetrics: {

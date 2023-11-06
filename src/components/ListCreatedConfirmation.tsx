@@ -39,8 +39,8 @@ export const ListCreatedConfirmation = ({ websiteUrl = "" }) => {
                 improve the process by providing feedback on your experience as
                 a badgeholder!
               </p>
-              <Button variant="outline" as={Link} href={websiteUrl}>
-                Return to {websiteUrl}
+              <Button variant="outline" as={Link} href={websiteUrl || "/lists"}>
+                {websiteUrl ? `Return to  ${websiteUrl}` : "View all lists"}
               </Button>
             </div>
             <Image

@@ -14,6 +14,7 @@ import { LoadMore } from "~/components/LoadMore";
 import { Banner } from "~/components/ui/Banner";
 import { CategoriesFilter } from "~/components/CategoriesFilter";
 import { Divider } from "~/components/ui/Divider";
+import { useCategories } from "~/hooks/useCategories";
 
 export default function ListsPage() {
   const router = useRouter();
@@ -30,7 +31,6 @@ export default function ListsPage() {
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
-
   return (
     <Layout sidebar="left">
       <div className="justify-between md:flex">
@@ -58,6 +58,7 @@ export default function ListsPage() {
           <Divider orientation={"vertical"} />
         </div>
         <CategoriesFilter
+          type="lists"
           selected={filter?.categories}
           onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
         />

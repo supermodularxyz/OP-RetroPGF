@@ -34,6 +34,7 @@ fundingSources {
   type
 }
 id
+includedInBallots
 impactCategory
 impactDescription
 impactMetrics {
@@ -101,6 +102,9 @@ export const CategoriesQuery = `
   query {
     retroPGF {
       projectsAggregate {
+        ${AGGREGATE_FRAGMENT}
+      }
+      listsAggregate {
         ${AGGREGATE_FRAGMENT}
       }
     }
