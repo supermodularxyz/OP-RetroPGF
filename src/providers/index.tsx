@@ -1,7 +1,12 @@
 import { type PropsWithChildren } from "react";
 import { Inter } from "next/font/google";
 
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  connectorsForWallets,
+  getDefaultWallets,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
+import { frameWallet } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createConfig, mainnet, WagmiConfig } from "wagmi";
 import { optimism, optimismGoerli } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
@@ -23,11 +28,19 @@ const { chains, publicClient } = configureChains(activeChains, [
   publicProvider(),
 ]);
 
-const { connectors } = getDefaultWallets({
+const { wallets } = getDefaultWallets({
   appName: "Retro PGF",
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_ID!,
   chains,
 });
+
+const connectors = connectorsForWallets([
+  ...wallets,
+  {
+    groupName: "Other",
+    wallets: [frameWallet({ chains })],
+  },
+]);
 
 const wagmiConfig = createConfig({
   autoConnect: true,

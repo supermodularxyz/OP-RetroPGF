@@ -12,9 +12,13 @@ import { Like, Liked } from "~/components/icons";
 import { useAccount } from "wagmi";
 import { LoadMore } from "~/components/LoadMore";
 import { Banner } from "~/components/ui/Banner";
+import { CategoriesFilter } from "~/components/CategoriesFilter";
+import { Divider } from "~/components/ui/Divider";
+import { useCategories } from "~/hooks/useCategories";
 
 export default function ListsPage() {
   const router = useRouter();
+  const query = router.query;
 
   const { data: filter } = useFilter("lists");
   const {
@@ -27,7 +31,6 @@ export default function ListsPage() {
 
   // TODO: Move this to a shared FilterLayout?
   useUpdateFilterFromRouter("lists");
-
   return (
     <Layout sidebar="left">
       <div className="justify-between md:flex">
@@ -49,8 +52,16 @@ export default function ListsPage() {
           />
         </div>
       </div>
-      <div className="no-scrollbar">
+      <div className="no-scrollbar flex gap-2">
         <LikedFilter />
+        <div className="flex py-4">
+          <Divider orientation={"vertical"} />
+        </div>
+        <CategoriesFilter
+          type="lists"
+          selected={filter?.categories}
+          onSelect={(categories) => `/lists?${toURL(query, { categories })}`}
+        />
       </div>
 
       {error ? (
@@ -85,7 +96,7 @@ const LikedFilter = () => {
 
   const selected = filter?.likedBy === address;
   return (
-    <div className="my-2 flex gap-2 overflow-x-auto py-1">
+    <div className="my-2 flex gap-2 py-1">
       <Tag
         size="lg"
         as={Link}

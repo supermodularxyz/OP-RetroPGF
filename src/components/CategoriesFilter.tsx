@@ -9,19 +9,29 @@ import {
 } from "~/hooks/useCategories";
 import { type Filter } from "~/hooks/useFilter";
 
+const { PAIRWISE, ...labels } = impactCategoryLabels;
+const categoryLabels = {
+  lists: impactCategoryLabels,
+  projects: labels,
+};
+
 export const CategoriesFilter = ({
   selected = [],
+  type,
   onSelect,
   children,
 }: {
   selected?: Filter["categories"];
+  type: "projects" | "lists";
   onSelect: (categories: Filter["categories"]) => void;
 } & PropsWithChildren) => {
-  const { data: count } = useCategories();
+  const { data } = useCategories();
+  const count = data?.[type];
+
   return (
     <div className="my-2 flex gap-2 overflow-x-auto py-1">
       {children}
-      {Object.entries(impactCategoryLabels).map(([key, label]) => {
+      {Object.entries(categoryLabels[type]).map(([key, label]) => {
         const category = key as ImpactCategory;
         const num = count?.[categoryMap[category]] ?? "?";
         return (

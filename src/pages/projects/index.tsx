@@ -25,6 +25,7 @@ export default function ProjectsPage() {
   } = useProjects(filter);
 
   // TODO: Move this to a shared FilterLayout?
+
   useUpdateFilterFromRouter("projects");
 
   console.log("error", error);
@@ -35,11 +36,12 @@ export default function ProjectsPage() {
         <DisplayAndSortFilter
           baseUrl="/projects"
           filter={filter!}
-          sortOptions={["shuffle", "asc", "desc"]}
+          sortOptions={["shuffle", "asc", "desc", "byIncludedInBallots"]}
         />
       </div>
       <div className="no-scrollbar">
         <CategoriesFilter
+          type="projects"
           selected={filter?.categories}
           onSelect={(categories) => `/projects?${toURL(query, { categories })}`}
         />

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CategoriesQuery } from "~/graphql/queries";
-import { Aggregate } from "~/graphql/utils";
+import { type Aggregate } from "~/graphql/utils";
 
 export type ImpactCategory =
   | "OP_STACK"
@@ -16,6 +16,7 @@ export const categoryMap = {
   DEVELOPER_ECOSYSTEM: "developerEcosystem",
   END_USER_EXPERIENCE_AND_ADOPTION: "endUserExperienceAndAdoption",
   OP_STACK: "opStack",
+  PAIRWISE: "pairwise",
 } as const;
 
 export const impactCategoryLabels = {
@@ -23,6 +24,7 @@ export const impactCategoryLabels = {
   OP_STACK: "OP Stack",
   DEVELOPER_ECOSYSTEM: "Developer Ecosystem",
   END_USER_EXPERIENCE_AND_ADOPTION: "End user UX",
+  PAIRWISE: "Pairwise",
 };
 
 export const impactCategoryDescriptions = {
@@ -43,9 +45,14 @@ export function useCategories() {
     return axios
       .post<{
         data: {
-          retroPGF: { projectsAggregate: Aggregate };
+          retroPGF: { projectsAggregate: Aggregate; listsAggregate: Aggregate };
         };
       }>(`${backendUrl}/graphql`, { query: CategoriesQuery })
-      .then((r) => r.data.data?.retroPGF?.projectsAggregate ?? null);
+      .then((r) => {
+        const { listsAggregate: lists, projectsAggregate: projects } =
+          r.data.data?.retroPGF ?? {};
+
+        return { lists, projects };
+      });
   });
 }
