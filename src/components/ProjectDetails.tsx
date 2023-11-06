@@ -137,7 +137,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           </p>
           <div className="flex flex-col gap-2">
             {project?.contributionLinks?.map((link) => {
-              return <ProjectContribution key={link.url} link={link} />;
+              return (
+                <ProjectContribution
+                  key={link.url}
+                  link={link}
+                  fallbackSrc={profileImageUrl!}
+                />
+              );
             })}
           </div>
           <DividerIcon icon={Contribution} className="my-4" />
