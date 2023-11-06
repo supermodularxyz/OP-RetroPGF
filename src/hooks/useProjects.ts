@@ -175,6 +175,7 @@ export function sortAndFilter<
       arr.sort((a: T, b: T) => Number(b.amount) - Number(a.amount)),
     // TODO: sort by likes
     liked: (arr: T[]) => arr,
+    byIncludedInBallots: (arr: T[]) => arr,
   }[sort];
 
   return sortFn([...collection])

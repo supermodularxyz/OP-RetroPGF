@@ -4,7 +4,14 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { type ParsedUrlQuery } from "querystring";
 
-type FilterSort = "shuffle" | "asc" | "desc" | "liked" | "ascOP" | "descOP";
+type FilterSort =
+  | "shuffle"
+  | "asc"
+  | "desc"
+  | "liked"
+  | "ascOP"
+  | "descOP"
+  | "byIncludedInBallots";
 export type Filter = {
   after?: string;
   display?: "grid" | "list";
