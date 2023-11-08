@@ -12,6 +12,7 @@ import { sumBallot, useSubmitBallot, useBallot } from "~/hooks/useBallot";
 import { formatNumber } from "~/utils/formatNumber";
 import { Dialog } from "./ui/Dialog";
 import { VotingEndsIn, useVotingTimeLeft } from "./VotingEndsIn";
+import { useCategories } from "~/hooks/useCategories";
 
 export const MAX_ALLOCATION_TOTAL = Number(
   process.env.NEXT_PUBLIC_MAX_ALLOCATION_TOTAL!
@@ -20,6 +21,7 @@ export const BallotOverview = () => {
   const router = useRouter();
 
   const { data: ballot } = useBallot();
+  const { data: categoryCount } = useCategories();
 
   const allocations = ballot?.votes ?? [];
   const sum = sumBallot(allocations);
@@ -28,6 +30,7 @@ export const BallotOverview = () => {
   const canSubmit = router.route === "/ballot" && allocations.length;
   const votingHasEnded = seconds < 0;
 
+  const projectCount = categoryCount?.projects.total ?? "?";
   return (
     <div className="space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
@@ -40,8 +43,8 @@ export const BallotOverview = () => {
         <>
           <BallotSection title="Projects added:">
             <div>
-              <span className="text-gray-900">{allocations.length}</span>
-              /200
+              <span className="text-gray-900">{allocations.length}</span>/
+              {projectCount}
             </div>
           </BallotSection>
           <BallotSection

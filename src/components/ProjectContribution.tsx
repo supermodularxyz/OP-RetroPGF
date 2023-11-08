@@ -2,12 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
 import { Link as LinkIcon } from "~/components/icons";
-import { Project } from "~/hooks/useProjects";
+import { type Project } from "~/hooks/useProjects";
 import { Image } from "./ui/Avatar";
 
 export function ProjectContribution({
+  fallbackSrc,
   link,
 }: {
+  fallbackSrc: string;
   link: Project["contributionLinks"][number];
 }) {
   const metadata = useQuery(["metadata", link.url], () =>
@@ -24,9 +26,9 @@ export function ProjectContribution({
       <div className="space-y-6 rounded-3xl border border-gray-200 p-6">
         <div className="flex items-center gap-4 overflow-auto rounded-xl border border-gray-200">
           <Image
-            className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100"
-            title={metadata.data?.title}
-            src={metadata.data?.image}
+            className="h-20 w-20 flex-shrink-0 rounded-l-xl bg-gray-100 bg-cover bg-center"
+            alt={metadata.data?.title}
+            src={metadata.data?.image ?? fallbackSrc}
           />
           <div>
             <div className="mb-2 overflow-auto font-semibold text-gray-700">

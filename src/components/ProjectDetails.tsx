@@ -114,7 +114,7 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         <div className="my-8 flex flex-wrap gap-2">
           <Tag>
             <FaCheckToSlot className="text-gray-500" />
-            {`?`} ballots
+            {project?.includedInBallots} ballots
           </Tag>
           <Tag>
             <LayoutList className="text-gray-500" /> {project?.lists?.length}{" "}
@@ -137,7 +137,13 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
           </p>
           <div className="flex flex-col gap-2">
             {project?.contributionLinks?.map((link) => {
-              return <ProjectContribution key={link.url} link={link} />;
+              return (
+                <ProjectContribution
+                  key={link.url}
+                  link={link}
+                  fallbackSrc={profileImageUrl!}
+                />
+              );
             })}
           </div>
           <DividerIcon icon={Contribution} className="my-4" />
@@ -259,8 +265,8 @@ const ImpactCategories = ({ project }: { project: Project }) => {
             key={category}
             tag={impactCategoryLabels[category]}
             description={impactCategoryDescriptions[category]}
-            includedProjectsNumber={count?.[categoryMap[category]]}
-            totalProjectsNumber={count?.total}
+            includedProjectsNumber={count?.projects?.[categoryMap[category]]}
+            totalProjectsNumber={count?.projects?.total}
           />
         );
       })}

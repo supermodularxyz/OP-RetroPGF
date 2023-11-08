@@ -1,6 +1,7 @@
 import axios from "axios";
-import * as cheerio from "cheerio";
 import type { NextApiRequest, NextApiResponse } from "next";
+
+const previewBaseUrl = `https://web-scrapper-coral.vercel.app/api/read_web_meta_data`;
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,13 +9,15 @@ export default async function handler(
 ) {
   try {
     const url = req.query.url as string;
-    const r = await axios.get(decodeURIComponent(url));
-    const $ = cheerio.load(r?.data as string);
-    const title = $("title").text();
-    const description = $('meta[name="description"]').attr("content");
-    const image = $('meta[property="og:image"]').attr("content");
+    const r = await axios.get<{
+      result?: { title: string; description: string; ["og:image"]: string };
+    }>(`${previewBaseUrl}?url=${url}`);
 
-    res.json({ title, description, image });
+    const result = r?.data?.result;
+    const title = result?.title;
+    const description = result?.description;
+    const image = result?.["og:image"];
+    return res.json({ title, description, image });
   } catch (error) {
     console.error("Error fetching link metadata", error);
     res
