@@ -106,6 +106,7 @@ export const CategoriesQuery = `
       }
       listsAggregate {
         ${AGGREGATE_FRAGMENT}
+        pairwise
       }
     }
   }
