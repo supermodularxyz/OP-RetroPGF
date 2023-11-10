@@ -10,8 +10,8 @@ import { initialFilter, type Filter } from "./useFilter";
 import { type Allocation } from "./useBallot";
 import { type ImpactCategory } from "./useCategories";
 import { ListQuery, ListsQuery } from "~/graphql/queries";
-import { Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
-import { Project } from "./useProjects";
+import { type Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
+import { type Project } from "./useProjects";
 import { useAccessToken } from "./useAuth";
 
 export type List = {

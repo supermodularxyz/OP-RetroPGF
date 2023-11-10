@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { Address, useAccount, useEnsAvatar, useEnsName } from "wagmi";
+import { type Address, useAccount } from "wagmi";
 
 import { type Filter } from "~/hooks/useFilter";
 import { useProject } from "~/hooks/useProjects";
@@ -188,7 +188,12 @@ export const ProjectsLogosCard = ({
   <div className="flex items-center gap-3">
     <div className="ml-1 flex">
       {projects?.slice(0, 4).map((item) => (
-        <ProjectAvatar key={item.project?.id} id={item.project?.id} />
+        <AvatarWithBorder
+          key={item.project?.id}
+          src={item?.project?.profile?.profileImageUrl}
+          className="-mx-1"
+          size="sm"
+        />
       ))}
     </div>
     {(projects?.length ?? 0) > 4 && (
@@ -198,14 +203,3 @@ export const ProjectsLogosCard = ({
     )}
   </div>
 );
-
-const ProjectAvatar = ({ id }: { id: string }) => {
-  const { data: project } = useProject(id);
-  return (
-    <AvatarWithBorder
-      src={project?.profile?.profileImageUrl}
-      className="-mx-1"
-      size="sm"
-    />
-  );
-};
