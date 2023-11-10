@@ -127,6 +127,9 @@ listContent {
   OPAmount
   project {
     id
+    profile {
+      profileImageUrl
+    }
   }
 }
 impactEvaluationLink
