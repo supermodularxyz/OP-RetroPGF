@@ -7,7 +7,11 @@ import {
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
 import { mapList, type List } from "~/hooks/useLists";
-import { ProjectQuery, ProjectsQuery } from "~/graphql/queries";
+import {
+  ProjectQuery,
+  ProjectsQuery,
+  SearchProjectsQuery,
+} from "~/graphql/queries";
 import { Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
 
 export type Project = {
@@ -96,7 +100,7 @@ export function useProjects(
           };
           errors?: { message: string }[];
         }>(`${backendUrl}/graphql`, {
-          query: ProjectsQuery,
+          query: SearchProjectsQuery,
           variables: createQueryVariables({ ...filter, after: pageParam }),
         })
         .then((r) => {
@@ -158,7 +162,7 @@ export function useProject(id: string) {
 function mapProject(project: Project) {
   return {
     ...parseId(project),
-    lists: project.lists.map(mapList),
+    lists: project.lists?.map(mapList),
   } as Project;
 }
 

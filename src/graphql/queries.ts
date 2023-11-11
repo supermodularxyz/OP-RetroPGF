@@ -68,6 +68,7 @@ lists {
   }
 }
 `;
+
 export const ProjectQuery = `
   query Project($id: ID!) {
     retroPGF {
@@ -88,6 +89,32 @@ export const ProjectsQuery = `
           cursor
           node {
             ${PROJECT_FRAGMENT}
+          }
+        }
+      }
+      projectsAggregate {
+        ${AGGREGATE_FRAGMENT}
+      }
+    }
+  }
+`;
+export const SearchProjectsQuery = `
+  query Projects($after: String, $first: Int!, $orderBy: ProjectOrder!, $category: [ProjectCategory!], $search: String, $seed: String) {
+    retroPGF {
+      projects(after: $after, first: $first, orderBy: $orderBy, category: $category, search: $search, seed: $seed) {
+        pageInfo {
+          ${PAGEINFO_FRAGMENT}
+        }
+        edges {
+          cursor
+          node {
+            id
+            bio
+            displayName
+            profile {
+              profileImageUrl
+              bannerImageUrl
+            }
           }
         }
       }

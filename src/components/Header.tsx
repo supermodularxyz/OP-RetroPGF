@@ -68,7 +68,7 @@ export const Header = () => {
               key={link.href}
               href={`${link.href}?${toURL({
                 ...params[link.type],
-                seed: Date.now().toString(),
+                // seed: Date.now().toString(),
               })}`}
             >
               {link.children}
