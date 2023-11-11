@@ -12,10 +12,12 @@ import { Providers } from "~/providers";
 import "@rainbow-me/rainbowkit/styles.css";
 import "~/styles/globals.css";
 
+const ONE_HOUR = 1000 * 60 * 60;
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+      cacheTime: ONE_HOUR * 24,
+      staleTime: ONE_HOUR,
     },
   },
 });
