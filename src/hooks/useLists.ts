@@ -71,9 +71,9 @@ export function useLists(
           const data = lists?.edges.map((edge) => mapList(edge.node));
 
           data.forEach((list) => {
-            list.listContent.forEach(({ project }) => {
-              queryClient.setQueryData(["projects", project.id], project);
-            });
+            list.listContent.forEach(({ project }) =>
+              queryClient.setQueryData(["projects", project.id], project)
+            );
           });
 
           const { total, ...categories } = listsAggregate ?? {};

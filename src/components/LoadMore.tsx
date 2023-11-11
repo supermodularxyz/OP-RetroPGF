@@ -25,7 +25,7 @@ export function LoadMore({
   }, [intersection?.isIntersecting]);
 
   return (
-    <div className="flex h-32 items-center justify-center" ref={ref}>
+    <div className="flex h-96 items-center justify-center" ref={ref}>
       {isFetching && <Spinner />}
     </div>
   );
