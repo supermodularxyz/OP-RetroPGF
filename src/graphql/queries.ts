@@ -127,6 +127,7 @@ listContent {
   OPAmount
   project {
     id
+    displayName
     profile {
       profileImageUrl
     }

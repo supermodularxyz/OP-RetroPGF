@@ -128,6 +128,19 @@ export function useProjects(
   };
 }
 
+export function useProjectDetails(id: string) {
+  return useQuery(
+    ["projects", id, "details"],
+    async () =>
+      axios
+        .post<{ data: { retroPGF: { project: Project } } }>(
+          `${backendUrl}/graphql`,
+          { query: ProjectQuery, variables: { id } }
+        )
+        .then((r) => mapProject(r.data.data?.retroPGF.project) ?? null),
+    { enabled: Boolean(id) }
+  );
+}
 export function useProject(id: string) {
   return useQuery(
     ["projects", id],

@@ -41,6 +41,7 @@ export function useLists(
   filter: Filter = initialFilter,
   opts?: { enabled?: boolean }
 ) {
+  const queryClient = useQueryClient();
   const query = useInfiniteQuery({
     enabled: opts?.enabled,
     queryKey: ["lists", filter],
@@ -68,6 +69,13 @@ export function useLists(
             throw r.data.errors?.[0]?.message;
           }
           const data = lists?.edges.map((edge) => mapList(edge.node));
+
+          data.forEach((list) => {
+            list.listContent.forEach(({ project }) => {
+              queryClient.setQueryData(["projects", project.id], project);
+            });
+          });
+
           const { total, ...categories } = listsAggregate ?? {};
 
           return { data, categories, pageInfo: lists?.pageInfo };
