@@ -97,7 +97,7 @@ export function useBallot() {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((r) => r.data ?? {}),
-    { enabled: Boolean(address && token) }
+    { enabled: Boolean(address && token), cacheTime: 0, staleTime: 0 }
   );
 }
 
