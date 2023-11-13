@@ -139,6 +139,16 @@ export const CategoriesQuery = `
   }
 `;
 
+const LIST_CONTENT_FRAGMENT = `
+OPAmount
+  project {
+    id
+    displayName
+    profile {
+      profileImageUrl
+    }
+  }
+`;
 export const LIST_FRAGMENT = `
 id
 listName
@@ -150,24 +160,19 @@ author {
   }
   address
 }
-listContentShort {
-  OPAmount
-  project {
-    id
-    displayName
-    profile {
-      profileImageUrl
-    }
-  }
-}
+listContentCount
 impactEvaluationLink
 impactEvaluationDescription
 `;
+
 export const ListQuery = `
   query List($id: ID!) {
     retroPGF {
       list(id: $id) {
         ${LIST_FRAGMENT}
+        listContent {
+          ${LIST_CONTENT_FRAGMENT}
+        }
       }
     }
   }
@@ -183,6 +188,9 @@ export const ListsQuery = `
           cursor
           node {
             ${LIST_FRAGMENT}
+            listContentShort {
+              ${LIST_CONTENT_FRAGMENT}
+            }
           }
         }
       }

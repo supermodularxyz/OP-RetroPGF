@@ -39,6 +39,7 @@ export const ListDetails = ({
       .sort((a, b) => Number(b.amount) - Number(a.amount)) ?? [];
 
   const allocatedOP = sumBallot(listProjects);
+
   return (
     <>
       {!list && !isLoading ? (
@@ -94,10 +95,12 @@ export const ListDetails = ({
                   {formatNumber(allocatedOP)} OP allocated
                 </p>
               </div>
-              <ListEditDistribution list={list} listProjects={listProjects} />
+              {!isLoading && (
+                <ListEditDistribution list={list} listProjects={listProjects} />
+              )}
             </div>
             <div className="max-h-[480px] overflow-y-scroll">
-              <AllocationList allocations={listProjects} />
+              {!isLoading && <AllocationList allocations={listProjects} />}
             </div>
           </Card>
         </div>

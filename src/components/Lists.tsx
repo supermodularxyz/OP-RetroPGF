@@ -80,7 +80,10 @@ export const ListGridItem = ({
           <LikeCount listId={list?.id} />
         </div>
 
-        <ProjectsLogosCard projects={list?.listContent} />
+        <ProjectsLogosCard
+          count={list?.listContentCount}
+          projects={list?.listContent}
+        />
 
         <p className="line-clamp-2 h-full text-sm text-neutral-700">
           <Skeleton isLoading={isLoading} className="w-full">
@@ -124,7 +127,10 @@ export const ListListItem = ({
           <AvatarWithName address={list?.author?.address} />
         </Skeleton>
       </div>
-      <ProjectsLogosCard projects={list?.listContent} />
+      <ProjectsLogosCard
+        count={list?.listContentCount}
+        projects={list?.listContent}
+      />
 
       <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
         <Skeleton isLoading={isLoading} className="w-full">
@@ -182,7 +188,9 @@ export const AvatarWithName = ({ address }: { address?: Address }) => {
 
 export const ProjectsLogosCard = ({
   projects,
+  count,
 }: {
+  count?: number;
   projects?: List["listContent"];
 }) => (
   <div className="flex items-center gap-3">
@@ -197,9 +205,7 @@ export const ProjectsLogosCard = ({
       ))}
     </div>
     {(projects?.length ?? 0) > 4 && (
-      <p className="text-xs text-neutral-600">
-        +{(projects?.length ?? 0) - 4} projects
-      </p>
+      <p className="text-xs text-neutral-600">+{(count ?? 0) - 4} projects</p>
     )}
   </div>
 );

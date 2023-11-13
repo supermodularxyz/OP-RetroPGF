@@ -23,6 +23,7 @@ export type List = {
   impactEvaluationDescription: string;
   impactEvaluationLink: string;
   projects: Allocation[];
+  listContentCount: number;
   listContent: {
     OPAmount: number;
     project: Project;
@@ -75,7 +76,8 @@ export function useLists(
           const data = lists?.edges.map((edge) => mapList(edge.node));
 
           data.forEach((list) => {
-            list.listContentShort.forEach(({ project }) =>
+            // Add projects to cache
+            list.listContent?.forEach(({ project }) =>
               queryClient.setQueryData(["projects", project.id], project)
             );
           });
@@ -102,6 +104,7 @@ export function useLists(
 }
 
 export function useList(id: string) {
+  const queryClient = useQueryClient();
   return useQuery(
     ["lists", id],
     async () =>
@@ -110,7 +113,14 @@ export function useList(id: string) {
           query: ListQuery,
           variables: { id },
         })
-        .then((r) => mapList(r.data.data?.retroPGF.list) ?? null),
+        .then((r) => {
+          const list = mapList(r.data.data?.retroPGF?.list);
+          // Add projects to cache
+          list.listContent?.forEach(({ project }) => {
+            queryClient.setQueryData(["projects", project.id], project);
+          });
+          return list ?? null;
+        }),
     { enabled: Boolean(id) }
   );
 }
@@ -118,7 +128,7 @@ export function useList(id: string) {
 export function mapList(list: List) {
   return {
     ...parseId(list),
-    listContent: list.listContentShort.map((item) => ({
+    listContent: (list.listContent ?? list.listContentShort).map((item) => ({
       ...item,
       project: parseId(item.project),
     })),
