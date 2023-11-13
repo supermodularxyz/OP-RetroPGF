@@ -27,6 +27,10 @@ export type List = {
     OPAmount: number;
     project: Project;
   }[];
+  listContentShort: {
+    OPAmount: number;
+    project: Project;
+  }[];
   author: {
     address: Address;
     resolvedName: {
@@ -71,7 +75,7 @@ export function useLists(
           const data = lists?.edges.map((edge) => mapList(edge.node));
 
           data.forEach((list) => {
-            list.listContent.forEach(({ project }) =>
+            list.listContentShort.forEach(({ project }) =>
               queryClient.setQueryData(["projects", project.id], project)
             );
           });
@@ -114,7 +118,7 @@ export function useList(id: string) {
 export function mapList(list: List) {
   return {
     ...parseId(list),
-    listContent: list.listContent.map((item) => ({
+    listContent: list.listContentShort.map((item) => ({
       ...item,
       project: parseId(item.project),
     })),

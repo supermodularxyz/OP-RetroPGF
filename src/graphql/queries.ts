@@ -60,7 +60,7 @@ lists {
       name
     }
   }
-  listContent {
+  listContentShort {
     OPAmount
     project {
       id
@@ -150,7 +150,7 @@ author {
   }
   address
 }
-listContent {
+listContentShort {
   OPAmount
   project {
     id
