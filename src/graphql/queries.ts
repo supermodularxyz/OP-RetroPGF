@@ -60,10 +60,14 @@ lists {
       name
     }
   }
+  listContentCount
   listContentShort {
     OPAmount
     project {
       id
+      profile {
+        profileImageUrl
+      }
     }
   }
 }
