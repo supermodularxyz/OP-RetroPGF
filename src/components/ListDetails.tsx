@@ -74,7 +74,9 @@ export const ListDetails = ({
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Impact Evaluation</h3>
-            <p className="whitespace-pre-wrap">>{list.impactEvaluationDescription}</p>
+            <p className="whitespace-pre-wrap">
+              {list.impactEvaluationDescription}
+            </p>
             <Button
               as={Link}
               href={list.impactEvaluationLink}
