@@ -14,7 +14,6 @@ import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
-import { useRouter } from "next/router";
 import { track } from "@vercel/analytics/react";
 import { Skeleton } from "./ui/Skeleton";
 
@@ -127,7 +126,7 @@ function UserDetails({
   isLoading,
 }: {
   address: Address;
-  isLoading: boolean;
+  isLoading?: boolean;
 }) {
   const { data } = useAvatar(address);
 
