@@ -16,6 +16,7 @@ import { LikeCount } from "./Lists";
 import { formatNumber } from "~/utils/formatNumber";
 import { useRouter } from "next/router";
 import { track } from "@vercel/analytics/react";
+import { Skeleton } from "./ui/Skeleton";
 
 export const ListDetails = ({
   list,
@@ -41,14 +42,17 @@ export const ListDetails = ({
     <>
       {!list && !isLoading ? (
         <h3>List not found</h3>
-      ) : isLoading ? (
-        <div>...</div>
       ) : (
         <div className="grid gap-10">
           <div className="flex justify-between gap-4 sm:items-center">
             <div>
-              <h3 className="mb-2 text-2xl font-bold">{list?.listName}</h3>
-              <UserDetails address={list?.author?.address} />
+              <Skeleton className="h-6 w-48" isLoading={isLoading}>
+                <h3 className="mb-2 text-2xl font-bold">{list?.listName}</h3>
+              </Skeleton>
+              <UserDetails
+                address={list?.author?.address}
+                isLoading={isLoading}
+              />
             </div>
             <div className="flex h-fit gap-3">
               <Button
@@ -57,27 +61,31 @@ export const ListDetails = ({
                 type="button"
                 className="text-gray-600"
                 onClick={(e) => {
-                  like.mutate(list.id);
-                  track("LikeList", { id: list.id });
+                  like.mutate(list?.id);
+                  track("LikeList", { id: list?.id });
                 }}
               >
-                <LikeCount listId={list.id} />
+                <LikeCount listId={list?.id} />
               </Button>
             </div>
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">About</h3>
-            <p className="whitespace-pre-wrap">{list.listDescription}</p>
+            <Skeleton isLoading={isLoading}>
+              <p className="whitespace-pre-wrap">{list?.listDescription}</p>
+            </Skeleton>
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-bold">Impact Evaluation</h3>
-            <p className="whitespace-pre-wrap">
-              {list.impactEvaluationDescription}
-            </p>
-            {list.impactEvaluationLink && (
+            <Skeleton isLoading={isLoading}>
+              <p className="whitespace-pre-wrap">
+                {list?.impactEvaluationDescription}
+              </p>
+            </Skeleton>
+            {list?.impactEvaluationLink && (
               <Button
                 as={Link}
-                href={list.impactEvaluationLink}
+                href={list?.impactEvaluationLink}
                 target="_blank"
                 className="group flex w-fit items-center gap-2 rounded-full border border-neutral-300 bg-transparent px-4 py-1"
               >
@@ -90,11 +98,15 @@ export const ListDetails = ({
           <Card className="border-0 p-0 md:border-2 md:p-6">
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center gap-2">
-                <p className="font-bold">{listProjects.length} projects</p>
+                <Skeleton isLoading={isLoading}>
+                  <p className="font-bold">{listProjects.length} projects</p>
+                </Skeleton>
                 <span>·</span>
-                <p className="font-bold">
-                  {formatNumber(allocatedOP)} OP allocated
-                </p>
+                <Skeleton className="w-32" isLoading={isLoading}>
+                  <p className="font-bold">
+                    {formatNumber(allocatedOP)} OP allocated
+                  </p>
+                </Skeleton>
               </div>
               {!isLoading && (
                 <ListEditDistribution list={list} listProjects={listProjects} />
@@ -110,14 +122,22 @@ export const ListDetails = ({
   );
 };
 
-function UserDetails({ address }: { address: Address }) {
+function UserDetails({
+  address,
+  isLoading,
+}: {
+  address: Address;
+  isLoading: boolean;
+}) {
   const { data } = useAvatar(address);
 
   return (
     <div className="flex items-center gap-1">
       <Avatar src={data?.avatar} size="xs" rounded="full" />
       <div className="flex items-center">
-        <div className="text-sm font-semibold">{data?.name}</div>
+        <Skeleton isLoading={isLoading} className="w-32">
+          <div className="text-sm font-semibold">{data?.name}</div>
+        </Skeleton>
         <CopyButton value={address} />
       </div>
     </div>
