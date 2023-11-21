@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Address, useAccount } from "wagmi";
+import { type Address, useAccount } from "wagmi";
 import { tv } from "tailwind-variants";
 
 import { useLikeList, type List } from "~/hooks/useLists";
@@ -10,7 +10,6 @@ import { createComponent } from "~/components/ui";
 import { Avatar } from "./ui/Avatar";
 import { AllocationList } from "./AllocationList";
 import { CopyButton } from "./CopyButton";
-import { MoreDropdown } from "./MoreDropdown";
 import { ListEditDistribution } from "./ListEditDistribution";
 import { sumBallot } from "~/hooks/useBallot";
 import { LikeCount } from "./Lists";
@@ -18,7 +17,6 @@ import { formatNumber } from "~/utils/formatNumber";
 import { useRouter } from "next/router";
 import { track } from "@vercel/analytics/react";
 
-const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
 export const ListDetails = ({
   list,
   isLoading,
@@ -26,7 +24,6 @@ export const ListDetails = ({
   list: List;
   isLoading?: boolean;
 }) => {
-  const router = useRouter();
   const { address } = useAccount();
   const like = useLikeList(list?.id);
 
@@ -77,16 +74,18 @@ export const ListDetails = ({
             <p className="whitespace-pre-wrap">
               {list.impactEvaluationDescription}
             </p>
-            <Button
-              as={Link}
-              href={list.impactEvaluationLink}
-              target="_blank"
-              className="group flex w-fit items-center gap-2 rounded-full border border-neutral-300 bg-transparent px-4 py-1"
-            >
-              <Document className="h-7 w-7 rounded-full p-1 text-neutral-600 transition-all group-hover:bg-neutral-200" />
-              <span>Impact Evaluation</span>
-              <ExternalLinkOutline className="text-neutral-600" />
-            </Button>
+            {list.impactEvaluationLink && (
+              <Button
+                as={Link}
+                href={list.impactEvaluationLink}
+                target="_blank"
+                className="group flex w-fit items-center gap-2 rounded-full border border-neutral-300 bg-transparent px-4 py-1"
+              >
+                <Document className="h-7 w-7 rounded-full p-1 text-neutral-600 transition-all group-hover:bg-neutral-200" />
+                <span>Impact Evaluation</span>
+                <ExternalLinkOutline className="text-neutral-600" />
+              </Button>
+            )}
           </div>
           <Card className="border-0 p-0 md:border-2 md:p-6">
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
