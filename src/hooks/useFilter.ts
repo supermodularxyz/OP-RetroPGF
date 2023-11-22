@@ -37,6 +37,11 @@ export const initialFilter: Filter = {
   categories: [],
 };
 
+const defaultFilters = {
+  projects: { ...initialFilter },
+  lists: { ...initialFilter, sort: "liked" },
+};
+
 export const sortLabels: { [key in FilterSort]: string } = {
   shuffle: "Shuffle",
   asc: "A to Z",
@@ -54,7 +59,7 @@ export function useFilter(type: FilterType) {
 
   return useQuery(
     ["filter", type],
-    () => client.getQueryData<Filter>(["filter", type]) ?? initialFilter,
+    () => client.getQueryData<Filter>(["filter", type]) ?? defaultFilters[type],
     { cacheTime: Infinity }
   );
 }
