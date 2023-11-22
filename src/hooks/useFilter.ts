@@ -37,11 +37,6 @@ export const initialFilter: Filter = {
   categories: [],
 };
 
-const defaultFilters = {
-  projects: { ...initialFilter },
-  lists: { ...initialFilter, sort: "liked" },
-};
-
 export const sortLabels: { [key in FilterSort]: string } = {
   shuffle: "Shuffle",
   asc: "A to Z",
@@ -53,6 +48,11 @@ export const sortLabels: { [key in FilterSort]: string } = {
 };
 
 type FilterType = "projects" | "lists";
+
+const defaultFilters: Record<FilterType, Filter> = {
+  projects: { ...initialFilter },
+  lists: { ...initialFilter, sort: "liked" },
+};
 
 export function useFilter(type: FilterType) {
   const client = useQueryClient();
@@ -68,10 +68,13 @@ export function useSetFilter(type: FilterType) {
   const client = useQueryClient();
 
   return useMutation(async (filter: Filter) =>
-    client.setQueryData<Filter>(["filter", type], (prev = initialFilter) => ({
-      ...prev,
-      ...filter,
-    }))
+    client.setQueryData<Filter>(
+      ["filter", type],
+      (prev = defaultFilters[type]) => ({
+        ...prev,
+        ...filter,
+      })
+    )
   );
 }
 
