@@ -61,7 +61,7 @@ lists {
     }
   }
   listContentCount
-  listContentShort {
+  listContent {
     OPAmount
     project {
       id
