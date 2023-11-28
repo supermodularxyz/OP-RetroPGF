@@ -136,7 +136,7 @@ export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];
   schema: S;
   onSubmit: (values: z.infer<S>) => void;
-  onChange: (values: z.infer<S>) => void;
+  onChange?: (values: z.infer<S>) => void;
 }
 
 export function Form<S extends z.Schema>({
@@ -155,7 +155,7 @@ export function Form<S extends z.Schema>({
 
   const formValues = form.watch();
   useEffect(() => {
-    onChange(formValues);
+    onChange?.(formValues);
   }, [formValues, onChange]);
 
   // Pass the form methods to a FormProvider. This lets us access the form from components without passing props.
