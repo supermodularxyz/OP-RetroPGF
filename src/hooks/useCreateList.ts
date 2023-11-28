@@ -1,11 +1,13 @@
 import { type Address } from "viem";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type WalletClient, useWalletClient } from "wagmi";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import { providers } from "ethers";
 import { type SignerOrProvider } from "@ethereum-attestation-service/eas-sdk/dist/transaction";
 
 import { createAttestation } from "~/utils/eas";
+import { CreateList } from "~/schemas/list";
+import { useLocalStorage } from "react-use";
 
 export type ListAttestation = {
   listName: string;

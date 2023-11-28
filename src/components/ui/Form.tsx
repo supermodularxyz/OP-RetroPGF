@@ -7,6 +7,7 @@ import {
   ComponentPropsWithoutRef,
   cloneElement,
   ReactElement,
+  useEffect,
 } from "react";
 import {
   FormProvider,
@@ -135,6 +136,7 @@ export interface FormProps<S extends z.Schema> extends PropsWithChildren {
   defaultValues?: UseFormProps<z.infer<S>>["defaultValues"];
   schema: S;
   onSubmit: (values: z.infer<S>) => void;
+  onChange: (values: z.infer<S>) => void;
 }
 
 export function Form<S extends z.Schema>({
@@ -142,6 +144,7 @@ export function Form<S extends z.Schema>({
   schema,
   children,
   onSubmit,
+  onChange,
 }: FormProps<S>) {
   // Initialize the form with defaultValues and schema for validation
   const form = useForm({
@@ -149,6 +152,11 @@ export function Form<S extends z.Schema>({
     resolver: zodResolver(schema),
     mode: "onBlur",
   });
+
+  const formValues = form.watch();
+  useEffect(() => {
+    onChange(formValues);
+  }, [formValues, onChange]);
 
   // Pass the form methods to a FormProvider. This lets us access the form from components without passing props.
   return (

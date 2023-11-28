@@ -1,7 +1,7 @@
 import { tv } from "tailwind-variants";
 import { useRouter } from "next/router";
 import { useController, useFormContext } from "react-hook-form";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 
 import { Layout } from "~/components/Layout";
 import {
@@ -29,6 +29,7 @@ import { Spinner } from "~/components/ui/Spinner";
 
 import { impactCategoryLabels } from "~/hooks/useCategories";
 import { Tag } from "~/components/ui/Tag";
+import { useLocalStorage } from "react-use";
 
 const ListTags = () => {
   const { control, watch } = useFormContext();
@@ -63,13 +64,20 @@ const ListTags = () => {
 const createListErrors = {
   ACTION_REJECTED: "User rejected transaction",
 };
-const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
+const CreateListForm = () => {
+  const router = useRouter();
+  const [draft, saveDraft] = useLocalStorage("draft-list", {});
+
   const create = useCreateList();
   const upload = useUploadMetadata();
   const { address } = useAccount();
 
-  function handleSaveDraft(data: unknown) {
+  function handleSaveDraft(data: CreateList) {
     console.log("save draft", data);
+    // Only save if changes - lazy way to compare objects
+    if (JSON.stringify(draft) !== JSON.stringify(data)) {
+      saveDraft(data);
+    }
   }
 
   const error = create.error || upload.error;
@@ -77,7 +85,9 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <Form
+      defaultValues={draft}
       schema={CreateListSchema}
+      onChange={handleSaveDraft}
       onSubmit={async (values) => {
         console.log(values);
 
@@ -93,7 +103,12 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
             listMetadataPtr,
             owner: address!,
           },
-          { onSuccess }
+          {
+            onSuccess: () => {
+              saveDraft({});
+              void router.push(`/lists/created?${toURL(router.query)}`);
+            },
+          }
         );
       }}
     >
@@ -147,11 +162,23 @@ const CreateListForm = ({ onSuccess }: { onSuccess: () => void }) => {
 const CreateListButton = ({ isLoading = false, error = "" }) => {
   const { address } = useAccount();
   const { formState } = useFormContext();
+  const { chain } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
 
-  const canCreate = Boolean(address && !isLoading && formState.isValid);
+  const canCreate = Boolean(
+    address && !isLoading && formState.isValid && chain?.id === 10
+  );
   return (
     <div className="flex items-center gap-4">
       {!address && <div>You must connect wallet to create a list</div>}
+      {address && chain?.id !== 10 && (
+        <div className="flex items-center gap-2">
+          You must be connected to Optimism
+          <Button onClick={() => switchNetwork?.(10)}>
+            Switch to Optimism
+          </Button>
+        </div>
+      )}
       {error && <Banner variant="warning">{error}</Banner>}
       <Button type="submit" disabled={!canCreate} variant="primary">
         Create list
@@ -184,7 +211,6 @@ const TotalOP = () => {
 };
 
 export default function CreateListPage() {
-  const router = useRouter();
   return (
     <Layout>
       <div className="mb-4">
@@ -205,9 +231,7 @@ export default function CreateListPage() {
           📝 How to create a List
         </Link>
       </div>
-      <CreateListForm
-        onSuccess={() => router.push(`/lists/created?${toURL(router.query)}`)}
-      />
+      <CreateListForm />
     </Layout>
   );
 }
