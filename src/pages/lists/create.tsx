@@ -72,7 +72,7 @@ const CreateListForm = () => {
   const upload = useUploadMetadata();
   const { address } = useAccount();
 
-  function handleSaveDraft(data: CreateList) {
+  function handleSaveDraft(data: Partial<CreateList>) {
     console.log("save draft", data);
     // Only save if changes - lazy way to compare objects
     if (JSON.stringify(draft) !== JSON.stringify(data)) {
