@@ -158,7 +158,6 @@ export const LikeCount = ({ listId = "" }) => {
       onClick={(e) => {
         e.preventDefault();
         if (address && isConnected) {
-          console.log("like", listId);
           like.mutate(listId);
           track("LikeList", { id: listId });
         }
