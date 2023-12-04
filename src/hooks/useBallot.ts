@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { type Project } from "./useProjects";
 import { useAccessToken } from "./useAuth";
 import { useBeforeUnload } from "react-use";
+import { ethers } from "ethers";
 
 export type Allocation = { projectId: string; amount: number };
 
@@ -67,9 +68,19 @@ export function useSubmitBallot({
   const { address } = useAccount();
   const { data: token } = useAccessToken();
 
-  return useMutation(() => {
+  return useMutation(async () => {
     const votes = mapBallotForBackend(ballot?.votes);
-    const message = JSON.stringify(votes);
+    const isTrezor = await axios
+      .post<{ isTrezor: boolean }>(`${backendUrl}/api/auth/is-trezor`, {
+        address,
+      })
+      .then((r) => r.data?.isTrezor);
+
+    const message = isTrezor
+      ? ethers.utils.keccak256(Buffer.from(JSON.stringify(ballot)))
+      : JSON.stringify(votes);
+
+    console.log({ isTrezor });
     return sign.signMessageAsync({ message }).then((signature) =>
       axios
         .post(
