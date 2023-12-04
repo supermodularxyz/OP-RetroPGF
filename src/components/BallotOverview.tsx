@@ -30,7 +30,7 @@ export const BallotOverview = () => {
   const canSubmit = router.route === "/ballot" && allocations.length;
   const votingHasEnded = seconds < 0;
 
-  const projectCount = categoryCount?.projects.total ?? "?";
+  const projectCount = categoryCount?.projects?.total ?? "?";
   return (
     <div className="space-y-6">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-700">
