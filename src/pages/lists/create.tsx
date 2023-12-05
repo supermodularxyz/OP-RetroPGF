@@ -80,7 +80,10 @@ const CreateListForm = () => {
     }
   }
 
-  const error = create.error || upload.error;
+  const error = (create.error || upload.error) as {
+    reason?: string;
+    data?: { message: string };
+  };
   const isLoading = create.isLoading || upload.isLoading;
 
   return (
@@ -145,7 +148,7 @@ const CreateListForm = () => {
         <div className="mb-4 flex justify-end">
           <CreateListButton
             isLoading={isLoading}
-            error={(error as { reason?: string })?.reason}
+            error={error?.reason ?? error?.data?.message}
           />
         </div>
 
