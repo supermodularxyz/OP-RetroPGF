@@ -6,7 +6,7 @@ export const CreateListSchema = z.object({
   listDescription: z.string().min(1),
   impactEvaluationLink: z.union([z.string().url(), z.literal("").default("")]),
   impactEvaluationDescription: z.string().min(1),
-  impactCategory: z.string().array().default([]),
+  impactCategory: z.string().array(),
   allocations: z
     .array(z.object({ projectId: z.string(), amount: z.number().min(0) }))
     .min(1)
