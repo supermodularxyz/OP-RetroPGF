@@ -77,7 +77,7 @@ export function useSubmitBallot({
       .then((r) => r.data?.isTrezor);
 
     const message = isTrezor
-      ? ethers.utils.keccak256(Buffer.from(JSON.stringify(ballot)))
+      ? ethers.utils.keccak256(Buffer.from(JSON.stringify(votes)))
       : JSON.stringify(votes);
 
     console.log({ isTrezor });
