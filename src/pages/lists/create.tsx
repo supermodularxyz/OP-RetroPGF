@@ -39,7 +39,9 @@ const ListTags = () => {
 
   return (
     <div className="mb-4">
-      <Label>Impact categories</Label>
+      <Label>
+        Impact categories<span className="text-red-300">*</span>
+      </Label>
       <div className="flex flex-wrap gap-1">
         {Object.entries(impactCategoryLabels).map(([value, label]) => {
           const isSelected = selected.includes(value);
@@ -151,6 +153,13 @@ const CreateListForm = () => {
             error={error?.reason ?? error?.data?.message}
           />
         </div>
+
+        {error && (
+          <div className="text-center text-gray-600">
+            Make sure you&apos;re not connected to a VPN since this can cause
+            problems with the RPC and your wallet.
+          </div>
+        )}
 
         <Dialog size="sm" isOpen={isLoading}>
           <FeedbackDialog variant="info" icon={Spinner}>
