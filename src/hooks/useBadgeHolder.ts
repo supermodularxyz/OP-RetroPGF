@@ -28,10 +28,8 @@ export function useBadgeHolder(address: Address) {
           schemaId: { equals: badgeholderSchema },
           attester: { equals: badgeholderAttester },
         },
-      }).then(
-        (r) =>
-          process.env.NEXT_PUBLIC_SKIP_BADGEHOLDER_CHECK ??
-          r.attestations?.length > 0
+      }).then((r) =>
+        process.env.NEXT_PUBLIC_SKIP_BADGEHOLDER_CHECK ? [true] : r.attestations
       ),
     { enabled: Boolean(address) }
   );

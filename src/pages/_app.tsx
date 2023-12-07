@@ -3,10 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { Analytics } from "@vercel/analytics/react";
 
-import {
-  PersistQueryClientProvider,
-  persistQueryClientSave,
-} from "@tanstack/react-query-persist-client";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { Providers } from "~/providers";
 
 import "@rainbow-me/rainbowkit/styles.css";
@@ -26,13 +23,14 @@ const persister = createSyncStoragePersister({
   storage: typeof window !== "undefined" ? window.localStorage : null,
 });
 
+const seed = Math.random().toString();
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
         persister,
-        buster: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? "hash",
+        buster: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? seed,
       }}
     >
       <QueryClientProvider client={queryClient}>

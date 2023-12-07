@@ -10,13 +10,14 @@ export const EligibilityDialog = () => {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: session } = useSession();
-  const { data, isLoading } = useBadgeHolder(address!);
+  const { data, isLoading, error } = useBadgeHolder(address!);
 
-  if (isLoading || !address || !session) return null;
+  console.log("isBadgeHolder", data, error);
+  if (isLoading || !address || !session || error) return null;
 
   return (
     <Dialog
-      isOpen={!data}
+      isOpen={data?.length === 0}
       onOpenChange={() => disconnect()}
       title={
         <>
