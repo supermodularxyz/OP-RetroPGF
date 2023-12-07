@@ -4,13 +4,15 @@ import { useAccount, useDisconnect } from "wagmi";
 import { Dialog } from "./ui/Dialog";
 import { Banner } from "./ui/Banner";
 import { useBadgeHolder } from "~/hooks/useBadgeHolder";
+import { useSession } from "~/hooks/useAuth";
 
 export const EligibilityDialog = () => {
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
+  const { data: session } = useSession();
   const { data, isLoading } = useBadgeHolder(address!);
 
-  if (isLoading || !address) return null;
+  if (isLoading || !address || !session) return null;
 
   return (
     <Dialog
