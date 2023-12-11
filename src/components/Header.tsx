@@ -9,6 +9,7 @@ import { ConnectButton } from "./ConnectButton";
 import { IconButton } from "./ui/Button";
 import { Menu, X } from "./icons";
 import { toURL, useFilter } from "~/hooks/useFilter";
+import { useBallot } from "~/hooks/useBallot";
 
 const navLinks = [
   {
@@ -47,8 +48,19 @@ export const Header = () => {
     lists: useFilter("lists").data,
   };
 
+  const { data: ballot } = useBallot();
   return (
     <header className="relative z-[100] bg-white shadow-md">
+      {ballot?.publishedAt && (
+        <div className="h-16">
+          <Link href={`/ballot/confirmation`}>
+            <div className="absolute left-0 top-0 z-50 flex h-16 w-full items-center justify-center gap-2 bg-primary-600 text-primary-100 underline underline-offset-4 shadow-lg hover:bg-primary-500 ">
+              The results are being tallied. You can see see your submitted
+              ballot here.
+            </div>
+          </Link>
+        </div>
+      )}
       <div className="container mx-auto flex h-[72px] max-w-screen-2xl items-center px-2 sm:px-8">
         <div className="mr-4 flex items-center lg:mr-16">
           <IconButton
