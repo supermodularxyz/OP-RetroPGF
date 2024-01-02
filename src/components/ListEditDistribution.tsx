@@ -61,15 +61,13 @@ export const ListEditDistribution = ({
   const allocations = listProjects
     .map((project) => {
       const inBallot = ballotContains(project.projectId, ballot);
-      const ballotAmount = ballotContains(project.projectId, ballot)?.amount;
+      const ballotAmount = inBallot?.amount ?? project.amount;
       return {
         ...project,
         // Find existing allocations from ballot
-        amount: Number(ballotAmount ?? project.amount),
+        amount: Number(ballotAmount),
         // Always show projects in ballot first, next highest in ballot, finally in list
-        sortAmount: inBallot
-          ? Number.MAX_SAFE_INTEGER
-          : ballotAmount ?? project.amount,
+        sortAmount: inBallot ? Number.MAX_SAFE_INTEGER : ballotAmount,
       };
     })
     .sort((a, b) => b.sortAmount - a.sortAmount);
