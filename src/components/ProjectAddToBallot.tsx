@@ -20,10 +20,15 @@ import { Form } from "./ui/Form";
 import { sumBallot } from "~/hooks/useBallot";
 import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { track } from "@vercel/analytics/react";
+import { Star } from "./SunnySVG";
 
 export const MAX_ALLOCATION_PROJECT = Number(
   process.env.NEXT_PUBLIC_MAX_ALLOCATION_PROJECT!
 );
+
+const VOTING_END_DATE =
+  process.env.NEXT_PUBLIC_VOTING_END_DATE ??
+  new Date(Date.now() + 1000 * 60 * 60 * 24 * 15).toISOString();
 
 export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const { address } = useAccount();
@@ -36,6 +41,10 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const inBallot = ballotContains(id, ballot);
   const allocations = ballot?.votes ?? [];
   const sum = sumBallot(allocations.filter((p) => p.projectId !== project?.id));
+
+  const votingHasEnded = new Date(VOTING_END_DATE) < new Date();
+
+  if (votingHasEnded) return <ProjectRewardButton />;
 
   return (
     <div>
@@ -171,3 +180,21 @@ const ProjectAllocation = ({
     </div>
   );
 };
+
+function ProjectRewardButton() {
+  const rewardAmount = 557301;
+
+  return (
+    <div className="group relative">
+      <Star className="absolute -top-1 left-2 h-4 w-4 group-hover:h-6 group-hover:w-6" />
+      <Button variant="allocated" className="w-48">
+        <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-[10px] font-bold italic text-white">
+          OP
+        </span>
+
+        {formatNumber(rewardAmount)}
+      </Button>
+      <Star className="absolute -bottom-2 right-2 h-8 w-8 group-hover:h-10 group-hover:w-10" />
+    </div>
+  );
+}

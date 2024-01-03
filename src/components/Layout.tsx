@@ -1,12 +1,16 @@
 import clsx from "clsx";
 import Head from "next/head";
-import { useState, type PropsWithChildren, useEffect } from "react";
+import { type PropsWithChildren } from "react";
 import { useAccount } from "wagmi";
 
 import { SunnyBanner } from "./SunnyBanner";
 import { Header } from "./Header";
 import { BallotOverview } from "./BallotOverview";
 import { useRouter } from "next/router";
+
+const VOTING_END_DATE =
+  process.env.NEXT_PUBLIC_VOTING_END_DATE ??
+  new Date(Date.now() + 1000 * 60 * 60 * 24 * 15).toISOString();
 
 export const Layout = (
   props: {
@@ -16,6 +20,7 @@ export const Layout = (
 ) => {
   const router = useRouter();
   const { address, isConnecting } = useAccount();
+  const votingHasEnded = new Date(VOTING_END_DATE) < new Date();
 
   if (props.requireAuth && !address && !isConnecting) {
     void router.push("/");
@@ -24,7 +29,7 @@ export const Layout = (
 
   const sidebar = (
     <Sidebar side={props.sidebar}>
-      {address ? <BallotOverview /> : <SunnyBanner />}
+      {address && !votingHasEnded ? <BallotOverview /> : <SunnyBanner />}
     </Sidebar>
   );
 

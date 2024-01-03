@@ -11,6 +11,7 @@ const button = tv({
       outline: "border border-gray-300 hover:bg-gray-100 disabled:border-none",
       dark: "bg-gray-700 text-gray-100",
       default: "bg-gray-100",
+      allocated: "bg-primary-200",
       link: "bg-none hover:underline",
     },
     size: {

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ComponentProps, PropsWithChildren } from "react";
 
 export const SunnyFace = () => (
@@ -205,6 +206,21 @@ export const Sparkles = () => (
       d="M32 16L33.8975 20.8113C35.5739 25.0617 38.9321 28.4237 43.1715 30.0957L48 32L43.1715 33.9043C38.9321 35.5763 35.5739 38.9383 33.8975 43.1887L32 48L30.1025 43.1887C28.4261 38.9383 25.0679 35.5763 20.8285 33.9043L16 32L20.8285 30.0957C25.0679 28.4237 28.4261 25.0617 30.1025 20.8113L32 16Z"
       fill="white"
     />
+  </svg>
+);
+
+export const Star = (props: ComponentProps<"svg">) => (
+  <svg
+    viewBox="0 0 16 16"
+    fill="none"
+    {...props}
+    className={clsx(
+      "pointer-events-none fill-primary-600 transition-all",
+      props.className
+    )}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M8 0L8.94877 2.40564C9.78693 4.53083 11.4661 6.21184 13.5858 7.04784L16 8L13.5857 8.95217C11.4661 9.78816 9.78693 11.4692 8.94877 13.5944L8 16L7.05123 13.5944C6.21307 11.4692 4.53394 9.78816 2.41425 8.95217L0 8L2.41425 7.04783C4.53395 6.21184 6.21307 4.53083 7.05123 2.40564L8 0Z" />
   </svg>
 );
 
