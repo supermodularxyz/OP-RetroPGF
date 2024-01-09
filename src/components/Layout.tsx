@@ -96,7 +96,7 @@ export const Layout = (
             className="group py-4 text-sm hover:text-white"
           >
             <div className="flex">
-              Run with{" "}
+              Built with{" "}
               <span className="relative -mt-1 w-6 px-1 text-xl text-primary-600">
                 <span className="absolute">❤️</span>
                 <span className="absolute group-hover:animate-ping">❤️</span>
