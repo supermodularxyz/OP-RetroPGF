@@ -12,6 +12,7 @@ export function ProjectRewardButton({
   amount?: number;
   isDetailed?: boolean;
 }) {
+  if (amount === undefined) return null;
   return (
     <div className={clsx("relative", { ["group"]: isDetailed })}>
       {amount ? (
