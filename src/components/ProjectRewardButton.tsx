@@ -5,19 +5,41 @@ import { Button } from "~/components/ui/Button";
 import { formatNumber } from "~/utils/formatNumber";
 import { Star } from "./SunnySVG";
 
-export function ProjectRewardButton({ amount }: { amount?: number }) {
+export function ProjectRewardButton({
+  amount,
+  isDetailed,
+}: {
+  amount?: number;
+  isDetailed?: boolean;
+}) {
   return (
     <div className="group relative">
       {amount ? (
         <>
-          <Star className="absolute -top-1 left-2 h-4 w-4 group-hover:h-6 group-hover:w-6" />
-          <Star className="absolute -bottom-2 right-2 h-8 w-8 group-hover:h-10 group-hover:w-10" />
+          <Star
+            className={clsx(
+              "absolute -top-1 left-2 h-4 w-4 group-hover:h-6 group-hover:w-6",
+              {
+                ["h-0 w-0"]: !isDetailed,
+              }
+            )}
+          />
+          <Star
+            className={clsx(
+              "absolute -bottom-2 right-2 h-8 w-8 group-hover:h-10 group-hover:w-10",
+              {
+                ["h-0 w-0"]: !isDetailed,
+              }
+            )}
+          />
         </>
       ) : null}
       <Button
         disabled={!amount}
         variant={amount ? "allocated" : "default"}
-        className="min-w-48 w-full"
+        className={clsx("min-w-48 w-full", {
+          ["w-48"]: isDetailed,
+        })}
       >
         <span
           className={clsx(

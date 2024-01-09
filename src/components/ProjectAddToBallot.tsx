@@ -44,7 +44,8 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
 
   const votingHasEnded = new Date(VOTING_END_DATE) < new Date();
 
-  if (votingHasEnded) return <ProjectRewardButton amount={project?.awarded} />;
+  if (votingHasEnded)
+    return <ProjectRewardButton isDetailed amount={project?.awarded} />;
 
   return (
     <div>
