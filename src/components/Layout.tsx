@@ -89,7 +89,7 @@ export const Layout = (
           </div>
           {props.sidebar === "right" ? sidebar : null}
         </div>
-        <footer className="flex flex-col items-center justify-center bg-gray-950 p-2 text-gray-400">
+        <footer className="flex flex-col items-center justify-center bg-gray-900 p-2 text-gray-400">
           <a
             href={"https://github.com/gitcoinco/easy-retro-pgf/"}
             target="_blank"
@@ -97,7 +97,7 @@ export const Layout = (
           >
             <div className="flex">
               Built with{" "}
-              <span className="relative -mt-1 w-6 px-1 text-xl text-primary-600">
+              <span className="relative -mt-1 w-6 px-1 text-xl text-red-600">
                 <span className="absolute">❤️</span>
                 <span className="absolute group-hover:animate-ping">❤️</span>
               </span>

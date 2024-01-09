@@ -19,7 +19,7 @@ export function ProjectRewardButton({
         <>
           <Star
             className={clsx(
-              "absolute -top-1 left-2 h-4 w-4 group-hover:h-6 group-hover:w-6",
+              "absolute -top-1 left-2 w-4 group-hover:h-6 group-hover:w-6",
               {
                 ["h-0 w-0"]: !isDetailed,
               }
@@ -27,7 +27,7 @@ export function ProjectRewardButton({
           />
           <Star
             className={clsx(
-              "absolute -bottom-2 right-2 h-8 w-8 group-hover:h-10 group-hover:w-10",
+              "absolute -bottom-2 right-2 w-8 group-hover:h-10 group-hover:w-10",
               {
                 ["h-0 w-0"]: !isDetailed,
               }
