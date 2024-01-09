@@ -32,7 +32,7 @@ export default function StatsPage() {
   return (
     <Layout sidebar="left">
       <div className="justify-between md:flex">
-        <h1 className="text-2xl font-bold text-gray-900">Stats</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Round 3 Stats</h1>
       </div>
       <pre className="py-24 text-center">not implemented yet</pre>
     </Layout>

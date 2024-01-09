@@ -8,7 +8,7 @@ import { Search } from "./Search";
 import { ConnectButton } from "./ConnectButton";
 import { IconButton } from "./ui/Button";
 import { Menu, X } from "./icons";
-import { toURL, useFilter } from "~/hooks/useFilter";
+import { Filter, toURL, useFilter } from "~/hooks/useFilter";
 import { useBallot } from "~/hooks/useBallot";
 
 const navLinks = [
@@ -25,7 +25,7 @@ const navLinks = [
   {
     href: "/stats",
     children: "Stats",
-    type: "results",
+    type: "stats",
   },
 ] as const;
 
@@ -51,7 +51,8 @@ export const Header = () => {
   const params = {
     projects: useFilter("projects").data,
     lists: useFilter("lists").data,
-  };
+    stats: {},
+  } as const;
 
   const { data: ballot } = useBallot();
   return (
@@ -83,10 +84,7 @@ export const Header = () => {
             <NavLink
               isActive={asPath.startsWith(link.href)}
               key={link.href}
-              href={`${link.href}?${toURL({
-                ...params[link.type],
-                // seed: Date.now().toString(),
-              })}`}
+              href={`${link.href}?${toURL(params[link.type] ?? {})}`}
             >
               {link.children}
             </NavLink>
