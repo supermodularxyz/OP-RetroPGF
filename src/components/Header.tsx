@@ -23,11 +23,6 @@ const navLinks = [
     type: "lists",
   },
   {
-    href: "/results",
-    children: "Results",
-    type: "results",
-  },
-  {
     href: "/stats",
     children: "Stats",
     type: "results",
