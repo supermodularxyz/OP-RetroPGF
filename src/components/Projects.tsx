@@ -102,20 +102,25 @@ export const ProjectListItem = ({
   isLoading?: boolean;
 }) => {
   return (
-    <div className="flex cursor-pointer gap-6 pt-6">
-      <AvatarWithBorder src={project?.profile?.profileImageUrl} />
-      <div className="min-w-0 space-y-2">
-        <Skeleton isLoading={isLoading} className="w-[140px]">
-          {project?.displayName}
-        </Skeleton>
-        <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
-          <Skeleton isLoading={isLoading} className="w-1/2">
-            {project?.bio}
+    <div className="group flex cursor-pointer justify-between pt-6">
+      <div className="flex gap-6">
+        <AvatarWithBorder src={project?.profile?.profileImageUrl} />
+        <div className="min-w-0 space-y-2">
+          <Skeleton isLoading={isLoading} className="w-[140px]">
+            {project?.displayName}
           </Skeleton>
-        </p>
-        <Skeleton isLoading={isLoading} className="w-[100px]">
-          <ImpactCategories tags={project?.impactCategory} />
-        </Skeleton>
+          <p className="line-clamp-3 text-sm text-neutral-700 sm:line-clamp-2">
+            <Skeleton isLoading={isLoading} className="w-1/2">
+              {project?.bio}
+            </Skeleton>
+          </p>
+          <Skeleton isLoading={isLoading} className="w-[100px]">
+            <ImpactCategories tags={project?.impactCategory} />
+          </Skeleton>
+        </div>
+      </div>
+      <div className="w-48">
+        <ProjectRewardButton amount={project?.awarded} />
       </div>
     </div>
   );

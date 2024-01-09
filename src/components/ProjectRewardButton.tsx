@@ -13,7 +13,7 @@ export function ProjectRewardButton({
   isDetailed?: boolean;
 }) {
   return (
-    <div className="group relative">
+    <div className={clsx("relative", { ["group"]: isDetailed })}>
       {amount ? (
         <>
           <Star
