@@ -28,7 +28,6 @@ export default function ProjectsPage() {
 
   useUpdateFilterFromRouter("projects");
 
-  console.log("error", error);
   return (
     <Layout sidebar="left">
       <div className="justify-between md:flex">

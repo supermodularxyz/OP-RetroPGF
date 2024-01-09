@@ -7,6 +7,7 @@ import { ImpactCategories } from "./ImpactCategories";
 import { AvatarWithBorder } from "./ui/Avatar";
 import { Skeleton } from "./ui/Skeleton";
 import { BlurredBannerImage } from "./ui/BlurredBannerImage";
+import { ProjectRewardButton } from "./ProjectRewardButton";
 
 type Props = { filter?: Filter; projects?: Project[]; isLoading?: boolean };
 
@@ -52,10 +53,11 @@ export const ProjectGridItem = ({
   project?: Project;
   isLoading?: boolean;
 }) => {
+  console.log("project", project);
   const { bannerImageUrl, profileImageUrl } = project?.profile ?? {};
   return (
     <Card
-      className={clsx("h-full", {
+      className={clsx("flex h-full flex-col", {
         ["animate-pulse"]: isLoading,
       })}
     >
@@ -64,7 +66,7 @@ export const ProjectGridItem = ({
         src={bannerImageUrl}
         fallbackSrc={profileImageUrl}
       />
-      <div className="relative z-10 space-y-2 px-4 pb-2">
+      <div className="relative z-10 flex-1 space-y-2 px-4 pb-2">
         <div className="-mt-8 pb-2">
           <AvatarWithBorder src={profileImageUrl} />
         </div>
@@ -82,6 +84,7 @@ export const ProjectGridItem = ({
           <ImpactCategories tags={project?.impactCategory} />
         </Skeleton>
       </div>
+      <ProjectRewardButton amount={project?.awarded} />
     </Card>
   );
 };
