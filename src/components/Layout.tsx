@@ -101,7 +101,7 @@ export const Layout = (
                 <span className="absolute">❤️</span>
                 <span className="absolute group-hover:animate-ping">❤️</span>
               </span>
-              by EasyRetroPGF.
+              on EasyRetroPGF.
             </div>
             <div className="inline-flex">
               Run your own RPGF Round
