@@ -35,7 +35,13 @@ export default function ProjectsPage() {
         <DisplayAndSortFilter
           baseUrl="/projects"
           filter={filter!}
-          sortOptions={["shuffle", "asc", "desc", "byIncludedInBallots"]}
+          sortOptions={[
+            "mostAwarded",
+            "shuffle",
+            "asc",
+            "desc",
+            "byIncludedInBallots",
+          ]}
         />
       </div>
       <div className="no-scrollbar">
