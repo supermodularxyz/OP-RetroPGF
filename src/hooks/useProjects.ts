@@ -7,15 +7,12 @@ import {
 import { initialFilter, type Filter } from "./useFilter";
 import { type ImpactCategory } from "./useCategories";
 import { mapList, type List } from "~/hooks/useLists";
-import {
-  ProjectQuery,
-  ProjectsQuery,
-  SearchProjectsQuery,
-} from "~/graphql/queries";
-import { Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
+import { ProjectQuery, SearchProjectsQuery } from "~/graphql/queries";
+import { type Aggregate, createQueryVariables, parseId } from "~/graphql/utils";
 
 export type Project = {
   id: string;
+  awarded?: number;
   applicantType: "PROJECT" | "INDIVIDUAL";
   displayName: string;
   owner: string;
@@ -192,6 +189,7 @@ export function sortAndFilter<
       arr.sort((a: T, b: T) => Number(b.amount) - Number(a.amount)),
     // TODO: sort by likes
     liked: (arr: T[]) => arr,
+    mostAwarded: (arr: T[]) => arr,
     byIncludedInBallots: (arr: T[]) => arr,
   }[sort];
 

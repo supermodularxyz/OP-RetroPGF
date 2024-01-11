@@ -57,7 +57,11 @@ export const Providers = ({ children }: PropsWithChildren) => {
             --font-inter: ${inter.style.fontFamily};
           }
         `}</style>
-        <main className={`${inter.variable} font-sans`}>{children}</main>
+        <main
+          className={`${inter.variable} flex min-h-screen flex-col font-sans`}
+        >
+          {children}
+        </main>
       </RainbowKitProvider>
     </WagmiConfig>
   );

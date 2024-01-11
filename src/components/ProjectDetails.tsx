@@ -3,7 +3,7 @@ import { useIntersection } from "react-use";
 import clsx from "clsx";
 import { tv } from "tailwind-variants";
 import Link from "next/link";
-import { FaCheckToSlot } from "react-icons/fa6";
+import { FaArrowLeft, FaCheckToSlot } from "react-icons/fa6";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { useCopyToClipboard } from "react-use";
 
@@ -32,8 +32,8 @@ import { ProjectAddToBallot } from "./ProjectAddToBallot";
 import { type List } from "~/hooks/useLists";
 import { ProjectContribution } from "./ProjectContribution";
 import { BlurredBannerImage } from "./ui/BlurredBannerImage";
-
-const reportUrl = process.env.NEXT_PUBLIC_REPORT_URL;
+import { IconButton } from "./ui/Button";
+import { toURL, useFilter } from "~/hooks/useFilter";
 
 export const ProjectDetails = ({ project }: { project: Project }) => {
   const [_, copy] = useCopyToClipboard();
@@ -59,9 +59,12 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
         {!intersection?.isIntersecting ? (
           <ProjectAddToBallot project={project} />
         ) : null}
-        <h1 className="flex h-12 items-center text-xl font-semibold">
-          {project?.displayName}&apos;s Application
-        </h1>
+        <div className="flex gap-2">
+          <BackButton />
+          <h1 className="flex h-12 items-center text-xl font-semibold">
+            {project?.displayName}&apos;s Application
+          </h1>
+        </div>
       </div>
       <div ref={intersectionRef}>
         <BlurredBannerImage
@@ -228,6 +231,18 @@ export const ProjectDetails = ({ project }: { project: Project }) => {
     </>
   );
 };
+
+function BackButton() {
+  const { data: filter } = useFilter("projects");
+  return (
+    <IconButton
+      icon={FaArrowLeft}
+      variant="ghost"
+      as={Link}
+      href={`/projects?${toURL(filter!)}`}
+    />
+  );
+}
 
 function findAllocationForProject(projectId: string, list: List) {
   return (

@@ -13,9 +13,13 @@ export const SunnyBanner = () => (
           30 million OP for public goods
         </h3>
         <p>
+          RetroPGF results are live! View nominated projects and the OP
+          they&apos;ll receive for their contributions to Optimism
+        </p>
+        {/* <p>
           RetroPGF voting is live! View nominated projects that are eligible to
           receive retroactive public goods funding.
-        </p>
+        </p> */}
         <div>
           <ExternalLink
             href="https://community.optimism.io/docs/governance/retropgf-3/"

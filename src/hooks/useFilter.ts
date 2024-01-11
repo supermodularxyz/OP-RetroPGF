@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { type ParsedUrlQuery } from "querystring";
 
 type FilterSort =
+  | "mostAwarded"
   | "shuffle"
   | "asc"
   | "desc"
@@ -31,13 +32,14 @@ export const defaultSortOptions = [
 export const initialFilter: Filter = {
   after: undefined,
   display: "grid",
-  sort: "shuffle",
+  sort: "mostAwarded",
   search: "",
   seed: Date.now().toString(),
   categories: [],
 };
 
 export const sortLabels: { [key in FilterSort]: string } = {
+  mostAwarded: "Highest awarded",
   shuffle: "Shuffle",
   asc: "A to Z",
   desc: "Z to A",

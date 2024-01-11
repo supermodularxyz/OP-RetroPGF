@@ -10,7 +10,7 @@ import { Banner } from "~/components/ui/Banner";
 import { Button } from "~/components/ui/Button";
 import Link from "next/link";
 
-export default function ProjectsPage() {
+export default function ResultsPage() {
   const router = useRouter();
   const query = router.query;
 
@@ -28,20 +28,15 @@ export default function ProjectsPage() {
 
   useUpdateFilterFromRouter("projects");
 
+  console.log("error", error);
   return (
     <Layout sidebar="left">
       <div className="justify-between md:flex">
-        <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Results</h1>
         <DisplayAndSortFilter
           baseUrl="/projects"
           filter={filter!}
-          sortOptions={[
-            "mostAwarded",
-            "shuffle",
-            "asc",
-            "desc",
-            "byIncludedInBallots",
-          ]}
+          sortOptions={["shuffle", "asc", "desc", "byIncludedInBallots"]}
         />
       </div>
       <div className="no-scrollbar">

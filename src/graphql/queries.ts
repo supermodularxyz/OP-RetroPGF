@@ -14,6 +14,7 @@ total
 `;
 
 export const PROJECT_FRAGMENT = `
+awarded
 displayName
 payoutAddress {
   address
@@ -112,6 +113,7 @@ export const SearchProjectsQuery = `
         edges {
           cursor
           node {
+            awarded
             id
             bio
             displayName

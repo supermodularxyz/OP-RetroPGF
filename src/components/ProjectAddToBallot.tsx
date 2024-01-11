@@ -20,10 +20,15 @@ import { Form } from "./ui/Form";
 import { sumBallot } from "~/hooks/useBallot";
 import { MAX_ALLOCATION_TOTAL } from "./BallotOverview";
 import { track } from "@vercel/analytics/react";
+import { ProjectRewardButton } from "./ProjectRewardButton";
 
 export const MAX_ALLOCATION_PROJECT = Number(
   process.env.NEXT_PUBLIC_MAX_ALLOCATION_PROJECT!
 );
+
+const VOTING_END_DATE =
+  process.env.NEXT_PUBLIC_VOTING_END_DATE ??
+  new Date(Date.now() + 1000 * 60 * 60 * 24 * 15).toISOString();
 
 export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const { address } = useAccount();
@@ -36,6 +41,11 @@ export const ProjectAddToBallot = ({ project }: { project: Project }) => {
   const inBallot = ballotContains(id, ballot);
   const allocations = ballot?.votes ?? [];
   const sum = sumBallot(allocations.filter((p) => p.projectId !== project?.id));
+
+  const votingHasEnded = new Date(VOTING_END_DATE) < new Date();
+
+  if (votingHasEnded)
+    return <ProjectRewardButton isDetailed amount={project?.awarded} />;
 
   return (
     <div>
