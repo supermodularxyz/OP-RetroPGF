@@ -22,11 +22,6 @@ const navLinks = [
     children: "Lists",
     type: "lists",
   },
-  {
-    href: "/stats",
-    children: "Stats",
-    type: "stats",
-  },
 ] as const;
 
 const NavLink = ({
