@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { Button } from "~/components/ui/Button";
 
 import { formatNumber } from "~/utils/formatNumber";
-import { Star } from "./SunnySVG";
+import { OP, Star } from "./SunnySVG";
 
 export function ProjectRewardButton({
   amount,
@@ -42,16 +42,14 @@ export function ProjectRewardButton({
           ["w-48"]: isDetailed,
         })}
       >
-        <span
+        <OP
           className={clsx(
-            "mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-700 text-[10px] font-bold italic text-white",
+            "mr-2 flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold italic",
             {
-              ["bg-primary-600 "]: amount,
+              ["text-primary-600"]: amount,
             }
           )}
-        >
-          OP
-        </span>
+        />
 
         {amount ? formatNumber(amount) : "No allocation"}
       </Button>
