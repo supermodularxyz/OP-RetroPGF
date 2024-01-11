@@ -31,7 +31,8 @@ export const Layout = (
 
   const sidebar = (
     <Sidebar side={props.sidebar}>
-      {address && !votingHasEnded ? <BallotOverview /> : <SunnyBanner />}
+      <SunnyBanner />
+      {/* {address && !votingHasEnded ? <BallotOverview /> : <SunnyBanner />} */}
     </Sidebar>
   );
 
