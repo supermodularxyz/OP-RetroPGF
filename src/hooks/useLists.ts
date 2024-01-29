@@ -66,7 +66,11 @@ export function useLists(
           errors?: { message: string }[];
         }>(`${backendUrl}/graphql`, {
           query: ListsQuery,
-          variables: createQueryVariables({ ...filter, after: pageParam }),
+          variables: createQueryVariables({
+            ...filter,
+            sort: "asc",
+            after: pageParam,
+          }),
         })
         .then((r) => {
           const { lists, listsAggregate } = r.data.data?.retroPGF ?? {};

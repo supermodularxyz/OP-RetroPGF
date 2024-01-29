@@ -48,7 +48,7 @@ export default function ListsPage() {
           <DisplayAndSortFilter
             baseUrl="/lists"
             filter={filter!}
-            sortOptions={["shuffle", "asc", "desc", "liked"]}
+            sortOptions={["asc"]}
           />
         </div>
       </div>
